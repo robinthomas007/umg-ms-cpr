@@ -1,5 +1,17 @@
+import Router from './Router/index'
+import { ColorModeProvider } from './Context/ColorModeContext'
+import { AuthProvider } from './Context/authContext'
+
 function App() {
-  return <h1>Welcome to CPR!</h1>
+  return (
+    <div className="App">
+      <AuthProvider>
+        <ColorModeProvider>
+          <Router />
+        </ColorModeProvider>
+      </AuthProvider>
+    </div>
+  )
 }
 
 export default App
