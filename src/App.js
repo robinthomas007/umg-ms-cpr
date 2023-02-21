@@ -1,16 +1,29 @@
-import Router from './Router/index'
-import { ColorModeProvider } from './Context/ColorModeContext'
-import { AuthProvider } from './Context/authContext'
+import getAuthUser from './utils/getAuthUser'
+import Unauthorized from './globalComponents/Unauthorized'
+import { useEffect } from 'react'
+import Pages from './pages'
+import LayOut from './globalComponents/LayOut'
 
 function App() {
+  const user = getAuthUser()
+
+  useEffect(() => {
+    if (user) {
+      setTimeout(() => {
+        alert('Session timed out!')
+        window.location.reload()
+      }, user.exp)
+    }
+  }, [user])
+
+  if (!user) {
+    return <Unauthorized />
+  }
+
   return (
-    <div className="App">
-      <AuthProvider>
-        <ColorModeProvider>
-          <Router />
-        </ColorModeProvider>
-      </AuthProvider>
-    </div>
+    <LayOut>
+      <Pages />
+    </LayOut>
   )
 }
 
