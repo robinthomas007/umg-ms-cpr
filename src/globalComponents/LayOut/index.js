@@ -3,6 +3,7 @@ import React from 'react'
 import logo from '../../images/logo.png'
 import guardian from '../../images/guardian.png'
 import cp3 from '../../images/cp3.png'
+import styles from './index.module.css'
 import { BellFilled, BarChartOutlined } from '@ant-design/icons'
 const { Header, Content, Sider } = Layout
 
@@ -42,7 +43,7 @@ const leftNavItems = [
 const LayOut = ({ children }) => {
   return (
     <Layout>
-      <Header>
+      <Header className={styles.header}>
         <Row justify="space-between">
           <img src={logo} style={{ height: 92, marginTop: '-16px' }} alt="logo" />
           <Col>
@@ -56,7 +57,7 @@ const LayOut = ({ children }) => {
               <Badge size="small" count={5}>
                 <Button shape="circle" icon={<BellFilled />} />
               </Badge>
-              <span style={{ color: 'white' }}>Welcome, Dineshkumar Raman</span>
+              <span>Welcome, Dineshkumar Raman</span>
             </Space>
           </Col>
         </Row>
@@ -67,7 +68,7 @@ const LayOut = ({ children }) => {
         }}
       >
         <Sider width={200} style={{ height: '100%' }}>
-          <Menu mode="inline" defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} items={leftNavItems} />
+          <Menu defaultSelectedKeys={['Dashboard']} items={leftNavItems} />
         </Sider>
         <Content
           style={{
