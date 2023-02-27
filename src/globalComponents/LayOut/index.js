@@ -64,7 +64,6 @@ const LayOut = ({ children }) => {
       <Layout
         style={{
           margin: '40px',
-          padding: '24px 0',
         }}
       >
         <Sider width={200} style={{ height: '100%' }}>
