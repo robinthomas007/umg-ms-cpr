@@ -1,60 +1,74 @@
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons'
-import { Layout, Menu, theme } from 'antd'
+import { Layout, Menu, Row, Col, Space, Button, Badge } from 'antd'
 import React from 'react'
-import './index.module.css'
-
+import logo from '../../images/logo.png'
+import guardian from '../../images/guardian.png'
+import cp3 from '../../images/cp3.png'
+import { BellFilled, BarChartOutlined } from '@ant-design/icons'
 const { Header, Content, Sider } = Layout
-const items1 = ['1', '2', '3'].map((key) => ({
-  key,
-  label: `nav ${key}`,
-}))
-const items2 = [UserOutlined, LaptopOutlined, NotificationOutlined].map((icon, index) => {
-  const key = String(index + 1)
-  return {
-    key: `sub${key}`,
-    icon: React.createElement(icon),
-    label: `subnav ${key}`,
-    children: new Array(4).fill(null).map((_, j) => {
-      const subKey = index * 4 + j + 1
-      return {
-        key: subKey,
-        label: `option${subKey}`,
-      }
-    }),
-  }
-})
+
+const leftNavItems = [
+  {
+    key: 'Dashboard',
+    label: 'Dashboard',
+    icon: <BarChartOutlined />,
+  },
+  {
+    key: 'My Queue',
+    label: 'My Queue',
+    icon: <BarChartOutlined />,
+  },
+  {
+    key: 'Message Board',
+    label: 'Message Board',
+    icon: <BarChartOutlined />,
+  },
+  {
+    key: 'Tasking',
+    label: 'Tasking',
+    icon: <BarChartOutlined />,
+  },
+  {
+    key: 'Administration',
+    label: 'Administration',
+    icon: <BarChartOutlined />,
+  },
+  {
+    key: 'Knowledge Base',
+    label: 'Knowledge Base',
+    icon: <BarChartOutlined />,
+  },
+]
+
 const LayOut = ({ children }) => {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken()
   return (
     <Layout>
-      <Header className="header">
-        <div className="logo" />
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
+      <Header>
+        <Row justify="space-between">
+          <img src={logo} style={{ height: 92, marginTop: '-16px' }} alt="logo" />
+          <Col>
+            <Space size={'large'}>
+              <img src={guardian} style={{ height: 32, marginTop: '-4px' }} alt="guardian" />
+              <img src={cp3} style={{ height: 48, marginTop: '-4px' }} alt="cp3" />
+            </Space>
+          </Col>
+          <Col>
+            <Space size={'large'}>
+              <Badge size="small" count={5}>
+                <Button shape="circle" icon={<BellFilled />} />
+              </Badge>
+              <span style={{ color: 'white' }}>Welcome, Dineshkumar Raman</span>
+            </Space>
+          </Col>
+        </Row>
       </Header>
       <Layout
         style={{
           margin: '40px',
           padding: '24px 0',
-          background: colorBgContainer,
         }}
       >
-        <Sider
-          style={{
-            background: colorBgContainer,
-          }}
-          width={200}
-        >
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={['1']}
-            defaultOpenKeys={['sub1']}
-            style={{
-              height: '100%',
-            }}
-            items={items2}
-          />
+        <Sider width={200} style={{ height: '100%' }}>
+          <Menu mode="inline" defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} items={leftNavItems} />
         </Sider>
         <Content
           style={{
