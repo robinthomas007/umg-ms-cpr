@@ -1,3 +1,7 @@
+import { Typography } from 'antd'
+
+const { Title } = Typography
+
 export default function Home() {
-  return <h1>Welcome to CPR!</h1>
+  return <Title level={2}>Welcome to CPR!</Title>
 }

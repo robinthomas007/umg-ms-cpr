@@ -7,6 +7,7 @@ export default function Unauthorized() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+        color: 'white',
       }}
     >
       <h1>You are not logged in!!!</h1>

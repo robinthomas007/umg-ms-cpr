@@ -13,6 +13,7 @@ root.render(
         theme={{
           algorithm: theme.darkAlgorithm,
           token: {
+            fontFamily: 'Roboto Condensed',
             colorPrimary: '#85D305',
           },
         }}
