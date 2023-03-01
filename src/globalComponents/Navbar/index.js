@@ -10,11 +10,11 @@ export default function Navbar() {
   return (
     <Header>
       <Row justify="space-between">
-        <img src={logo} style={{ height: 92, marginTop: '-18px' }} alt="logo" />
+        <img src={logo} height="92px" style={{ marginTop: '-18px' }} alt="logo" />
         <Col>
           <Space size={'large'}>
-            <img src={guardian} style={{ height: 32 }} alt="guardian" />
-            <img src={cp3} style={{ height: 48 }} alt="cp3" />
+            <img src={guardian} height="32px" alt="guardian" />
+            <img src={cp3} height="48px" alt="cp3" />
           </Space>
         </Col>
         <Col>
