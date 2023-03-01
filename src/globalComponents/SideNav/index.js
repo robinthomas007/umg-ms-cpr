@@ -1,6 +1,14 @@
 import { Layout, Menu, Row, Col, Typography } from 'antd'
 import styles from './index.module.css'
-import { BarChartOutlined, PushpinFilled } from '@ant-design/icons'
+import {
+  AlertFilled,
+  PushpinFilled,
+  MenuOutlined,
+  AppstoreFilled,
+  MailFilled,
+  SlidersFilled,
+  AuditOutlined,
+} from '@ant-design/icons'
 const { Sider } = Layout
 const { Paragraph } = Typography
 
@@ -8,38 +16,38 @@ const MENUS = [
   {
     key: 'Dashboard',
     label: 'Dashboard',
-    icon: <BarChartOutlined />,
+    icon: <AppstoreFilled />,
   },
   {
     key: 'My Queue',
     label: 'My Queue',
-    icon: <BarChartOutlined />,
+    icon: <MenuOutlined />,
   },
   {
     key: 'Message Board',
     label: 'Message Board',
-    icon: <BarChartOutlined />,
+    icon: <MailFilled />,
   },
   {
     key: 'Tasking',
     label: 'Tasking',
-    icon: <BarChartOutlined />,
+    icon: <SlidersFilled />,
   },
   {
     key: 'Administration',
     label: 'Administration',
-    icon: <BarChartOutlined />,
+    icon: <AuditOutlined />,
   },
   {
     key: 'Knowledge Base',
     label: 'Knowledge Base',
-    icon: <BarChartOutlined />,
+    icon: <AlertFilled />,
   },
 ]
 
 export default function SideNav() {
   return (
-    <Sider className={styles.sider}>
+    <Sider>
       <Menu defaultSelectedKeys={[MENUS[0].key]} items={MENUS} />
       <Row className={styles.news}>
         <Col className={styles.newsBoardText}>
