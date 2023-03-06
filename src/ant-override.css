@@ -115,7 +115,8 @@ h3.ant-typography,
 
 .ant-picker-calendar.custom-calendar .ant-picker-calendar-header {
   background: var(--header-background) !important;
-  margin-top: -64px;
+  margin-top: -60px;
+  padding-right: 20px;
 }
 .custom-calendar .ant-picker-panel {
   margin-top: 12px;
