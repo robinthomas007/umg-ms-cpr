@@ -1,14 +1,35 @@
-import { Layout, Row, Col, Space, Button, Badge, Typography } from 'antd'
+import { Layout, Row, Col, Space, Button, Badge, Typography, Menu } from 'antd'
 import logo from '../../images/logo.png'
 import guardian from '../../images/guardian.png'
 import cp3 from '../../images/cp3.png'
-import { BellFilled } from '@ant-design/icons'
+import { BellFilled, SearchOutlined, SafetyCertificateFilled } from '@ant-design/icons'
 import getAuthUser from '../../utils/getAuthUser'
+import { useState } from 'react'
 const { Header } = Layout
 const { Text } = Typography
 
+const items = [
+  {
+    label: 'Search',
+    key: 'logo',
+    icon: <SearchOutlined />,
+  },
+  {
+    label: 'Policy',
+    key: 'cis',
+    icon: <SafetyCertificateFilled />,
+  },
+]
+
 export default function Navbar() {
   const user = getAuthUser()
+  const [current, setCurrent] = useState(items[0].key)
+
+  const onClick = (e) => {
+    console.log('click ', e)
+    setCurrent(e.key)
+  }
+
   return (
     <Header>
       <Row justify="space-between">
@@ -18,6 +39,9 @@ export default function Navbar() {
             <img src={guardian} height="32px" alt="guardian" />
             <img src={cp3} height="48px" alt="cp3" />
           </Space>
+        </Col>
+        <Col>
+          <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />
         </Col>
         <Col>
           <Space size={'large'}>

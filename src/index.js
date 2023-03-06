@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import 'antd/dist/reset.css'
-import './index.css'
+import './ant-override.css'
 import App from './App'
 import { BrowserRouter } from 'react-router-dom'
 import { ConfigProvider, theme } from 'antd'
