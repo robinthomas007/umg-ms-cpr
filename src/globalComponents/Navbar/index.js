@@ -3,10 +3,12 @@ import logo from '../../images/logo.png'
 import guardian from '../../images/guardian.png'
 import cp3 from '../../images/cp3.png'
 import { BellFilled } from '@ant-design/icons'
+import getAuthUser from '../../utils/getAuthUser'
 const { Header } = Layout
 const { Text } = Typography
 
 export default function Navbar() {
+  const user = getAuthUser()
   return (
     <Header>
       <Row justify="space-between">
@@ -22,7 +24,7 @@ export default function Navbar() {
             <Badge size="small" count={5}>
               <Button shape="circle" icon={<BellFilled />} />
             </Badge>
-            <Text>Welcome, Dineshkumar Raman</Text>
+            <Text>Welcome {user ? user.name : ''}</Text>
           </Space>
         </Col>
       </Row>
