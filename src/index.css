@@ -1,0 +1,26 @@
+/* Calendar */
+
+.ant-picker-calendar.custom-calendar .ant-picker-calendar-header {
+  background: var(--header-background) !important;
+  margin-top: -60px;
+  padding-right: 20px;
+}
+.custom-calendar .ant-picker-panel {
+  margin-top: 12px;
+}
+
+/* List */
+
+.ant-list .ant-spin-container {
+  padding-top: 4px;
+  padding-bottom: 8px;
+}
+.ant-list .ant-list-item {
+  border-block-end: none !important;
+  padding: 4px 12px;
+}
+.ant-list-item-meta {
+  background-color: var(--list-background);
+  padding: 12px;
+  border-radius: 4px;
+}
