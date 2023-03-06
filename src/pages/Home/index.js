@@ -2,10 +2,11 @@ import { Row, Col } from 'antd'
 import Chart1 from './Chart1'
 import Chart2 from './Chart2'
 import ChartContainer from './ChartContainer'
+import Release from './Release'
 
 export default function Home() {
   return (
-    <Row gutter={40} style={{ marginLeft: 20 }}>
+    <Row gutter={[40, 40]} style={{ marginLeft: 20 }}>
       <Col span={12}>
         <ChartContainer
           title="Guardian Projects"
@@ -30,7 +31,9 @@ export default function Home() {
           <Chart2 />
         </ChartContainer>
       </Col>
-      <Col span={9}></Col>
+      <Col span={9}>
+        <Release />
+      </Col>
       <Col span={15}></Col>
     </Row>
   )
