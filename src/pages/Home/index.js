@@ -3,6 +3,7 @@ import Chart1 from './Chart1'
 import Chart2 from './Chart2'
 import ChartContainer from './ChartContainer'
 import Release from './Release'
+import TeamCalendar from './TeamCalendar'
 
 export default function Home() {
   return (
@@ -34,7 +35,9 @@ export default function Home() {
       <Col span={9}>
         <Release />
       </Col>
-      <Col span={15}></Col>
+      <Col span={15}>
+        <TeamCalendar />
+      </Col>
     </Row>
   )
 }
