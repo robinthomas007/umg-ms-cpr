@@ -21,7 +21,7 @@ export const data = {
       data: [12, 19, 8, 3],
       backgroundColor: ['#01579B', '#85D305', '#F5FA20'],
       borderWidth: 0,
-      cutout: 90,
+      cutout: 80,
     },
   ],
 }
