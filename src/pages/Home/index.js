@@ -1,7 +1,16 @@
-import { Typography } from 'antd'
-
-const { Title } = Typography
+import { Row, Col } from 'antd'
+import Chart1 from './Chart1'
+import Chart2 from './Chart2'
 
 export default function Home() {
-  return <Title level={2}>Welcome to CPR!</Title>
+  return (
+    <Row gutter={[40, 40]}>
+      <Col span={12}>
+        <Chart1 />
+      </Col>
+      <Col span={12}>
+        <Chart2 />
+      </Col>
+    </Row>
+  )
 }
