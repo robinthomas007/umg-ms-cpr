@@ -8,34 +8,30 @@ export const options = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'top',
-    },
-    title: {
-      display: true,
-      text: 'Chart.js Bar Chart',
+      display: false,
     },
   },
 }
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July']
+const labels = ['January', 'February', 'March', 'April']
 
 export const data = {
   labels,
   datasets: [
     {
-      label: 'Dataset 1',
-      data: [100, 200, 300, 400, 500, 600, 700],
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      label: 'Submitted',
+      data: [400, 300, 100, 200],
+      backgroundColor: '#01579B',
     },
     {
-      label: 'Dataset 2',
-      data: [100, 200, 300, 400, 500, 600, 700],
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      label: 'Published',
+      data: [300, 200, 300, 400],
+      backgroundColor: '#85D305',
     },
     {
-      label: 'Dataset 2',
-      data: [100, 200, 300, 400, 500, 600, 700],
-      backgroundColor: 'rgba(53, 162, 225, 0.5)',
+      label: 'In Progress',
+      data: [150, 300, 250, 200],
+      backgroundColor: '#F5FA20',
     },
   ],
 }

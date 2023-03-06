@@ -11,7 +11,7 @@ const LayOut = ({ children }) => {
       <Navbar />
       <Layout className={styles.main}>
         <SideNav />
-        <Content className={styles.content}>{children}</Content>
+        <Content>{children}</Content>
       </Layout>
     </Layout>
   )
