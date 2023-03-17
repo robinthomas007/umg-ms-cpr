@@ -5,29 +5,32 @@ import cp3 from '../../images/cp3.png'
 import { BellFilled, SearchOutlined, SafetyCertificateFilled } from '@ant-design/icons'
 import getAuthUser from '../../utils/getAuthUser'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 const { Header } = Layout
 const { Text } = Typography
 
 const items = [
   {
     label: 'Search',
-    key: 'logo',
+    key: 'search',
     icon: <SearchOutlined />,
   },
   {
     label: 'Policy',
-    key: 'cis',
+    key: 'policy',
     icon: <SafetyCertificateFilled />,
   },
 ]
 
 export default function Navbar() {
   const user = getAuthUser()
-  const [current, setCurrent] = useState(items[0].key)
+  const [current, setCurrent] = useState()
+
+  const navigate = useNavigate()
 
   const onClick = (e) => {
-    console.log('click ', e)
     setCurrent(e.key)
+    navigate('/search')
   }
 
   return (
