@@ -11,7 +11,7 @@ WORKDIR /src
 RUN apt-get update -y && apt-get install -y jq
 
 COPY package.json package.json
-COPY package-lock.lock package-lock.lock
+COPY package-lock.json package-lock.json
 
 RUN npm install --immutable
 COPY . .
