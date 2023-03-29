@@ -6,6 +6,9 @@ ENV USER_DATA $USER_DATA
 ARG VAULT_TOKEN
 ENV VAULT_TOKEN $VAULT_TOKEN
 
+ARG ENV
+ENV ENV $ENV
+
 WORKDIR /src
 
 RUN apt-get update -y && apt-get install -y jq
@@ -18,6 +21,7 @@ COPY . .
 RUN echo "The environment is" 
 RUN echo $ENV
 RUN echo $MODE
+RUN ENVIRONMENT
 
 RUN npm run build:$ENV
 # RUN --mount=type=secret,id=serviceaccount_token,target=/var/run/secrets/kubernetes.io/serviceaccount/token \
