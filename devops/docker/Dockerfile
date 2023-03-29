@@ -6,9 +6,6 @@ ENV USER_DATA $USER_DATA
 ARG VAULT_TOKEN
 ENV VAULT_TOKEN $VAULT_TOKEN
 
-ARG ENV
-ENV ENV $ENV
-
 WORKDIR /src
 
 RUN apt-get update -y && apt-get install -y jq
@@ -16,14 +13,11 @@ RUN apt-get update -y && apt-get install -y jq
 COPY package.json package.json
 COPY package-lock.json package-lock.json
 
-RUN npm install
+RUN npm install --immutable
 COPY . .
-RUN echo "The environment is" 
-RUN echo $ENV
-RUN echo $MODE
-RUN ENVIRONMENT
 
-RUN npm run build:$ENV
+RUN npm build:dev
+
 # RUN --mount=type=secret,id=serviceaccount_token,target=/var/run/secrets/kubernetes.io/serviceaccount/token \
 #     bash ./devops/scripts/buildwithvault.sh
 

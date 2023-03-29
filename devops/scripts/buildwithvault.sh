@@ -1,5 +1,5 @@
 #!/bin/bash
 
-# . ./devops/scripts/vaultsecrets.sh
+. ./devops/scripts/vaultsecrets.sh
 
 npm run build:$MODE

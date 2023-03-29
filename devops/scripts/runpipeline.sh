@@ -66,8 +66,7 @@ cat > trigger.json <<-EOF
     "Config": {
         "VaultKVPath": "$VAULT_KV_PATH",
         "UserData": "$USER_DATA",
-        "EventID": "",
-        "ENV":"$ENV"
+        "EventID": ""
     }
 }
 EOF
