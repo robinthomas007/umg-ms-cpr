@@ -11,9 +11,9 @@ WORKDIR /src
 RUN apt-get update -y && apt-get install -y jq
 
 COPY package.json package.json
-COPY yarn.lock yarn.lock
+COPY package-lock.lock package-lock.lock
 
-RUN yarn install --immutable
+RUN npm install --immutable
 COPY . .
 RUN --mount=type=secret,id=serviceaccount_token,target=/var/run/secrets/kubernetes.io/serviceaccount/token \
     bash ./devops/scripts/buildwithvault.sh
