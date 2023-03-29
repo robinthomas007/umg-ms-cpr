@@ -1,5 +1,5 @@
 #!/bin/bash
 
-. ./devops/scripts/vaultsecrets.sh
+# . ./devops/scripts/vaultsecrets.sh
 
-yarn run build:$MODE
+npm run build:$MODE

@@ -13,10 +13,15 @@ RUN apt-get update -y && apt-get install -y jq
 COPY package.json package.json
 COPY package-lock.json package-lock.json
 
-RUN npm install --immutable
+RUN npm install
 COPY . .
-RUN --mount=type=secret,id=serviceaccount_token,target=/var/run/secrets/kubernetes.io/serviceaccount/token \
-    bash ./devops/scripts/buildwithvault.sh
+RUN echo "The environment is" 
+RUN echo $ENV
+RUN echo $MODE
+
+RUN npm run build:$ENV
+# RUN --mount=type=secret,id=serviceaccount_token,target=/var/run/secrets/kubernetes.io/serviceaccount/token \
+#     bash ./devops/scripts/buildwithvault.sh
 
 FROM nginx:1.17 as web
 
