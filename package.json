@@ -15,7 +15,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build:dev": "REACT_APP_ENV=dev react-scripts build",
+    "build:qa": "REACT_APP_ENV=qa react-scripts build",
+    "build:uat": "REACT_APP_ENV=uat react-scripts build",
+    "build:prod": "REACT_APP_ENV=prod react-scripts build",
     "prepare": "husky install"
   },
   "eslintConfig": {
