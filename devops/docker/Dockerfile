@@ -16,7 +16,7 @@ COPY package-lock.json package-lock.json
 RUN npm install --immutable
 COPY . .
 
-RUN npm build:dev
+RUN npm run build:dev
 
 # RUN --mount=type=secret,id=serviceaccount_token,target=/var/run/secrets/kubernetes.io/serviceaccount/token \
 #     bash ./devops/scripts/buildwithvault.sh
