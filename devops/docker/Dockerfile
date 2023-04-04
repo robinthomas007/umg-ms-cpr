@@ -6,8 +6,8 @@ ENV USER_DATA $USER_DATA
 WORKDIR /src
 
 
-echo "USER_DATA =======================USER_DATA in docker"
-echo $USER_DATA
+RUN echo "USER_DATA =======================USER_DATA in docker"
+RUN echo $USER_DATA
 
 RUN apt-get update -y && apt-get install -y jq
 
