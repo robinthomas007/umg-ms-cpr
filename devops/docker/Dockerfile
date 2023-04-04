@@ -1,12 +1,13 @@
 FROM node:17.4.0 as builder
 
-ARG ENV
-ENV ENV $ENV
-
-ARG ENVIRONMENT
-ENV ENVIRONMENT $ENVIRONMENT
+ARG USER_DATA
+ENV USER_DATA $USER_DATA
 
 WORKDIR /src
+
+
+echo "USER_DATA =======================USER_DATA in docker"
+echo $USER_DATA
 
 RUN apt-get update -y && apt-get install -y jq
 
@@ -17,11 +18,6 @@ RUN npm install --immutable
 COPY . .
 
 RUN bash ./devops/scripts/environment.sh
-
-RUN echo "environment =======================indocker"
-RUN echo $ENV
-RUN echo "environment =======================indocker"
-RUN echo $ENVIRONMENT
 
 RUN npm run build:dev
 
