@@ -61,6 +61,7 @@ cat > trigger.json <<-EOF
         "Cache": "$USE_CACHE",
         "Platforms": "$PLATFORMS",
         "UserData": "$USER_DATA"
+        "ENV": "$ENV",
     },
     "K8S": {
         "YamlPath": "$YAML_PATH",
