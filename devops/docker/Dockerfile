@@ -6,11 +6,6 @@ ENV ENV $ENV
 ARG ENVIRONMENT
 ENV ENVIRONMENT $ENVIRONMENT
 
-RUN echo "environment =======================111"
-RUN echo $env
-RUN echo "environment =======================222"
-RUN echo $ENVIRONMENT
-
 WORKDIR /src
 
 RUN apt-get update -y && apt-get install -y jq
@@ -20,6 +15,12 @@ COPY package-lock.json package-lock.json
 
 RUN npm install --immutable
 COPY . .
+RUN bash ./devops/scripts/environment.sh
+
+RUN echo "environment =======================indocker"
+RUN echo $env
+RUN echo "environment =======================indocker"
+RUN echo $ENVIRONMENT
 
 RUN npm run build:dev
 
