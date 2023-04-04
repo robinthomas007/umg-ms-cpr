@@ -3,11 +3,23 @@ FROM node:17.4.0 as builder
 ARG USER_DATA
 ENV USER_DATA $USER_DATA
 
+ARG ENV
+ENV ENV $ENV
+
+ARG ENVIRONMENT
+ENV ENVIRONMENT $ENVIRONMENT
+
 WORKDIR /src
 
 
 RUN echo "USER_DATA =======================USER_DATA in docker"
 RUN echo $USER_DATA
+
+echo "env =======================in docker"
+echo $ENV
+
+echo "environment =======================in docker"
+echo $ENVIRONMENT
 
 RUN apt-get update -y && apt-get install -y jq
 

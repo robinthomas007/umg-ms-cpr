@@ -4,9 +4,6 @@ set -e
 
 ENVIRONMENT=""
 ENV=${ENV:-"qa"}
-echo "environment =======================runpipeline"
-echo $ENV
-
 case "$ENV" in
     "dev") 
         export ENVIRONMENT="awsa1-hybrid-nonprod-v2/cprportal-dev" 
@@ -21,9 +18,6 @@ case "$ENV" in
         export ENVIRONMENT="awsa3-hybrid-prod-v2/cprportal-prod" 
         ;;
 esac
-
-echo "environment =======================runpipeline"
-echo $ENVIRONMENT
 
 IMAGE_URL=${IMAGE_URL:-"docker-registry.umusic.com/cprportal/cprportal-web"}
 
@@ -72,7 +66,9 @@ cat > trigger.json <<-EOF
     "Config": {
         "VaultKVPath": "$VAULT_KV_PATH",
         "UserData": "$USER_DATA",
-        "EventID": ""
+        "EventID": "",
+        "ENV": "$ENV",
+        "Environment":"$Environment"
     }
 }
 EOF
