@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-ENV=${ENV:-"prod"}
+# ENV=${ENV:-"dev"}
 
 echo "env =======================111"
 echo $ENV

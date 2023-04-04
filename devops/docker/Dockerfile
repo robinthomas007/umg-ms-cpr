@@ -15,11 +15,11 @@ WORKDIR /src
 RUN echo "USER_DATA =======================USER_DATA in docker"
 RUN echo $USER_DATA
 
-echo "env =======================in docker"
-echo $ENV
+RUN echo "env =======================in docker"
+RUN echo $ENV
 
-echo "environment =======================in docker"
-echo $ENVIRONMENT
+RUN echo "environment =======================in docker"
+RUN echo $ENVIRONMENT
 
 RUN apt-get update -y && apt-get install -y jq
 

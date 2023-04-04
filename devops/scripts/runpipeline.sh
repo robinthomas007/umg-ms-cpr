@@ -3,7 +3,7 @@
 set -e
 
 ENVIRONMENT=""
-ENV=${ENV:-"qa"}
+ENV=${ENV:-"dev"}
 case "$ENV" in
     "dev") 
         export ENVIRONMENT="awsa1-hybrid-nonprod-v2/cprportal-dev" 
