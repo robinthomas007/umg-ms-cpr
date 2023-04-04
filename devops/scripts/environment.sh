@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RUN echo "environment =======================111"
-RUN echo $env
-RUN echo "environment =======================222"
-RUN echo $ENVIRONMENT
+echo "environment =======================111"
+echo $env
+echo "environment =======================222"
+echo $ENVIRONMENT

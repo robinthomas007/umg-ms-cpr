@@ -15,6 +15,7 @@ COPY package-lock.json package-lock.json
 
 RUN npm install --immutable
 COPY . .
+
 RUN bash ./devops/scripts/environment.sh
 
 RUN echo "environment =======================indocker"
