@@ -19,7 +19,7 @@ COPY . .
 RUN bash ./devops/scripts/environment.sh
 
 RUN echo "environment =======================indocker"
-RUN echo $env
+RUN echo $ENV
 RUN echo "environment =======================indocker"
 RUN echo $ENVIRONMENT
 
