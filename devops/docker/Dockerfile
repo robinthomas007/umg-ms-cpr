@@ -1,6 +1,5 @@
 FROM node:17.4.0 as builder
 
-FROM alpine
 ARG USER_DATA
  
 RUN echo “hello ${USER_DATA}”
