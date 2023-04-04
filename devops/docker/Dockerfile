@@ -1,25 +1,11 @@
 FROM node:17.4.0 as builder
 
+FROM alpine
 ARG USER_DATA
-ENV USER_DATA $USER_DATA
-
-ARG ENV
-ENV ENV $ENV
-
-ARG ENVIRONMENT
-ENV ENVIRONMENT $ENVIRONMENT
+ 
+RUN echo “hello ${USER_DATA}”
 
 WORKDIR /src
-
-
-RUN echo "USER_DATA =======================USER_DATA in docker"
-RUN echo $USER_DATA
-
-RUN echo "env =======================in docker"
-RUN echo $ENV
-
-RUN echo "environment =======================in docker"
-RUN echo $ENVIRONMENT
 
 RUN apt-get update -y && apt-get install -y jq
 
@@ -28,10 +14,10 @@ COPY package-lock.json package-lock.json
 
 RUN npm install --immutable
 COPY . .
-
-RUN bash ./devops/scripts/environment.sh
-
 RUN npm run build:dev
+
+# RUN --mount=type=secret,id=serviceaccount_token,target=/var/run/secrets/kubernetes.io/serviceaccount/token \
+    # bash ./devops/scripts/buildwithvault.sh
 
 FROM nginx:1.17 as web
 
