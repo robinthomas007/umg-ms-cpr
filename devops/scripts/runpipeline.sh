@@ -68,7 +68,7 @@ cat > trigger.json <<-EOF
         "UserData": "$USER_DATA",
         "EventID": "",
         "ENV": "$ENV",
-        "Environment":"$Environment"
+        "Environment":"$ENVIRONMENT"
     }
 }
 EOF
