@@ -31,6 +31,8 @@ DOCKERFILE=${DOCKERFILE:-"devops/docker/Dockerfile"}
 CONTEXT=${CONTEXT:-""}
 YAML_PATH=${YAML_PATH:-"devops/app.yaml"}
 YAML_DIR=${YAML_DIR:-"devops/k8s"}
+PLATFORMS=${PLATFORMS:-"linux/amd64,linux/arm64"}
+USE_CACHE=${USE_CACHE:-"true"}
 
 IMAGE_TAG="$GIT_COMMIT-$ENV"
 
@@ -55,7 +57,10 @@ cat > trigger.json <<-EOF
         "URL": "$IMAGE_URL",
         "Tag": "$IMAGE_TAG",
         "Dockerfile": "$DOCKERFILE",
-        "Context": "$CONTEXT"
+        "Context": "$CONTEXT",
+        "Cache": "$USE_CACHE",
+        "Platforms": "$PLATFORMS",
+        "UserData": "$USER_DATA"
     },
     "K8S": {
         "YamlPath": "$YAML_PATH",
@@ -77,9 +82,7 @@ cat trigger.json
 
 
 
-# export EVENT_ID=`curl http://el-build-pipeline-listener.tekton-pipelines.svc.cluster.local:8080/v2/$PIPELINE \
-#     -d @trigger.json | jq -r '.eventID'`
-export EVENT_ID=`curl https://tektontrigger.devops.umgapps.com/v1/#/pipelines/post_$PIPELINE \
+export EVENT_ID=`curl http://el-build-pipeline-listener.tekton-pipelines.svc.cluster.local:8080/v1/$PIPELINE \
     -d @trigger.json | jq -r '.eventID'`
 
 echo Execution Logs: https://tekton.devops.umgapps.com/#/pipelineruns?labelSelector=triggers.tekton.dev%2Ftriggers-eventid%3D$EVENT_ID
