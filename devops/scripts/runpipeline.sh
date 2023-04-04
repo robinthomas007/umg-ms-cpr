@@ -31,6 +31,8 @@ DOCKERFILE=${DOCKERFILE:-"devops/docker/Dockerfile"}
 CONTEXT=${CONTEXT:-""}
 YAML_PATH=${YAML_PATH:-"devops/app.yaml"}
 YAML_DIR=${YAML_DIR:-"devops/k8s"}
+PLATFORMS=${PLATFORMS:-"linux/amd64,linux/arm64"}
+USE_CACHE=${USE_CACHE:-"true"}
 
 IMAGE_TAG="$GIT_COMMIT-$ENV"
 
@@ -55,7 +57,10 @@ cat > trigger.json <<-EOF
         "URL": "$IMAGE_URL",
         "Tag": "$IMAGE_TAG",
         "Dockerfile": "$DOCKERFILE",
-        "Context": "$CONTEXT"
+        "Context": "$CONTEXT",
+        "Cache": "$USE_CACHE",
+        "Platforms": "$PLATFORMS",
+        "UserData": "$USER_DATA"
     },
     "K8S": {
         "YamlPath": "$YAML_PATH",
