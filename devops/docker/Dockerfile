@@ -1,10 +1,15 @@
 FROM node:17.4.0 as builder
 
-ARG USER_DATA
-ENV USER_DATA $USER_DATA
+ARG ENV
+ENV ENV $ENV
 
-ARG VAULT_TOKEN
-ENV VAULT_TOKEN $VAULT_TOKEN
+ARG ENVIRONMENT
+ENV ENVIRONMENT $ENVIRONMENT
+
+RUN echo "environment =======================111"
+RUN echo $env
+RUN echo "environment =======================222"
+RUN echo $ENVIRONMENT
 
 WORKDIR /src
 
@@ -17,9 +22,6 @@ RUN npm install --immutable
 COPY . .
 
 RUN npm run build:dev
-
-# RUN --mount=type=secret,id=serviceaccount_token,target=/var/run/secrets/kubernetes.io/serviceaccount/token \
-#     bash ./devops/scripts/buildwithvault.sh
 
 FROM nginx:1.17 as web
 

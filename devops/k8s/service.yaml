@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: cp3-web
-  namespace: cp3-dev
+  name: cprportal-web
+  namespace: cprportal-dev
   labels:
-    app: cp3-web
+    app: cprportal-web
 spec:
   type: ClusterIP
   selector:
-    app: cp3-web
+    app: cprportal-web
   ports:
   - protocol: TCP
     port: 80

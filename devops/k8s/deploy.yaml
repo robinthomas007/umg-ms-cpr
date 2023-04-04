@@ -2,29 +2,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cp3-web-v1
-  namespace: cp3-dev
+  name: cprportal-web-v1
+  namespace: cprportal-dev
   labels:
-    app: cp3-web
+    app: cprportal-web
     version: v1
-    auth: cp3
+    auth: cprportal
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cp3-web
+      app: cprportal-web
       version: v1
   template:
     metadata:
       labels:
-        app: cp3-web
+        app: cprportal-web
         version: v1
-        auth: cp3
+        auth: cprportal
     spec:
-      serviceAccountName: cp3-api
+      serviceAccountName: cprportal-api
       containers:
-      - name: cp3-web
-        image: docker-registry.umusic.com/cp3/cp3-web:v0.0.1
+      - name: cprportal-web
+        image: docker-registry.umusic.com/cprportal/cprportal-web:v0.0.1
         ports:
         - containerPort: 80
           name: http
