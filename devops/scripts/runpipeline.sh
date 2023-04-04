@@ -75,7 +75,11 @@ EOF
 
 cat trigger.json
 
-export EVENT_ID=`curl http://el-build-pipeline-listener.tekton-pipelines.svc.cluster.local:8080/v2/$PIPELINE \
+
+
+# export EVENT_ID=`curl http://el-build-pipeline-listener.tekton-pipelines.svc.cluster.local:8080/v2/$PIPELINE \
+#     -d @trigger.json | jq -r '.eventID'`
+export EVENT_ID=`curl https://tektontrigger.devops.umgapps.com/v1/#/pipelines/post_$PIPELINE \
     -d @trigger.json | jq -r '.eventID'`
 
 echo Execution Logs: https://tekton.devops.umgapps.com/#/pipelineruns?labelSelector=triggers.tekton.dev%2Ftriggers-eventid%3D$EVENT_ID
