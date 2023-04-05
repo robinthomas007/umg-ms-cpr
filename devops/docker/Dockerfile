@@ -1,12 +1,6 @@
 FROM node:17.4.0 as builder
 
 ARG USER_DATA
-ARG ENV
-ARG ENVIRONMENT
- 
-RUN echo “hello ${USER_DATA}”
-RUN echo ENVIRONMENT ENV ===============================”
-
 
 WORKDIR /src
 
@@ -20,7 +14,6 @@ COPY . .
 
 RUN bash ./devops/scripts/buildwithenv.sh 
 
-# RUN npm run build:dev
 
 # RUN --mount=type=secret,id=serviceaccount_token,target=/var/run/secrets/kubernetes.io/serviceaccount/token \
     # bash ./devops/scripts/buildwithvault.sh
