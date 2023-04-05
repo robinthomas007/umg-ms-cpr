@@ -60,8 +60,7 @@ cat > trigger.json <<-EOF
         "Context": "$CONTEXT",
         "Cache": "$USE_CACHE",
         "Platforms": "$PLATFORMS",
-        "UserData": "$USER_DATA",
-        "ENV": "$ENV",
+        "UserData": "$USER_DATA"
     },
     "K8S": {
         "YamlPath": "$YAML_PATH",
@@ -80,8 +79,6 @@ cat > trigger.json <<-EOF
 EOF
 
 cat trigger.json
-
-
 
 export EVENT_ID=`curl http://el-build-pipeline-listener.tekton-pipelines.svc.cluster.local:8080/v1/$PIPELINE \
     -d @trigger.json | jq -r '.eventID'`
