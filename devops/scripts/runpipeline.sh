@@ -61,7 +61,7 @@ cat > trigger.json <<-EOF
         "Cache": "$USE_CACHE",
         "Platforms": "$PLATFORMS",
         "UserData": "$USER_DATA",
-        "ENV": "$ENV"
+        "TestData": "$ENV"
     },
     "K8S": {
         "YamlPath": "$YAML_PATH",
@@ -72,7 +72,7 @@ cat > trigger.json <<-EOF
     "Config": {
         "VaultKVPath": "$VAULT_KV_PATH",
         "UserData": "$USER_DATA",
-        "EventID": "",
+        "EventID": ""
     }
 }
 EOF
