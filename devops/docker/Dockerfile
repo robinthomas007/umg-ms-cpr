@@ -3,10 +3,13 @@ FROM node:17.4.0 as builder
 ARG USER_DATA
 ARG ENV
 ARG ENVIRONMENT
+ARG TestData
  
 RUN echo “hello ${USER_DATA}”
 RUN echo ENVIRONMENT ENV ${ENV}”
 RUN echo ENVIRONMENT ENVIRONMENT ${ENVIRONMENT}”
+RUN echo TestData TestData ${TestData}”
+
 
 WORKDIR /src
 
