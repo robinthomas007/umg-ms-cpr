@@ -60,7 +60,7 @@ cat > trigger.json <<-EOF
         "Context": "$CONTEXT",
         "Cache": "$USE_CACHE",
         "Platforms": "$PLATFORMS",
-        "UserData": "$USER_DATA"
+        "UserData": "$USER_DATA",
         "ENV": "$ENV",
     },
     "K8S": {
