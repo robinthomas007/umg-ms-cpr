@@ -37,7 +37,8 @@ USE_CACHE=${USE_CACHE:-"true"}
 IMAGE_TAG="$GIT_COMMIT-$ENV"
 
 USER_DATA='{
-    "VAULT_KV_PATH": "cprportal/web/'$ENV'"
+    "VAULT_KV_PATH": "cprportal/web/'$ENV'",
+    "TEST":'$ENV'
 }'
 
 USER_DATA=`echo "$USER_DATA" | base64`
@@ -60,8 +61,7 @@ cat > trigger.json <<-EOF
         "Context": "$CONTEXT",
         "Cache": "$USE_CACHE",
         "Platforms": "$PLATFORMS",
-        "UserData": "$USER_DATA",
-        "TestData": "$ENV"
+        "UserData": "$USER_DATA"
     },
     "K8S": {
         "YamlPath": "$YAML_PATH",

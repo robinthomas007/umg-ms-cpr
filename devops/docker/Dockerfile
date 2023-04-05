@@ -3,12 +3,9 @@ FROM node:17.4.0 as builder
 ARG USER_DATA
 ARG ENV
 ARG ENVIRONMENT
-ARG TestData
  
 RUN echo “hello ${USER_DATA}”
-RUN echo ENVIRONMENT ENV ${ENV}”
-RUN echo ENVIRONMENT ENVIRONMENT ${ENVIRONMENT}”
-RUN echo TestData TestData ${TestData}”
+RUN echo ENVIRONMENT ENV ===============================”
 
 
 WORKDIR /src
@@ -20,7 +17,7 @@ COPY package-lock.json package-lock.json
 
 RUN npm install --immutable
 COPY . .
-RUN npm run build:dev
+RUN npm run build
 
 # RUN --mount=type=secret,id=serviceaccount_token,target=/var/run/secrets/kubernetes.io/serviceaccount/token \
     # bash ./devops/scripts/buildwithvault.sh
