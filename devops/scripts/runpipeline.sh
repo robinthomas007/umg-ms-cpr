@@ -38,7 +38,7 @@ IMAGE_TAG="$GIT_COMMIT-$ENV"
 
 USER_DATA='{
     "VAULT_KV_PATH": "cprportal/web/'$ENV'",
-    "TEST":'$ENV'
+    "ENV_VARIABLE":"'$ENV'"
 }'
 
 USER_DATA=`echo "$USER_DATA" | base64`
