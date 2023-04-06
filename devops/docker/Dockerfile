@@ -14,10 +14,6 @@ COPY . .
 
 RUN bash ./devops/scripts/buildwithenv.sh 
 
-
-# RUN --mount=type=secret,id=serviceaccount_token,target=/var/run/secrets/kubernetes.io/serviceaccount/token \
-    # bash ./devops/scripts/buildwithvault.sh
-
 FROM nginx:1.17 as web
 
 WORKDIR /usr/share/nginx/html
