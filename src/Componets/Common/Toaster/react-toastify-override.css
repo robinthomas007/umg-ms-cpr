@@ -1,0 +1,39 @@
+.Toastify__toast {
+  min-height: 50px;
+  margin-bottom: 1px;
+}
+
+/** Used to define container behavior: width, position: fixed etc... **/
+.Toastify__toast-container {
+  width: 100vw;
+  height: 50px;
+  text-align: center;
+  right: 0;
+  top: 0;
+  padding: 0;
+}
+
+.Toastify__toast--success {
+  background-color: rgba(245, 127, 23, 0.8);
+  color: #FFFFFF;
+}
+
+.Toastify__toast--success svg {
+  fill: #FFFFFF;
+}
+
+.Toastify__toast--error {
+  background-color: #7f1b2e;
+  color: #F5F5F5;
+}
+
+.Toastify__progress-bar--success {
+  background-color: #E5E5E5;
+}
+
+.Toastify__toast-body {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1em;
+  font-weight: 600;
+  line-height: 1.2;
+}

@@ -17,6 +17,7 @@ root.render(
           token: {
             fontFamily: 'Roboto Condensed',
             colorPrimary: '#85D305',
+            borderRadius: '2px',
           },
         }}
       >

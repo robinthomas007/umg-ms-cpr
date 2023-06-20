@@ -12,43 +12,9 @@ import {
 const { Sider } = Layout
 const { Paragraph } = Typography
 
-const MENUS = [
-  {
-    key: 'Dashboard',
-    label: 'Dashboard',
-    icon: <AppstoreFilled />,
-  },
-  {
-    key: 'My Queue',
-    label: 'My Queue',
-    icon: <MenuOutlined />,
-  },
-  {
-    key: 'Message Board',
-    label: 'Message Board',
-    icon: <MailFilled />,
-  },
-  {
-    key: 'Tasking',
-    label: 'Tasking',
-    icon: <SlidersFilled />,
-  },
-  {
-    key: 'Administration',
-    label: 'Administration',
-    icon: <AuditOutlined />,
-  },
-  {
-    key: 'Knowledge Base',
-    label: 'Knowledge Base',
-    icon: <AlertFilled />,
-  },
-]
-
 export default function SideNav() {
   return (
     <Sider>
-      <Menu defaultSelectedKeys={[MENUS[0].key]} items={MENUS} />
       <Row className={styles.news}>
         <Col className={styles.newsBoardText}>
           <Paragraph>From The Board</Paragraph>
