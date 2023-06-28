@@ -1,10 +1,14 @@
 .listContainer {
-  border-radius: 4px;
-  background-color: var(--header-background);
+  /* border-radius: 4px;
+  background-color: var(--header-background); */
 }
 
 .listHeader {
   padding: 20px 20px 12px 20px;
   display: flex;
   justify-content: space-between;
+}
+
+:where(.css-dev-only-do-not-override-1ityi0u).ant-radio-button-wrapper {
+  background: #333333;
 }

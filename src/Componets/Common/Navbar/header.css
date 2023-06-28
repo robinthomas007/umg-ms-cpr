@@ -1,5 +1,16 @@
 .header-menu {
   margin-bottom: 15px;
   padding-left: 200px;
-  justify-content: space-evenly;
+  justify-content: flex-end;
+  background: #333333 !important;
+  color: #ffffff !important;
+}
+.header-menu .ant-menu-item:hover{
+  color: #ffffff !important;
+}
+.header-typography .ant-typography{
+  color: #ffffff !important;
+}
+.header-menu li {
+  margin: 0 40px !important;
 }

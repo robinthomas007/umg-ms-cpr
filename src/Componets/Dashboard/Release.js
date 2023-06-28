@@ -32,6 +32,7 @@ export default function Release() {
       <List
         itemLayout="horizontal"
         dataSource={data}
+        style={{ textAlign: 'start' }}
         renderItem={(item, index) => (
           <List.Item>
             <List.Item.Meta

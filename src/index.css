@@ -1,16 +1,49 @@
+body{
+  width: 100%;
+  height: 100%;
+  background: #000000;
+}
 /* Calendar */
 
 .ant-picker-calendar.custom-calendar .ant-picker-calendar-header {
-  background: var(--header-background) !important;
-  margin-top: -60px;
+  /* background: var(--header-background) !important; */
+  /* margin-top: -60px; */
   padding-right: 20px;
 }
 .custom-calendar .ant-picker-panel {
   margin-top: 12px;
 }
-
+.ant-picker-calendar.ant-picker-calendar-full .ant-picker-panel {
+  display: block;
+  width: 100%;
+  text-align: end;
+  border: 0;
+}
+/* .ant-picker-calendar.ant-picker-calendar-full .ant-picker-calendar-date{
+  background: #191919;
+} */
+.ant-picker-cell-inner .ant-picker-calendar-date{
+  background: #191919 !important;
+}
+/* ant-picker-cell-inner ant-picker-calendar-date */
 /* List */
-
+/* .ant-picker-cell{
+  background: #191919 !important;
+} */
+.ant-picker-content > td{
+}
+.ant-picker-cell .ant-picker-cell-end{
+  background: #191919 !important;
+}
+.ant-picker-body{
+  background: #222222 !important;
+}
+.ant-picker-calendar.ant-picker-calendar-full .ant-picker-panel .ant-picker-body th{
+  color: #fff !important;
+}
+.ant-picker-calendar.ant-picker-calendar-full .ant-picker-calendar-date-value{
+  color: #fff !important;
+}
 .ant-list .ant-spin-container {
   padding-top: 4px;
   padding-bottom: 8px;
@@ -20,7 +53,28 @@
   padding: 4px 12px;
 }
 .ant-list-item-meta {
-  background-color: var(--list-background);
+  /* background-color: var(--list-background); */
   padding: 12px;
   border-radius: 4px;
+}
+.ant-switch{
+  background-color: gray;
+}
+/* .ant-switch-checked{
+  background-color: gray;
+} */
+.background-overlay{
+  background: #333333;
+}
+.dashboard-layout .ant-typography {
+  color: #ffffff !important;
+}
+.divideComponent .ant-col{
+  max-width: 240px;
+}
+.nest-messages_project_notes{
+  height: 47px;
+}
+.notesContent .ant-row{
+  display: grid;
 }

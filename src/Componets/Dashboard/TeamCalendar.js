@@ -4,7 +4,7 @@ import styles from './TeamCalendar.module.css'
 
 export default function TeamCalendar() {
   const onPanelChange = (value, mode) => {
-    console.log(value.format('YYYY-MM-DD'), mode)
+    // console.log(value.format('YYYY-MM-DD'), mode)
   }
 
   return (

@@ -1,103 +1,33 @@
 import React, { useState, useEffect } from 'react'
-import { Table } from 'antd'
+import { Table, Tag, Select } from 'antd'
 import type { ColumnsType, TableProps } from 'antd/es/table'
+import { TableRowSelection } from 'antd/es/table/interface'
 
-interface DataType {
-  key: React.Key
-  name: string
-  age: number
-  address: string
+interface Project {
+  key?: React.Key
+  projectId: React.Key
+  title: string
+  artistList: string
+  platform: string
+  teams: string
+  status: string
+  progress: number
+  startDate: string
+  endDate: string
+  notes: string
+  updatedOn: string
 }
 
-const columns: ColumnsType<DataType> = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    filters: [
-      {
-        text: 'Joe',
-        value: 'Joe',
-      },
-      {
-        text: 'Jim',
-        value: 'Jim',
-      },
-      {
-        text: 'Submenu',
-        value: 'Submenu',
-        children: [
-          {
-            text: 'Green',
-            value: 'Green',
-          },
-          {
-            text: 'Black',
-            value: 'Black',
-          },
-        ],
-      },
-    ],
-    // specify the condition of filtering result
-    // here is that finding the name started with `value`
-    onFilter: (value: any, record) => record.name.indexOf(value) === 0,
-    sorter: (a, b) => a.name.length - b.name.length,
-    sortDirections: ['descend'],
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    defaultSortOrder: 'descend',
-    sorter: (a, b) => a.age - b.age,
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-    filters: [
-      {
-        text: 'London',
-        value: 'London',
-      },
-      {
-        text: 'New York',
-        value: 'New York',
-      },
-    ],
-    onFilter: (value: any, record) => record.address.indexOf(value) === 0,
-  },
-]
-
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-]
-
-const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
+const onChange: TableProps<Project>['onChange'] = (pagination, filters, sorter, extra) => {
   console.log('params', pagination, filters, sorter, extra)
 }
+interface ProjectsProps {
+  columsProjects: ColumnsType<Project>
+  projects: Project[]
+  state: any
+}
 
-const DataGrid: React.FC = () => {
+const DataGrid: React.FC<ProjectsProps> = ({ columsProjects, projects, state }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const [loading, setLoading] = useState(false)
 
@@ -121,7 +51,16 @@ const DataGrid: React.FC = () => {
   }
 
   return (
-    <Table columns={columns} rowSelection={rowSelection} dataSource={data} onChange={onChange} pagination={false} />
+    <Table
+      columns={columsProjects}
+      scroll={{ y: 450 }}
+      rowSelection={rowSelection}
+      dataSource={projects}
+      onChange={onChange}
+      pagination={false}
+      rowKey={'projectId'}
+      loading={state.loading}
+    />
   )
 }
 

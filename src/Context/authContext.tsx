@@ -25,30 +25,11 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
   let LoggedInUser: any = jwt_decode(token)
   LoggedInUser.role = LoggedInUser.groups && LoggedInUser.groups.includes(ADMIN) ? 'admin' : 'user'
   const [user, setUser] = useState<any>(LoggedInUser || {})
-  // const IsValidFSUser = () => {
-  //   return axios
-  //     .get(BASE_URL + 'User/IsValidFSUser', {
-  //       headers: {
-  //         cpr_auth: token,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       return res.data
-  //     })
-  //     .catch((err) => {
-  //       isSessionExpired(err)
-  //       return false
-  //     });
-  // }
-  // React.useEffect(() => {
-  //   IsValidFSUser().then(res => {
-  //     setUser({ ...user, FS: res })
-  //   })
-  // }, [])
+  const [darkMode, setDarkMode] = useState<boolean>(true)
   const login = (user: any) => {
     setUser(user)
   }
-  return <AuthContext.Provider value={{ user, login }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, login, darkMode, setDarkMode }}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => {

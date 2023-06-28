@@ -5,15 +5,24 @@ import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 import { Input, Space, Modal, Form, Checkbox, message, Dropdown, Button, Select, DatePicker, Row, Col } from 'antd'
 import type { MenuProps } from 'antd'
 import type { DatePickerProps } from 'antd'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+
+dayjs.extend(customParseFormat)
 
 const { Search } = Input
+const { Option } = Select
+
+const dateFormat = 'MM-DD-YYYY'
 
 const options = [
-  { label: 'All', value: 'All' },
   { label: 'Title', value: 'Title' },
   { label: 'Title/Artists', value: 'Title/Artists' },
   { label: 'Notes', value: 'Notes' },
 ]
+const plainOptions = ['Title', 'Title/Artists', 'Notes']
+const defaultCheckedList = ['Apple', 'Orange']
 
 const items: MenuProps['items'] = [
   {
@@ -44,69 +53,158 @@ const menuProps = {
 }
 
 const onSearch = (value: string) => console.log(value)
-const onChange = (checkedValues: CheckboxValueType[]) => {
-  console.log('checked = ', checkedValues)
+
+interface Platform {
+  platformId: number
+  platformName: string
 }
-interface IMyProps {
+interface Teams {
+  teamId: string
+  teamName: string
+}
+interface Status {
+  statusTypeId: number
+  statusTypeDescription: string
+}
+interface FilterProps {
   open: boolean
   close: boolean
+  platformFacets: Platform[]
+  teamFacets: Teams[]
+  statusFacets: Status[]
   handleClose: () => void
+  state: any
+  dispatch: any
+  handleFlterModalSubmit: any
 }
 
-const SearchComponent: React.FC<IMyProps> = (props) => {
-  //   const [open, setOpen] = useState(false)
-  //   const showModal = () => {
-  //     setOpen(true)
-  //   }
+const SearchComponent: React.FC<FilterProps> = (props) => {
+  const [searchWithin, setSearchWithin] = useState<CheckboxValueType[]>(['All'])
+  const [startDateFormat, setStartDateFormat] = useState('')
+  const [endDateFormat, setEndDateFormat] = useState('')
+
+  const [indeterminate, setIndeterminate] = useState(true)
+  const [checkAll, setCheckAll] = useState(false)
+
   const handleCancel = () => {
     // setOpen(false)
     props.handleClose()
+  }
+  const onChange = (list: CheckboxValueType[]) => {
+    setSearchWithin(list)
+    // setIndeterminate(false)
+
+    setIndeterminate(!!list.length && list.length < plainOptions.length)
+    setCheckAll(list.length === plainOptions.length)
+  }
+  // const onChange = (e: CheckboxChangeEvent) => {
+  //   console.log(`checked = ${e.target.checked}`)
+  // }
+  const onAllChange = (checkedValues) => {
+    // console.log('checked!!! = ', checkedValues.target.checked)
+    // setSearchWithin(checkedValues)
+  }
+  const onCheckAllChange = (e: CheckboxChangeEvent) => {
+    setSearchWithin(e.target.checked ? [] : plainOptions)
+    setIndeterminate(true)
+    setCheckAll(e.target.checked)
   }
 
   const onSelectChange = (value: string) => {
     console.log(`selected ${value}`)
   }
 
-  const onSearch = (value: string) => {
-    console.log('search:', value)
-  }
+  const onSearch = (value: string) => {}
 
-  const onDateChange: DatePickerProps['onChange'] = (date, dateString) => {
-    console.log(date, dateString)
+  const onStartDateChange: DatePickerProps['onChange'] = (date, dateString) => {
+    setStartDateFormat(dateString)
+  }
+  const onEndDateChange: DatePickerProps['onChange'] = (date, dateString) => {
+    setEndDateFormat(dateString)
+  }
+  const onFinish = (values: any) => {
+    const modifiedProject = values.project
+    modifiedProject.startDate = startDateFormat
+    modifiedProject.endDate = endDateFormat
+    modifiedProject.searchWithin = searchWithin.join(',')
+    props.handleFlterModalSubmit(modifiedProject)
   }
 
   return (
     <>
-      <Space direction="horizontal">
-        {/* <Search
-          addonBefore={<SettingOutlined onClick={showModal} />}
-          className="search"
-          placeholder="input search text"
-          onSearch={onSearch}
-          enterButton
-        /> */}
-        <Modal title="Search Filters" open={props.open} onCancel={handleCancel} okText="submit" footer={null}>
-          <Form
-            name="complex-form"
-            // onFinish={onFinish}
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 16 }}
-            style={{ maxWidth: 600 }}
-          >
-            <Form.Item label="Search Within" colon={false}>
-              <Space>
-                <Checkbox.Group options={options} defaultValue={['All']} />
-              </Space>
+      <Modal title="Search Filters" width={600} open={props.open} onCancel={handleCancel} okText="submit" footer={null}>
+        <Form name="filterModal-form" onFinish={onFinish} labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
+          <Form.Item name={['project', 'searchWithin']} label="Search Within" colon={false}>
+            <Space>
+              <Checkbox checked={true} onChange={onCheckAllChange}>
+                All
+              </Checkbox>
+
+              <Checkbox.Group options={options} defaultValue={searchWithin} onChange={onChange} />
+            </Space>
+          </Form.Item>
+
+          <Form.Item label="Platform" style={{ marginBottom: 0 }} colon={false}>
+            <Form.Item
+              name={['project', 'platform']}
+              rules={[{ required: true }]}
+              style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+            >
+              <Select
+                style={{ width: '125px' }}
+                showSearch
+                placeholder="Select a option"
+                optionFilterProp="children"
+                onChange={onSelectChange}
+                onSearch={onSearch}
+                optionLabelProp="label"
+                filterOption={(input: any, option: any) =>
+                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                }
+              >
+                {props.platformFacets &&
+                  props.platformFacets.map((platform) => {
+                    return (
+                      <Option label={platform.platformName} value={platform.platformId}>
+                        {platform.platformName}
+                      </Option>
+                    )
+                  })}
+              </Select>
             </Form.Item>
 
-            <Form.Item label="Platform" style={{ marginBottom: 0 }} colon={false}>
-              <Form.Item
-                name="year"
-                rules={[{ required: true }]}
-                style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+            <Form.Item
+              label="Team"
+              name={['project', 'teams']}
+              style={{ display: 'inline-block', width: 'calc(50% - 8px)', margin: '0 8px' }}
+              colon={false}
+            >
+              <Select
+                style={{ width: '130px' }}
+                showSearch
+                placeholder="Select a option"
+                optionFilterProp="children"
+                onChange={onSelectChange}
+                onSearch={onSearch}
+                filterOption={(input: any, option: any) =>
+                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                }
               >
+                {props.teamFacets &&
+                  props.teamFacets.map((team) => {
+                    return (
+                      <Option key={team.teamId} label={team.teamName} value={team.teamId}>
+                        {team.teamName}
+                      </Option>
+                    )
+                  })}
+              </Select>
+            </Form.Item>
+          </Form.Item>
+          <Form.Item label="Status" colon={false}>
+            <Space.Compact>
+              <Form.Item name={['project', 'status']} noStyle>
                 <Select
-                  style={{ width: '125px' }}
                   showSearch
                   placeholder="Select a option"
                   optionFilterProp="children"
@@ -115,130 +213,60 @@ const SearchComponent: React.FC<IMyProps> = (props) => {
                   filterOption={(input: any, option: any) =>
                     (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                   }
-                  options={[
-                    {
-                      value: 'Option 1',
-                      label: 'Option 1',
-                    },
-                    {
-                      value: 'Option 2',
-                      label: 'Option 2',
-                    },
-                    {
-                      value: 'Option 3',
-                      label: 'Option 3',
-                    },
-                  ]}
-                />
+                >
+                  {props.statusFacets &&
+                    props.statusFacets.map((status) => {
+                      return (
+                        <Option label={status.statusTypeDescription} value={status.statusTypeId}>
+                          {status.statusTypeDescription}
+                        </Option>
+                      )
+                    })}
+                </Select>
               </Form.Item>
+            </Space.Compact>
+          </Form.Item>
 
-              <Form.Item
-                label="Team"
-                name="month"
-                style={{ display: 'inline-block', width: 'calc(50% - 8px)', margin: '0 8px' }}
-                colon={false}
-              >
-                <Select
-                  style={{ width: '130px' }}
-                  showSearch
-                  placeholder="Select a option"
-                  optionFilterProp="children"
-                  onChange={onSelectChange}
-                  onSearch={onSearch}
-                  filterOption={(input: any, option: any) =>
-                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                  }
-                  options={[
-                    {
-                      value: 'Option 1',
-                      label: 'Option 1',
-                    },
-                    {
-                      value: 'Option 2',
-                      label: 'Option 2',
-                    },
-                    {
-                      value: 'Option 3',
-                      label: 'Option 3',
-                    },
-                  ]}
-                />
-              </Form.Item>
+          <Form.Item label="Start Date" style={{ marginBottom: 0 }} colon={false}>
+            <Form.Item
+              name={['project', 'startDate']}
+              rules={[{ required: true }]}
+              style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+              colon={false}
+            >
+              <DatePicker onChange={onStartDateChange} format={dateFormat} placeholder="" />
             </Form.Item>
-            <Form.Item label="Status" colon={false}>
-              <Space.Compact>
-                <Form.Item noStyle>
-                  <Select
-                    showSearch
-                    placeholder="Select a option"
-                    optionFilterProp="children"
-                    onChange={onSelectChange}
-                    onSearch={onSearch}
-                    filterOption={(input: any, option: any) =>
-                      (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                    }
-                    options={[
-                      {
-                        value: 'Option 1',
-                        label: 'Option 1',
-                      },
-                      {
-                        value: 'Option 2',
-                        label: 'Option 2',
-                      },
-                      {
-                        value: 'Option 3',
-                        label: 'Option 3',
-                      },
-                    ]}
-                  />
+
+            <Form.Item
+              label="End Date"
+              name={['project', 'endDate']}
+              style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+              colon={false}
+            >
+              <DatePicker onChange={onEndDateChange} format={dateFormat} placeholder="" />
+            </Form.Item>
+          </Form.Item>
+
+          <Row justify="end">
+            <Space>
+              <Col>
+                <Form.Item>
+                  <Button type="primary" htmlType="submit">
+                    Apply
+                  </Button>
                 </Form.Item>
-              </Space.Compact>
-            </Form.Item>
-
-            <Form.Item label="LeakDate" style={{ marginBottom: 0 }} colon={false}>
-              <Form.Item
-                name="year"
-                rules={[{ required: true }]}
-                style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
-                colon={false}
-              >
-                <DatePicker onChange={onDateChange} placeholder="" />
-              </Form.Item>
-
-              <Form.Item
-                label="to"
-                name="month"
-                // rules={[{ required: true }]}
-                style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
-                colon={false}
-              >
-                <DatePicker onChange={onDateChange} placeholder="" />
-              </Form.Item>
-            </Form.Item>
-            <Form.Item label="ReleaseDate" style={{ marginBottom: 0 }} colon={false}>
-              <Form.Item
-                name="year"
-                rules={[{ required: true }]}
-                style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
-                colon={false}
-              >
-                <DatePicker onChange={onDateChange} placeholder="" />
-              </Form.Item>
-
-              <Form.Item
-                label="to"
-                name="month"
-                // rules={[{ required: true }]}
-                style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
-                colon={false}
-              >
-                <DatePicker onChange={onDateChange} placeholder="" />
-              </Form.Item>
-            </Form.Item>
-          </Form>
-        </Modal>
-      </Space>
+              </Col>
+              <Col>
+                <Form.Item>
+                  <Button onClick={() => props.handleClose()} type="primary">
+                    Cancel
+                  </Button>
+                </Form.Item>
+              </Col>
+            </Space>
+          </Row>
+        </Form>
+      </Modal>
     </>
   )
 }

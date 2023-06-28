@@ -2,8 +2,12 @@
   border-radius: 4px;
   margin-top: 20px;
   padding: 20px;
-  background: #222222 !important;
+  text-align: initial;
+
 }
+/* .news .ant-typography{
+  color: #fff !important;
+} */
 .newsBoardText {
   width: 100%;
   display: flex;
@@ -16,7 +20,7 @@
 }
 .newsTitle {
   margin-bottom: 0px !important;
-  color: #85d305;
+  color: blue !important;
   font-size: 16px;
 }
 .newsSubTitle {
