@@ -74,12 +74,10 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
       isDeleted: false,
       userEmail: 'vinoth.periyasamy@umusic.com',
     }
-    console.log('create Project Data', data)
-    // axios.post('https://api.dev.cpr-portal.umgapps.com/gateway/cpr/projects', data).then((response) => {
-    //   console.log('response', response)
-    //   props.dispatch({ type: 'CHANGE_LIMIT', payload: 10 })
-    //   props.handleClose()
-    // })
+    axios.post('https://api.dev.cpr-portal.umgapps.com/gateway/cpr/projects', data).then((response) => {
+      props.dispatch({ type: 'CHANGE_LIMIT', payload: 10 })
+      props.handleClose()
+    })
   }
 
   const handleOk = () => {
