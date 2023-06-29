@@ -51,6 +51,7 @@ const SearchInput: React.FC = () => {
   const [project, setProject] = useState<any>({})
   const [pageNumber, setPageNumber] = useState(1)
   const [selectedFilters, setSelectedFilters] = React.useState<any>([])
+  const [totalItems, setTotalItems] = useState<number>(0)
 
   function getCookie(name: string) {
     return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
@@ -82,6 +83,7 @@ const SearchInput: React.FC = () => {
         })
         .then((res) => {
           setProjects(res.data.projects)
+          setTotalItems(res.data.totalItems)
           dispatch({ type: 'FETCH_SUCCESS', payload: res.data })
           dispatch({ type: 'SET_FACETS', payload: res.data })
         })
@@ -339,7 +341,7 @@ const SearchInput: React.FC = () => {
             options={countValues}
           />
           &nbsp;&nbsp;
-          <Text>of 247 results</Text>
+          <Text>of {totalItems} results</Text>
         </Col>
         <Col span={8} push={3}>
           <Pagination current={pageNumber} onChange={handlePageChange} total={projects.length} />

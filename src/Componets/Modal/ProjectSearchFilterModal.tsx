@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-// import '../Search/SearchComponent.css'
+import React, { useEffect, useState } from 'react'
 import { SettingOutlined, DownOutlined } from '@ant-design/icons'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 import { Input, Space, Modal, Form, Checkbox, message, Dropdown, Button, Select, DatePicker, Row, Col } from 'antd'
@@ -11,49 +10,9 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 dayjs.extend(customParseFormat)
 
-const { Search } = Input
 const { Option } = Select
 
 const dateFormat = 'MM-DD-YYYY'
-
-const options = [
-  { label: 'Title', value: 'Title' },
-  { label: 'Title/Artists', value: 'Title/Artists' },
-  { label: 'Notes', value: 'Notes' },
-]
-const plainOptions = ['Title', 'Title/Artists', 'Notes']
-const defaultCheckedList = ['Apple', 'Orange']
-
-const items: MenuProps['items'] = [
-  {
-    label: '1st menu item',
-    key: '1',
-  },
-  {
-    label: '2nd menu item',
-    key: '2',
-  },
-  {
-    label: '3rd menu item',
-    key: '3',
-  },
-  {
-    label: '4rd menu item',
-    key: '4',
-  },
-]
-
-const handleMenuClick: MenuProps['onClick'] = (e) => {
-  message.info('Click on menu item.')
-}
-
-const menuProps = {
-  items,
-  onClick: handleMenuClick,
-}
-
-const onSearch = (value: string) => console.log(value)
-
 interface Platform {
   platformId: number
   platformName: string
@@ -79,42 +38,13 @@ interface FilterProps {
 }
 
 const SearchComponent: React.FC<FilterProps> = (props) => {
-  const [searchWithin, setSearchWithin] = useState<CheckboxValueType[]>(['All'])
+  const [searchWithin, setSearchWithin] = useState<any>(['ALL'])
   const [startDateFormat, setStartDateFormat] = useState('')
   const [endDateFormat, setEndDateFormat] = useState('')
 
-  const [indeterminate, setIndeterminate] = useState(true)
-  const [checkAll, setCheckAll] = useState(false)
-
   const handleCancel = () => {
-    // setOpen(false)
     props.handleClose()
   }
-  const onChange = (list: CheckboxValueType[]) => {
-    setSearchWithin(list)
-    // setIndeterminate(false)
-
-    setIndeterminate(!!list.length && list.length < plainOptions.length)
-    setCheckAll(list.length === plainOptions.length)
-  }
-  // const onChange = (e: CheckboxChangeEvent) => {
-  //   console.log(`checked = ${e.target.checked}`)
-  // }
-  const onAllChange = (checkedValues) => {
-    // console.log('checked!!! = ', checkedValues.target.checked)
-    // setSearchWithin(checkedValues)
-  }
-  const onCheckAllChange = (e: CheckboxChangeEvent) => {
-    setSearchWithin(e.target.checked ? [] : plainOptions)
-    setIndeterminate(true)
-    setCheckAll(e.target.checked)
-  }
-
-  const onSelectChange = (value: string) => {
-    console.log(`selected ${value}`)
-  }
-
-  const onSearch = (value: string) => {}
 
   const onStartDateChange: DatePickerProps['onChange'] = (date, dateString) => {
     setStartDateFormat(dateString)
@@ -129,6 +59,35 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
     modifiedProject.searchWithin = searchWithin.join(',')
     props.handleFlterModalSubmit(modifiedProject)
   }
+  const onCheckAllChange = (e: any) => {
+    if (e.target.type === 'checkbox') {
+      let arr = searchWithin
+      if (e.target.checked) {
+        if (e.target.id === 'ALL') {
+          arr = []
+        } else {
+          let index = arr.indexOf('ALL')
+          if (index !== -1) {
+            console.log('before arr', arr)
+            arr.splice(index, 1)
+            console.log('after arr', arr)
+          }
+        }
+        arr.push(e.target.id)
+      } else {
+        arr = arr.filter(function (item: any) {
+          return item !== e.target.id
+        })
+        if (arr.length === 0) {
+          arr.push('ALL')
+        }
+      }
+      const modifiedFilterArray = [...arr]
+      setSearchWithin(modifiedFilterArray)
+    } else {
+      console.log('not a checkbox type')
+    }
+  }
 
   return (
     <>
@@ -136,27 +95,48 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
         <Form name="filterModal-form" onFinish={onFinish} labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
           <Form.Item name={['project', 'searchWithin']} label="Search Within" colon={false}>
             <Space>
-              <Checkbox checked={true} onChange={onCheckAllChange}>
+              <Checkbox
+                defaultChecked={searchWithin.includes('ALL')}
+                checked={searchWithin.includes('ALL')}
+                onChange={onCheckAllChange}
+                id="ALL"
+              >
                 All
               </Checkbox>
-
-              <Checkbox.Group options={options} defaultValue={searchWithin} onChange={onChange} />
+              <Checkbox
+                id="title"
+                defaultChecked={searchWithin.includes('title')}
+                checked={searchWithin.includes('title')}
+                onChange={onCheckAllChange}
+              >
+                Title
+              </Checkbox>
+              <Checkbox
+                id="artistList"
+                defaultChecked={searchWithin.includes('artistList')}
+                checked={searchWithin.includes('artistList')}
+                onChange={onCheckAllChange}
+              >
+                Title/Artists List
+              </Checkbox>
+              <Checkbox
+                id="notes"
+                defaultChecked={searchWithin.includes('notes')}
+                checked={searchWithin.includes('notes')}
+                onChange={onCheckAllChange}
+              >
+                Notes
+              </Checkbox>
             </Space>
           </Form.Item>
 
           <Form.Item label="Platform" style={{ marginBottom: 0 }} colon={false}>
-            <Form.Item
-              name={['project', 'platform']}
-              rules={[{ required: true }]}
-              style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
-            >
+            <Form.Item name={['project', 'platform']} style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}>
               <Select
                 style={{ width: '125px' }}
                 showSearch
                 placeholder="Select a option"
                 optionFilterProp="children"
-                onChange={onSelectChange}
-                onSearch={onSearch}
                 optionLabelProp="label"
                 filterOption={(input: any, option: any) =>
                   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
@@ -184,8 +164,6 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
                 showSearch
                 placeholder="Select a option"
                 optionFilterProp="children"
-                onChange={onSelectChange}
-                onSearch={onSearch}
                 filterOption={(input: any, option: any) =>
                   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                 }
@@ -208,8 +186,6 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
                   showSearch
                   placeholder="Select a option"
                   optionFilterProp="children"
-                  onChange={onSelectChange}
-                  onSearch={onSearch}
                   filterOption={(input: any, option: any) =>
                     (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                   }
@@ -230,7 +206,6 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
           <Form.Item label="Start Date" style={{ marginBottom: 0 }} colon={false}>
             <Form.Item
               name={['project', 'startDate']}
-              rules={[{ required: true }]}
               style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
               colon={false}
             >
