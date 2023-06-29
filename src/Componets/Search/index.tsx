@@ -95,6 +95,10 @@ const SearchInput: React.FC = () => {
     [state.searchCriteria]
   )
 
+  React.useEffect(() => {
+    getSearchPageData(false, '')
+  }, [getSearchPageData])
+
   const setSearchTerm = (searchTerm: string) => {
     dispatch({
       type: 'SET_SEARCH',
@@ -156,10 +160,6 @@ const SearchInput: React.FC = () => {
       </span>
     )
   }
-
-  React.useEffect(() => {
-    getSearchPageData(false, '')
-  }, [getSearchPageData])
 
   const columnsProject: ColumnsType<Project> = [
     {
@@ -249,6 +249,9 @@ const SearchInput: React.FC = () => {
     setSearchTerm(value)
     setSearch('')
   }
+  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (current, pageSize) => {
+    console.log(current, pageSize)
+  }
   const countValues = [
     {
       value: '10',
@@ -308,6 +311,7 @@ const SearchInput: React.FC = () => {
             statusFacets={state.statusFacets}
             open={openCreateProject}
             close={true}
+            getSearchPageData={getSearchPageData}
             handleClose={handleCreateProjectClose}
             state={state}
             dispatch={dispatch}
@@ -323,6 +327,7 @@ const SearchInput: React.FC = () => {
               handleClose={handleEditProjectClose}
               state={state}
               dispatch={dispatch}
+              getSearchPageData={getSearchPageData}
             />
           )}
         </Col>
@@ -344,7 +349,12 @@ const SearchInput: React.FC = () => {
           <Text>of {totalItems} results</Text>
         </Col>
         <Col span={8} push={3}>
-          <Pagination current={pageNumber} onChange={handlePageChange} total={projects.length} />
+          <Pagination
+            current={pageNumber}
+            onShowSizeChange={onShowSizeChange}
+            onChange={handlePageChange}
+            total={projects.length}
+          />
         </Col>
 
         <Col span={4} offset={4}>

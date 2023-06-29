@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 import { Button, Form, Input, InputNumber, DatePicker, Modal, Select, Row, Col, Upload, Space } from 'antd'
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons'
 import axios from 'axios'
@@ -50,6 +51,7 @@ interface ModalProps {
   state: any
   dispatch: any
   projectData: any
+  getSearchPageData: any
 }
 
 const EditProjectModal: React.FC<ModalProps> = (props) => {
@@ -88,7 +90,11 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       userEmail: 'vinoth.periyasamy@umusic.com',
     }
     axios.post('https://api.dev.cpr-portal.umgapps.com/gateway/cpr/projects', data).then((response) => {
-      props.dispatch({ type: 'CHANGE_LIMIT', payload: 10 })
+      props.getSearchPageData()
+      toast.success('Project Updated successfully!', {
+        autoClose: 3000,
+        closeOnClick: true,
+      })
       props.handleClose()
     })
   }
