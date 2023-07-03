@@ -120,7 +120,7 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
         centered
         confirmLoading={confirmLoading}
         footer={null}
-        width={700}
+        width={750}
         onCancel={props.handleClose}
       >
         <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
@@ -153,9 +153,9 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
               >
                 <Select>
                   {props.platformFacets &&
-                    props.platformFacets.map((platform) => {
+                    props.platformFacets.map((platform, index) => {
                       return (
-                        <Option label={platform.platformName} value={platform.platformId}>
+                        <Option key={index} label={platform.platformName} value={platform.platformId}>
                           {platform.platformName}
                         </Option>
                       )
@@ -171,9 +171,9 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
               >
                 <Select>
                   {props.teamFacets &&
-                    props.teamFacets.map((team) => {
+                    props.teamFacets.map((team, index) => {
                       return (
-                        <Option label={team.teamName} value={team.teamId}>
+                        <Option key={index} label={team.teamName} value={team.teamId}>
                           {team.teamName}
                         </Option>
                       )
@@ -189,9 +189,9 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
               >
                 <Select>
                   {props.statusFacets &&
-                    props.statusFacets.map((status) => {
+                    props.statusFacets.map((status, index) => {
                       return (
-                        <Option label={status.statusTypeDescription} value={status.statusTypeId}>
+                        <Option key={index} label={status.statusTypeDescription} value={status.statusTypeId}>
                           {status.statusTypeDescription}
                         </Option>
                       )
@@ -201,6 +201,9 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
               <Form.Item name={['project', 'startDate']} label="Start Date" labelAlign="left" colon={false}>
                 <DatePicker onChange={onStartDateChange} format={dateFormat} placeholder="" />
               </Form.Item>
+              <Form.Item name={['project', 'endDate']} label="End Date" labelAlign="left" colon={false}>
+                <DatePicker onChange={onEndDateChange} format={dateFormat} placeholder="" />
+              </Form.Item>
             </Col>
             <Col span={10} className="divideComponent">
               <Form.Item>
@@ -209,7 +212,12 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
                     <p className="ant-upload-drag-icon">
                       <InboxOutlined />
                     </p>
-                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                    <span className="ant-upload-text">
+                      <span>Upload CSV</span>
+                      <br />
+                      <span> Click to Browse</span>
+                      <br /> <span>or Drag & Drop</span>
+                    </span>
                   </Upload.Dragger>
                 </Form.Item>
               </Form.Item>
@@ -224,23 +232,19 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
               >
                 <Input.TextArea showCount maxLength={100} />
               </Form.Item>
-              <Form.Item name={['project', 'endDate']} label="End Date" labelAlign="left" colon={false}>
-                <DatePicker onChange={onEndDateChange} format={dateFormat} placeholder="" />
-              </Form.Item>
+              <br />
               <Row justify="end">
                 <Space>
                   <Col>
                     <Form.Item>
                       <Button type="primary" htmlType="submit">
-                        Submit
+                        Save
                       </Button>
                     </Form.Item>
                   </Col>
                   <Col>
                     <Form.Item>
-                      <Button onClick={() => props.handleClose()} type="primary">
-                        Cancel
-                      </Button>
+                      <Button onClick={() => props.handleClose()}>Cancel</Button>
                     </Form.Item>
                   </Col>
                 </Space>

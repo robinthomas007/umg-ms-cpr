@@ -35,12 +35,14 @@ interface FilterProps {
   state: any
   dispatch: any
   handleFlterModalSubmit: any
+  selectedFilterKeys: object
 }
 
-const SearchComponent: React.FC<FilterProps> = (props) => {
+const FilterModal: React.FC<FilterProps> = (props) => {
   const [searchWithin, setSearchWithin] = useState<any>(['ALL'])
   const [startDateFormat, setStartDateFormat] = useState('')
   const [endDateFormat, setEndDateFormat] = useState('')
+  const [form] = Form.useForm()
 
   const handleCancel = () => {
     props.handleClose()
@@ -53,11 +55,19 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
     setEndDateFormat(dateString)
   }
   const onFinish = (values: any) => {
-    const modifiedProject = values.project
+    const modifiedProject = values
     modifiedProject.startDate = startDateFormat
     modifiedProject.endDate = endDateFormat
     modifiedProject.searchWithin = searchWithin.join(',')
+
     props.handleFlterModalSubmit(modifiedProject)
+    // modifiedProject.startDate = ''
+    // modifiedProject.endDate = ''
+    console.log('modifedPro', modifiedProject)
+    setStartDateFormat('')
+    setEndDateFormat('')
+    setSearchWithin(['ALL'])
+    form.resetFields()
   }
   const onCheckAllChange = (e: any) => {
     if (e.target.type === 'checkbox') {
@@ -92,8 +102,8 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
   return (
     <>
       <Modal title="Search Filters" width={600} open={props.open} onCancel={handleCancel} okText="submit" footer={null}>
-        <Form name="filterModal-form" onFinish={onFinish} labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
-          <Form.Item name={['project', 'searchWithin']} label="Search Within" colon={false}>
+        <Form name="filterModal-form" form={form} onFinish={onFinish} labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
+          <Form.Item name="searchWithin" label="Search Within" colon={false}>
             <Space>
               <Checkbox
                 defaultChecked={searchWithin.includes('ALL')}
@@ -131,7 +141,7 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
           </Form.Item>
 
           <Form.Item label="Platform" style={{ marginBottom: 0 }} colon={false}>
-            <Form.Item name={['project', 'platform']} style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}>
+            <Form.Item name="platform" style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}>
               <Select
                 style={{ width: '125px' }}
                 showSearch
@@ -143,9 +153,9 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
                 }
               >
                 {props.platformFacets &&
-                  props.platformFacets.map((platform) => {
+                  props.platformFacets.map((platform, index) => {
                     return (
-                      <Option label={platform.platformName} value={platform.platformId}>
+                      <Option key={index} label={platform.platformName} value={platform.platformId}>
                         {platform.platformName}
                       </Option>
                     )
@@ -155,7 +165,7 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
 
             <Form.Item
               label="Team"
-              name={['project', 'teams']}
+              name="teams"
               style={{ display: 'inline-block', width: 'calc(50% - 8px)', margin: '0 8px' }}
               colon={false}
             >
@@ -169,9 +179,9 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
                 }
               >
                 {props.teamFacets &&
-                  props.teamFacets.map((team) => {
+                  props.teamFacets.map((team, index) => {
                     return (
-                      <Option key={team.teamId} label={team.teamName} value={team.teamId}>
+                      <Option key={index} label={team.teamName} value={team.teamId}>
                         {team.teamName}
                       </Option>
                     )
@@ -181,7 +191,7 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
           </Form.Item>
           <Form.Item label="Status" colon={false}>
             <Space.Compact>
-              <Form.Item name={['project', 'status']} noStyle>
+              <Form.Item name="status" noStyle>
                 <Select
                   showSearch
                   placeholder="Select a option"
@@ -191,9 +201,9 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
                   }
                 >
                   {props.statusFacets &&
-                    props.statusFacets.map((status) => {
+                    props.statusFacets.map((status, index) => {
                       return (
-                        <Option label={status.statusTypeDescription} value={status.statusTypeId}>
+                        <Option key={index} label={status.statusTypeDescription} value={status.statusTypeId}>
                           {status.statusTypeDescription}
                         </Option>
                       )
@@ -204,17 +214,13 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
           </Form.Item>
 
           <Form.Item label="Start Date" style={{ marginBottom: 0 }} colon={false}>
-            <Form.Item
-              name={['project', 'startDate']}
-              style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
-              colon={false}
-            >
+            <Form.Item name="startDate" style={{ display: 'inline-block', width: 'calc(50% - 8px)' }} colon={false}>
               <DatePicker onChange={onStartDateChange} format={dateFormat} placeholder="" />
             </Form.Item>
 
             <Form.Item
               label="End Date"
-              name={['project', 'endDate']}
+              name="endDate"
               style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
               colon={false}
             >
@@ -233,9 +239,7 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
               </Col>
               <Col>
                 <Form.Item>
-                  <Button onClick={() => props.handleClose()} type="primary">
-                    Cancel
-                  </Button>
+                  <Button onClick={() => props.handleClose()}>Cancel</Button>
                 </Form.Item>
               </Col>
             </Space>
@@ -246,4 +250,4 @@ const SearchComponent: React.FC<FilterProps> = (props) => {
   )
 }
 
-export default SearchComponent
+export default FilterModal

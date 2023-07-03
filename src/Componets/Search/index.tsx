@@ -52,6 +52,8 @@ const SearchInput: React.FC = () => {
   const [pageNumber, setPageNumber] = useState(1)
   const [selectedFilters, setSelectedFilters] = React.useState<any>([])
   const [totalItems, setTotalItems] = useState<number>(0)
+  const [totalPages, setTotalPages] = useState<number>(0)
+  const [selectedFilterKeys, setSelectedFilterKeys] = useState<object>({})
 
   function getCookie(name: string) {
     return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
@@ -74,16 +76,18 @@ const SearchInput: React.FC = () => {
             platforms: filter.platform,
             teams: filter.teams,
             status: filter.status,
-            // startDate: filter.releaseFrom,
-            // endDate: filter.releaseTo,
+            startDate: filter.startDate,
+            endDate: filter.endDate,
           },
           headers: {
             cpr_portal: getCookie('cpr_auth'),
           },
         })
         .then((res) => {
+          console.log('fetched results', res.data)
           setProjects(res.data.projects)
           setTotalItems(res.data.totalItems)
+          setTotalPages(Number(res.data.totalPages))
           dispatch({ type: 'FETCH_SUCCESS', payload: res.data })
           dispatch({ type: 'SET_FACETS', payload: res.data })
         })
@@ -124,6 +128,7 @@ const SearchInput: React.FC = () => {
 
   const handleFlterModalSubmit = (project: any) => {
     setSelectedFilters(Object.entries(project))
+
     dispatch({
       type: 'SET_FILTER',
       payload: { filter: project },
@@ -131,15 +136,13 @@ const SearchInput: React.FC = () => {
     handleClose()
   }
 
-  const filters = ['searchWithin', 'Platform(s)', 'Teams', 'Status', 'StartDate', 'End Date']
-
   const handleTagClose = (removedTag) => {
     const modifiiedFilters = selectedFilters.filter((item) => item[0] !== removedTag)
+    setSelectedFilters(modifiiedFilters)
     dispatch({
       type: 'SET_FILTER',
       payload: { filter: Object.fromEntries(modifiiedFilters) },
     })
-    setSelectedFilters(modifiiedFilters)
   }
 
   const forMap = (type, tag) => {
@@ -176,7 +179,7 @@ const SearchInput: React.FC = () => {
       key: 'artistList',
     },
     {
-      title: 'Platform(s)',
+      title: 'Platform',
       dataIndex: 'platformName',
       defaultSortOrder: 'descend',
       key: 'platform',
@@ -228,7 +231,7 @@ const SearchInput: React.FC = () => {
     setOpen(true)
   }
   const editProject = (projectId) => {
-    const selectedProject = projects.find((project) => project.projectId === projectId)
+    const selectedProject = state.projects.find((project) => project.projectId === projectId)
     setProject(selectedProject)
     setEditModal(true)
   }
@@ -258,12 +261,16 @@ const SearchInput: React.FC = () => {
       label: '10',
     },
     {
-      value: '20',
-      label: '20',
+      value: '25',
+      label: '25',
     },
     {
-      value: '30',
-      label: '30',
+      value: '50',
+      label: '50',
+    },
+    {
+      value: '100',
+      label: '100',
     },
   ]
 
@@ -303,6 +310,7 @@ const SearchInput: React.FC = () => {
             handleClose={handleClose}
             state={state}
             dispatch={dispatch}
+            selectedFilterKeys={selectedFilterKeys}
             handleFlterModalSubmit={handleFlterModalSubmit}
           />
           <CreateProjectModal
@@ -323,10 +331,7 @@ const SearchInput: React.FC = () => {
               statusFacets={state.statusFacets}
               projectData={project}
               open={editModal}
-              close={true}
               handleClose={handleEditProjectClose}
-              state={state}
-              dispatch={dispatch}
               getSearchPageData={getSearchPageData}
             />
           )}
@@ -354,6 +359,7 @@ const SearchInput: React.FC = () => {
             onShowSizeChange={onShowSizeChange}
             onChange={handlePageChange}
             total={projects.length}
+            pageSize={totalPages}
           />
         </Col>
 

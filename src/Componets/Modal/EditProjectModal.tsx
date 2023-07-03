@@ -43,39 +43,39 @@ interface Status {
 
 interface ModalProps {
   open: boolean
-  close: boolean
   platformFacets: Platform[]
   teamFacets: Teams[]
   statusFacets: Status[]
   handleClose: () => void
-  state: any
-  dispatch: any
   projectData: any
   getSearchPageData: any
 }
 
 const EditProjectModal: React.FC<ModalProps> = (props) => {
-  const [confirmLoading, setConfirmLoading] = useState(false)
-  const [modalText, setModalText] = useState('Content of the modal')
   const [startDateFormat, setStartDateFormat] = useState('')
   const [endDateFormat, setEndDateFormat] = useState('')
-  const [projects, setProjects] = useState<any>({})
   const [form] = Form.useForm()
+  const { projectData, getSearchPageData, open, platformFacets, teamFacets, statusFacets, handleClose } = props
 
   useEffect(() => {
-    const modifiedProject = props.projectData
-    setStartDateFormat(dayjs(props.projectData.startDate).format('MM-DD-YYYY'))
-    setEndDateFormat(dayjs(props.projectData.endDate).format('MM-DD-YYYY'))
-    modifiedProject.startDate = dayjs(props.projectData.startDate, dateFormat)
-    modifiedProject.endDate = dayjs(props.projectData.endDate, dateFormat)
-    setProjects(modifiedProject)
+    const modifiedProject = projectData
+    const { startDate, endDate } = projectData
+    if (startDate) {
+      setStartDateFormat(dayjs(projectData.startDate).format('MM-DD-YYYY'))
+      modifiedProject.startDate = dayjs(projectData.startDate, dateFormat)
+    }
+    if (endDate) {
+      setEndDateFormat(dayjs(projectData.endDate).format('MM-DD-YYYY'))
+      modifiedProject.endDate = dayjs(projectData.endDate, dateFormat)
+    }
+
     form.setFieldsValue(modifiedProject)
-  }, [props.projectData, projects])
+  }, [projectData, form])
 
   const onFinish = (values: any) => {
     const { artistList, title, platformId, teamId, statusTypeId, dragger, notes } = values
     const data = {
-      projectId: projects.projectId,
+      projectId: projectData.projectId,
       artistList: artistList,
       title: title,
       platformId: platformId,
@@ -89,23 +89,17 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       isDeleted: false,
       userEmail: 'vinoth.periyasamy@umusic.com',
     }
+
     axios.post('https://api.dev.cpr-portal.umgapps.com/gateway/cpr/projects', data).then((response) => {
-      props.getSearchPageData()
+      getSearchPageData()
       toast.success('Project Updated successfully!', {
         autoClose: 3000,
         closeOnClick: true,
       })
-      props.handleClose()
+      handleClose()
     })
   }
 
-  const handleOk = () => {
-    setModalText('The modal will be closed after two seconds')
-    setConfirmLoading(true)
-    setTimeout(() => {
-      setConfirmLoading(false)
-    }, 2000)
-  }
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
       return e
@@ -113,8 +107,8 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
     return e?.fileList
   }
   const onStartDateChange: DatePickerProps['onChange'] = (date, dateString) => {
-    const modifiedProject = projects
-    modifiedProject.startDate = dayjs(projects.startDate, dateFormat)
+    // const modifiedProject = projects
+    // modifiedProject.startDate = dayjs(projects.startDate, dateFormat)
     setStartDateFormat(dateString)
   }
   const onEndDateChange: DatePickerProps['onChange'] = (date, dateString) => {
@@ -123,16 +117,7 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
 
   return (
     <>
-      <Modal
-        open={props.open}
-        title="Edit Project"
-        onOk={handleOk}
-        centered
-        confirmLoading={confirmLoading}
-        footer={null}
-        width={650}
-        onCancel={props.handleClose}
-      >
+      <Modal open={open} title="Edit Project" centered footer={null} width={750} onCancel={handleClose}>
         <Form {...layout} name="nest-messages" form={form} onFinish={onFinish} validateMessages={validateMessages}>
           <Row>
             <Col span={14}>
@@ -144,10 +129,10 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
               </Form.Item>
               <Form.Item labelAlign="left" name="platformId" label="Platform(s)" colon={false}>
                 <Select>
-                  {props.platformFacets &&
-                    props.platformFacets.map((platform) => {
+                  {platformFacets &&
+                    platformFacets.map((platform, index) => {
                       return (
-                        <Option label={platform.platformName} value={platform.platformId}>
+                        <Option key={index} label={platform.platformName} value={platform.platformId}>
                           {platform.platformName}
                         </Option>
                       )
@@ -156,10 +141,10 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
               </Form.Item>
               <Form.Item labelAlign="left" name="teamId" label="Team Assignment" colon={false}>
                 <Select>
-                  {props.teamFacets &&
-                    props.teamFacets.map((team) => {
+                  {teamFacets &&
+                    teamFacets.map((team, index) => {
                       return (
-                        <Option label={team.teamName} value={team.teamId}>
+                        <Option key={index} label={team.teamName} value={team.teamId}>
                           {team.teamName}
                         </Option>
                       )
@@ -168,10 +153,10 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
               </Form.Item>
               <Form.Item labelAlign="left" name="statusTypeId" label="Status" colon={false}>
                 <Select>
-                  {props.statusFacets &&
-                    props.statusFacets.map((status) => {
+                  {statusFacets &&
+                    statusFacets.map((status, index) => {
                       return (
-                        <Option label={status.statusTypeDescription} value={status.statusTypeId}>
+                        <Option key={index} label={status.statusTypeDescription} value={status.statusTypeId}>
                           {status.statusTypeDescription}
                         </Option>
                       )
@@ -181,6 +166,9 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
               <Form.Item name="startDate" label="Start Date" labelAlign="left" colon={false}>
                 <DatePicker onChange={onStartDateChange} format={dateFormat} placeholder="" />
               </Form.Item>
+              <Form.Item name="endDate" label="End Date" labelAlign="left" colon={false}>
+                <DatePicker onChange={onEndDateChange} format={dateFormat} placeholder="" />
+              </Form.Item>
             </Col>
             <Col span={10} className="divideComponent">
               <Form.Item>
@@ -189,7 +177,12 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
                     <p className="ant-upload-drag-icon">
                       <InboxOutlined />
                     </p>
-                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                    <span className="ant-upload-text">
+                      <span>Upload CSV</span>
+                      <br />
+                      <span> Click to Browse</span>
+                      <br /> <span>or Drag & Drop</span>
+                    </span>
                   </Upload.Dragger>
                 </Form.Item>
               </Form.Item>
@@ -204,15 +197,6 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
               >
                 <Input.TextArea showCount maxLength={100} />
               </Form.Item>
-              <Form.Item name="endDate" label="End Date" labelAlign="left" colon={false}>
-                <DatePicker
-                  // defaultValue={dayjs(modifiedProject.endDate, dateFormat)}
-
-                  onChange={onEndDateChange}
-                  format={dateFormat}
-                  placeholder=""
-                />
-              </Form.Item>
             </Col>
           </Row>
           <Row justify="end">
@@ -226,7 +210,7 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
               </Col>
               <Col>
                 <Form.Item wrapperCol={{ ...layout.wrapperCol }}>
-                  <Button onClick={() => props.handleClose()}>Cancel</Button>
+                  <Button onClick={() => handleClose()}>Cancel</Button>
                 </Form.Item>
               </Col>
             </Space>
