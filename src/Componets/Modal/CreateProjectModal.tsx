@@ -28,18 +28,6 @@ const validateMessages = {
   },
 }
 /* eslint-enable no-template-curly-in-string */
-interface Platform {
-  platformId: number
-  platformName: string
-}
-interface Teams {
-  teamId: number
-  teamName: string
-}
-interface Status {
-  statusTypeId: number
-  statusTypeDescription: string
-}
 
 interface ModalProps {
   open: boolean
@@ -54,8 +42,6 @@ interface ModalProps {
 }
 
 const CreateProjectModal: React.FC<ModalProps> = (props) => {
-  const [confirmLoading, setConfirmLoading] = useState(false)
-  const [modalText, setModalText] = useState('Content of the modal')
   const [startDateFormat, setStartDateFormat] = useState('')
   const [endDateFormat, setEndDateFormat] = useState('')
 
@@ -86,13 +72,6 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
     })
   }
 
-  const handleOk = () => {
-    setModalText('The modal will be closed after two seconds')
-    setConfirmLoading(true)
-    setTimeout(() => {
-      setConfirmLoading(false)
-    }, 2000)
-  }
   const normFile = (e: any) => {
     // console.log('Upload event:', e)
     if (Array.isArray(e)) {
@@ -107,22 +86,9 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
     setEndDateFormat(dateString)
   }
 
-  // const onFinish = (values: any) => {
-  //   console.log('Received values of form: ', values)
-  // }
-
   return (
     <>
-      <Modal
-        open={props.open}
-        title="Create Project"
-        onOk={handleOk}
-        centered
-        confirmLoading={confirmLoading}
-        footer={null}
-        width={750}
-        onCancel={props.handleClose}
-      >
+      <Modal open={props.open} title="Create Project" centered footer={null} width={750} onCancel={props.handleClose}>
         <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
           <Row>
             <Col span={14}>

@@ -117,6 +117,7 @@ export const searchReducer = (state: searchState, action: searchActions) => {
         searchCriteria: {
           ...state.searchCriteria,
           searchTerm: action.payload.searchTerm,
+          sortColumn: action.payload.sortColumn,
           filter: action.payload.filter,
           pageNumber: '1',
         },

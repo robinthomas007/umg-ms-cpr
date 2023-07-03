@@ -28,18 +28,6 @@ const validateMessages = {
   },
 }
 /* eslint-enable no-template-curly-in-string */
-interface Platform {
-  platformId: number
-  platformName: string
-}
-interface Teams {
-  teamId: number
-  teamName: string
-}
-interface Status {
-  statusTypeId: number
-  statusTypeDescription: string
-}
 
 interface ModalProps {
   open: boolean
@@ -48,7 +36,7 @@ interface ModalProps {
   statusFacets: Status[]
   handleClose: () => void
   projectData: any
-  getSearchPageData: any
+  getSearchPageData: (isExport: any) => void
 }
 
 const EditProjectModal: React.FC<ModalProps> = (props) => {
@@ -58,8 +46,11 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
   const { projectData, getSearchPageData, open, platformFacets, teamFacets, statusFacets, handleClose } = props
 
   useEffect(() => {
-    const modifiedProject = projectData
-    const { startDate, endDate } = projectData
+    const copyProject = { ...projectData }
+    const modifiedProject = copyProject
+    const { startDate, endDate } = copyProject
+    console.log('startDate', startDate)
+    console.log('endDate', endDate)
     if (startDate) {
       setStartDateFormat(dayjs(projectData.startDate).format('MM-DD-YYYY'))
       modifiedProject.startDate = dayjs(projectData.startDate, dateFormat)
@@ -68,7 +59,7 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       setEndDateFormat(dayjs(projectData.endDate).format('MM-DD-YYYY'))
       modifiedProject.endDate = dayjs(projectData.endDate, dateFormat)
     }
-
+    console.log('test')
     form.setFieldsValue(modifiedProject)
   }, [projectData, form])
 
@@ -91,7 +82,7 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
     }
 
     axios.post('https://api.dev.cpr-portal.umgapps.com/gateway/cpr/projects', data).then((response) => {
-      getSearchPageData()
+      getSearchPageData(false)
       toast.success('Project Updated successfully!', {
         autoClose: 3000,
         closeOnClick: true,

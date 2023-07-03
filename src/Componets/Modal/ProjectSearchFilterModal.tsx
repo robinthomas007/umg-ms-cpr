@@ -13,18 +13,6 @@ dayjs.extend(customParseFormat)
 const { Option } = Select
 
 const dateFormat = 'MM-DD-YYYY'
-interface Platform {
-  platformId: number
-  platformName: string
-}
-interface Teams {
-  teamId: string
-  teamName: string
-}
-interface Status {
-  statusTypeId: number
-  statusTypeDescription: string
-}
 interface FilterProps {
   open: boolean
   close: boolean
@@ -35,7 +23,6 @@ interface FilterProps {
   state: any
   dispatch: any
   handleFlterModalSubmit: any
-  selectedFilterKeys: object
 }
 
 const FilterModal: React.FC<FilterProps> = (props) => {
@@ -101,7 +88,15 @@ const FilterModal: React.FC<FilterProps> = (props) => {
 
   return (
     <>
-      <Modal title="Search Filters" width={600} open={props.open} onCancel={handleCancel} okText="submit" footer={null}>
+      <Modal
+        title="Search Filters"
+        style={{ top: 20 }}
+        width={600}
+        open={props.open}
+        onCancel={handleCancel}
+        okText="submit"
+        footer={null}
+      >
         <Form name="filterModal-form" form={form} onFinish={onFinish} labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
           <Form.Item name="searchWithin" label="Search Within" colon={false}>
             <Space>

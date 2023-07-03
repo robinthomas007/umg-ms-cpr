@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import './search.css'
 import { Col, Row, Space, Button, Input, Tag, Select, Divider, Progress, Typography, Pagination } from 'antd'
 import type { PaginationProps } from 'antd'
+import Highlighter from 'react-highlight-words'
 import {
   DownloadOutlined,
   PlusCircleOutlined,
@@ -13,33 +14,16 @@ import {
 import ProjectSearchDataTable from './ProjectSearchDataTable'
 import ProjectSearchFilterModal from '../Modal/ProjectSearchFilterModal'
 import CreateProjectModal from '../Modal/CreateProjectModal'
-import type { ColumnsType } from 'antd/es/table'
+import type { ColumnsType, ColumnType } from 'antd/es/table'
 import { searchReducer, searchInitialState } from './searchReducer'
 import axios from 'axios'
 import { BASE_URL } from '../../../src/App'
 import EditProjectModal from '../Modal/EditProjectModal'
+import NotesModal from '../Modal/NotesModal'
+import { platform } from 'os'
 
 const { Search } = Input
 const { Text } = Typography
-
-interface Platforms {
-  label: string
-  value: string
-}
-interface Project {
-  key?: React.Key
-  projectId: React.Key
-  title: string
-  artistList: string
-  platform: string
-  teams: string
-  status: string
-  progress: number
-  startDate: string
-  endDate: string
-  notes: string
-  updatedOn: string
-}
 
 const SearchInput: React.FC = () => {
   const [state, dispatch] = React.useReducer(searchReducer, searchInitialState)
@@ -47,20 +31,25 @@ const SearchInput: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [editModal, setEditModal] = useState<boolean>(false)
   const [openCreateProject, setOpenCreateProject] = useState<boolean>(false)
+  const [openNotesModal, setNotesModal] = useState<boolean>(false)
+
   const [projects, setProjects] = useState<Project[]>([])
   const [project, setProject] = useState<any>({})
   const [pageNumber, setPageNumber] = useState(1)
   const [selectedFilters, setSelectedFilters] = React.useState<any>([])
   const [totalItems, setTotalItems] = useState<number>(0)
   const [totalPages, setTotalPages] = useState<number>(0)
-  const [selectedFilterKeys, setSelectedFilterKeys] = useState<object>({})
+  const [searchText, setSearchText] = useState('')
+  const [searchedColumn, setSearchedColumn] = useState('')
+  const searchInput = useRef(null)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
 
   function getCookie(name: string) {
     return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
   }
 
   const getSearchPageData = React.useCallback(
-    (isExport: any, isReport: any) => {
+    (isExport: any) => {
       const { searchTerm, itemsPerPage, pageNumber, sortColumn, sortOrder, filter, tableSearch } = state.searchCriteria
 
       dispatch({ type: 'FETCH_REQUEST', payload: '' })
@@ -100,7 +89,7 @@ const SearchInput: React.FC = () => {
   )
 
   React.useEffect(() => {
-    getSearchPageData(false, '')
+    getSearchPageData(false)
   }, [getSearchPageData])
 
   const setSearchTerm = (searchTerm: string) => {
@@ -123,6 +112,7 @@ const SearchInput: React.FC = () => {
   }
 
   const handleLimitChange = (limit: { value: string; label: React.ReactNode }) => {
+    setItemsPerPage(Number(limit.value))
     dispatch({ type: 'CHANGE_LIMIT', payload: limit.value })
   }
 
@@ -145,54 +135,174 @@ const SearchInput: React.FC = () => {
     })
   }
 
+  const checkCondition = (type: string, tag) => {
+    if (type === 'platform') {
+      return `${state.platformFacets[tag - 1].platformName}`
+    }
+    if (type === 'status') {
+      return `${state.statusFacets[tag - 1].statusTypeDescription}`
+    }
+    if (type === 'teams') {
+      return `${state.teamFacets[tag - 1].teamName}`
+    }
+    return tag
+  }
+
   const forMap = (type, tag) => {
     const tagElem = (
       <Tag
+        color={'#85D305'}
         closable
         onClose={(e) => {
           e.preventDefault()
           handleTagClose(type)
         }}
       >
-        {tag && tag}
+        {tag && checkCondition(type, tag)}
       </Tag>
     )
     return (
       <span key={tag} style={{ display: 'inline-block' }}>
+        {}
         {type}: {tagElem}
       </span>
     )
   }
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    console.log('selectedKeys', selectedKeys[0])
+    console.log('setSearchedColumn', dataIndex)
+
+    confirm()
+    setSearchText(selectedKeys[0])
+    setSearchedColumn(dataIndex)
+    dispatch({
+      type: 'SET_SEARCH',
+      payload: {
+        searchTerm: selectedKeys[0],
+        sortColumn: dataIndex,
+        filter: state.searchCriteria.filter,
+      },
+    })
+  }
+  const handleReset = (clearFilters) => {
+    clearFilters()
+    setSearchText('')
+    dispatch({
+      type: 'SET_SEARCH',
+      payload: {
+        searchTerm: '',
+        filter: state.searchCriteria.filter,
+      },
+    })
+  }
+
+  type DataIndex = keyof Project
+  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<Project> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 24,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            size="small"
+            onClick={() => {
+              close()
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1677ff' : undefined,
+        }}
+      />
+    ),
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: 'rgb(116, 182, 7, 0.6)',
+            color: '#fff',
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  })
+  // const handleSortTable=(selectedColumn)= {
+  //   return null
+  // }
 
   const columnsProject: ColumnsType<Project> = [
     {
       title: 'Project Title',
       dataIndex: 'title',
-      defaultSortOrder: 'descend',
       key: 'projectId',
       sorter: (a, b) => a.title.length - b.title.length,
+      ...getColumnSearchProps('title'),
     },
     {
       title: 'Title/ Artist List',
       dataIndex: 'artistList',
-      defaultSortOrder: 'descend',
       key: 'artistList',
+      ...getColumnSearchProps('artistList'),
     },
     {
       title: 'Platform',
       dataIndex: 'platformName',
-      defaultSortOrder: 'descend',
-      key: 'platform',
+      key: 'platformName',
+      ...getColumnSearchProps('platformName'),
     },
     {
       title: 'Teams',
       dataIndex: 'teamName',
-      defaultSortOrder: 'descend',
       key: 'teams',
+      ...getColumnSearchProps('teamName'),
     },
     {
       title: 'Links/Progress',
-      defaultSortOrder: 'descend',
       key: 'progress',
       render: (_, record) => (
         <Progress percent={record.progress} strokeColor={{ '0%': '#85D305', '50%': '#F68B0D', '100%': '#CA1919' }} />
@@ -201,19 +311,17 @@ const SearchInput: React.FC = () => {
     {
       title: 'Status',
       dataIndex: 'statusTypeDescription',
-      defaultSortOrder: 'descend',
-      key: 'status',
+      key: 'statusTypeDescription',
+      ...getColumnSearchProps('statusTypeDescription'),
     },
     {
       title: 'Start Date',
       dataIndex: 'startDate',
-      defaultSortOrder: 'descend',
       key: 'startDate',
     },
     {
       title: 'End Date',
       dataIndex: 'endDate',
-      defaultSortOrder: 'descend',
       key: 'endDate',
     },
     {
@@ -221,7 +329,7 @@ const SearchInput: React.FC = () => {
       render: (_, record) => (
         <Space size="middle">
           <Button onClick={() => editProject(record.projectId)} icon={<EditOutlined />} size={'middle'} />
-          <Button icon={<WechatOutlined />} size={'middle'} />
+          <Button onClick={() => showNotesModal(record.projectId)} icon={<WechatOutlined />} size={'middle'} />
         </Space>
       ),
     },
@@ -231,7 +339,7 @@ const SearchInput: React.FC = () => {
     setOpen(true)
   }
   const editProject = (projectId) => {
-    const selectedProject = state.projects.find((project) => project.projectId === projectId)
+    const selectedProject = projects.find((project) => project.projectId === projectId)
     setProject(selectedProject)
     setEditModal(true)
   }
@@ -240,6 +348,14 @@ const SearchInput: React.FC = () => {
   }
   const handleClose = () => {
     setOpen(false)
+  }
+  const showNotesModal = (projectId) => {
+    const selectedProject = state.projects.find((project) => project.projectId === projectId)
+    setProject(selectedProject)
+    setNotesModal(true)
+  }
+  const handleNotesModal = () => {
+    setNotesModal(false)
   }
   const handleCreateProjectClose = () => {
     setOpenCreateProject(false)
@@ -252,9 +368,7 @@ const SearchInput: React.FC = () => {
     setSearchTerm(value)
     setSearch('')
   }
-  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (current, pageSize) => {
-    console.log(current, pageSize)
-  }
+
   const countValues = [
     {
       value: '10',
@@ -310,7 +424,6 @@ const SearchInput: React.FC = () => {
             handleClose={handleClose}
             state={state}
             dispatch={dispatch}
-            selectedFilterKeys={selectedFilterKeys}
             handleFlterModalSubmit={handleFlterModalSubmit}
           />
           <CreateProjectModal
@@ -335,6 +448,7 @@ const SearchInput: React.FC = () => {
               getSearchPageData={getSearchPageData}
             />
           )}
+          <NotesModal projectData={project} open={openNotesModal} handleClose={handleNotesModal} />
         </Col>
       </Row>
       <br />
@@ -355,11 +469,11 @@ const SearchInput: React.FC = () => {
         </Col>
         <Col span={8} push={3}>
           <Pagination
+            // defaultCurrent={pageNumber}
             current={pageNumber}
-            onShowSizeChange={onShowSizeChange}
             onChange={handlePageChange}
-            total={projects.length}
-            pageSize={totalPages}
+            total={totalItems}
+            defaultCurrent={1}
           />
         </Col>
 

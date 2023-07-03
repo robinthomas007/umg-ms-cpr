@@ -3,21 +3,6 @@ import { Table, Tag, Select } from 'antd'
 import type { ColumnsType, TableProps } from 'antd/es/table'
 import { TableRowSelection } from 'antd/es/table/interface'
 
-interface Project {
-  key?: React.Key
-  projectId: React.Key
-  title: string
-  artistList: string
-  platform: string
-  teams: string
-  status: string
-  progress: number
-  startDate: string
-  endDate: string
-  notes: string
-  updatedOn: string
-}
-
 const onChange: TableProps<Project>['onChange'] = (pagination, filters, sorter, extra) => {
   console.log('params', pagination, filters, sorter, extra)
 }
