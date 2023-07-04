@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react'
 import getAuthUser from './utils/getAuthUser'
-import Unauthorized from './globalComponents/Unauthorized'
 import Router from './Router'
 // import { ColorModeProvider } from './Context/ColorModeContext'
 import { useAuth } from './Context/authContext'
-import Toaster from './Componets/Common/Toaster'
 import { cprUrls } from './config'
 import { ConfigProvider, theme } from 'antd'
 import customTheme from './globalTheme'
@@ -19,10 +17,6 @@ function App() {
   const user = getAuthUser()
   const { darkTheme, lightTheme } = customTheme
   const { darkMode } = useAuth()
-
-  // if (!user) {
-  //   return <Unauthorized />
-  // }
 
   return (
     <div className="App">
