@@ -69,7 +69,7 @@ const SearchInput: React.FC = () => {
             endDate: filter.endDate,
           },
           headers: {
-            cpr_portal: getCookie('cpr_auth'),
+            cpr_portal: getCookie('cpr_portal'),
           },
         })
         .then((res) => {
@@ -135,7 +135,7 @@ const SearchInput: React.FC = () => {
     })
   }
 
-  const checkCondition = (type: string, tag) => {
+  const renderFilterTags = (type: string, tag) => {
     if (type === 'platform') {
       return `${state.platformFacets[tag - 1].platformName}`
     }
@@ -148,7 +148,7 @@ const SearchInput: React.FC = () => {
     return tag
   }
 
-  const forMap = (type, tag) => {
+  const tagElement = (type, tag) => {
     const tagElem = (
       <Tag
         color={'#85D305'}
@@ -158,7 +158,7 @@ const SearchInput: React.FC = () => {
           handleTagClose(type)
         }}
       >
-        {tag && checkCondition(type, tag)}
+        {tag && renderFilterTags(type, tag)}
       </Tag>
     )
     return (
@@ -411,7 +411,7 @@ const SearchInput: React.FC = () => {
           {selectedFilters &&
             selectedFilters.map((item) => {
               if (typeof item[1] !== 'undefined' && item[1]) {
-                return forMap(item[0], item[1])
+                return tagElement(item[0], item[1])
               }
             })}
 

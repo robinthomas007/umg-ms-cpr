@@ -20,9 +20,9 @@ function App() {
   const { darkTheme, lightTheme } = customTheme
   const { darkMode } = useAuth()
 
-  if (!user) {
-    return <Unauthorized />
-  }
+  // if (!user) {
+  //   return <Unauthorized />
+  // }
 
   return (
     <div className="App">

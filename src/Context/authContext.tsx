@@ -21,10 +21,7 @@ type Authype = {
 
 const AuthContext = createContext<Authype | any>(null)
 export const AuthProvider = ({ children }: AuthContextProps) => {
-  // const token = getCookie('cpr_auth')
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
-
+  const token = getCookie('cpr_portal')
   let LoggedInUser: any = jwt_decode(token)
   LoggedInUser.role = LoggedInUser.groups && LoggedInUser.groups.includes(ADMIN) ? 'admin' : 'user'
   const [user, setUser] = useState<any>(LoggedInUser || {})
