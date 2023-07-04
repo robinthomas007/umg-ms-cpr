@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
-import { toast } from 'react-toastify'
+import { BASE_URL } from '../../App'
 import { Button, Form, Input, InputNumber, DatePicker, Modal, Select, Row, Col, Upload, Space } from 'antd'
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import type { DatePickerProps } from 'antd'
 import dayjs from 'dayjs'
+import { showSuccessNotification, showErrorNotification } from '../../utils/notifications'
+
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-const { RangePicker } = DatePicker
 const dateFormat = 'MM-DD-YYYY'
 
 dayjs.extend(customParseFormat)
@@ -62,14 +63,16 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
       isDeleted: false,
       userEmail: 'vinoth.periyasamy@umusic.com',
     }
-    axios.post('https://api.dev.cpr-portal.umgapps.com/gateway/cpr/projects', data).then((response) => {
-      props.getSearchPageData()
-      toast.success('Project Created successfully!', {
-        autoClose: 3000,
-        closeOnClick: true,
+    axios
+      .post(BASE_URL + 'projects', data)
+      .then((response) => {
+        props.getSearchPageData()
+        showSuccessNotification('Project Created Successfully')
+        props.handleClose()
       })
-      props.handleClose()
-    })
+      .catch((error) => {
+        showErrorNotification(error.message)
+      })
   }
 
   const normFile = (e: any) => {

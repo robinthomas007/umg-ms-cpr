@@ -43,7 +43,6 @@ function App() {
             background: 'black',
           }}
         >
-          <Toaster />
           <Router />
         </div>
       </ConfigProvider>

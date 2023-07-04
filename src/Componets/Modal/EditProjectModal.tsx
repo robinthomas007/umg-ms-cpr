@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
-import { Button, Form, Input, InputNumber, DatePicker, Modal, Select, Row, Col, Upload, Space } from 'antd'
+import { BASE_URL } from '../../App'
+import { Button, Form, Input, InputNumber, Alert, DatePicker, Modal, Select, Row, Col, Upload, Space } from 'antd'
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import type { DatePickerProps } from 'antd'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-const { RangePicker } = DatePicker
-const dateFormat = 'MM-DD-YYYY'
+import { showSuccessNotification, showErrorNotification } from '../../utils/notifications'
 
+const dateFormat = 'MM-DD-YYYY'
 dayjs.extend(customParseFormat)
+
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 14 },
@@ -81,14 +82,19 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       userEmail: 'vinoth.periyasamy@umusic.com',
     }
 
-    axios.post('https://api.dev.cpr-portal.umgapps.com/gateway/cpr/projects', data).then((response) => {
-      getSearchPageData(false)
-      toast.success('Project Updated successfully!', {
-        autoClose: 3000,
-        closeOnClick: true,
+    axios
+      .post(BASE_URL + 'projects', data)
+      .then((response) => {
+        console.log(response, 'response of editProject')
+
+        getSearchPageData(false)
+        handleClose()
+        showSuccessNotification('Project Updated successfully')
       })
-      handleClose()
-    })
+      .catch((error) => {
+        console.log('Error ', error.message)
+        showErrorNotification(error.message)
+      })
   }
 
   const normFile = (e: any) => {

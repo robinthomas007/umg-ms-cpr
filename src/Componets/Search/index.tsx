@@ -3,6 +3,7 @@ import './search.css'
 import { Col, Row, Space, Button, Input, Tag, Select, Divider, Progress, Typography, Pagination } from 'antd'
 import type { PaginationProps } from 'antd'
 import Highlighter from 'react-highlight-words'
+import { showSuccessNotification, showErrorNotification } from '../../utils/notifications'
 import {
   DownloadOutlined,
   PlusCircleOutlined,
@@ -87,6 +88,7 @@ const SearchInput: React.FC = () => {
         .catch((err) => {
           dispatch({ type: 'FETCH_FAILURE', payload: err.Message })
           console.log('error feching data', err)
+          showErrorNotification(err.message)
         })
     },
     [state.searchCriteria]
