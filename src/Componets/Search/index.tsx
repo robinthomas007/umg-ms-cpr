@@ -20,7 +20,9 @@ import axios from 'axios'
 import { BASE_URL } from '../../../src/App'
 import EditProjectModal from '../Modal/EditProjectModal'
 import NotesModal from '../Modal/NotesModal'
-import { platform } from 'os'
+// @ts-ignore
+import { CSVLink } from 'react-csv'
+import { SEARCH_TITLES } from '../Common/StaticDatas'
 
 const { Search } = Input
 const { Text } = Typography
@@ -43,6 +45,8 @@ const SearchInput: React.FC = () => {
   const [searchedColumn, setSearchedColumn] = useState('')
   const searchInput = useRef(null)
   const [itemsPerPage, setItemsPerPage] = useState(10)
+  const [csvData, setcsvData] = React.useState([])
+  const csvLink = React.createRef<any>()
 
   function getCookie(name: string) {
     return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
@@ -91,6 +95,16 @@ const SearchInput: React.FC = () => {
   React.useEffect(() => {
     getSearchPageData(false)
   }, [getSearchPageData])
+
+  const exportData = () => {
+    getSearchPageData(true)
+    dispatch({ type: 'EXPORT_START', payload: '' })
+  }
+  React.useEffect(() => {
+    if (csvData.length > 0 && csvLink) {
+      csvLink.current.link.click()
+    }
+  }, [csvData, csvLink])
 
   const setSearchTerm = (searchTerm: string) => {
     dispatch({
@@ -469,8 +483,8 @@ const SearchInput: React.FC = () => {
         </Col>
         <Col span={8} push={3}>
           <Pagination
-            // defaultCurrent={pageNumber}
             current={pageNumber}
+            pageSize={itemsPerPage}
             onChange={handlePageChange}
             total={totalItems}
             defaultCurrent={1}
@@ -486,6 +500,14 @@ const SearchInput: React.FC = () => {
               <Button type="primary" icon={<DownloadOutlined />} size={'middle'}>
                 Export
               </Button>
+              <CSVLink
+                data={csvData}
+                headers={SEARCH_TITLES.map((elm: any) => ({ key: elm.id, label: elm.name }))}
+                filename="projects.csv"
+                className="hidden"
+                ref={csvLink}
+                target="_blank"
+              />
             </Space>
           </Row>
         </Col>
