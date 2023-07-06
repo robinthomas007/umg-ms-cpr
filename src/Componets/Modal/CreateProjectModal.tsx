@@ -56,9 +56,11 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
       userEmail: user.upn,
     }
     return Api.post('projects', data)
-      .then(() => {
-        props.getSearchPageData(false)
-        showSuccessNotification('Project Created Successfully')
+      .then((response) => {
+        if (response.status === 200) {
+          props.getSearchPageData(false)
+          showSuccessNotification('Project Created Successfully')
+        }
         props.handleClose()
       })
       .catch((error) => {

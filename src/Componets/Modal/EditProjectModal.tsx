@@ -70,10 +70,12 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       userEmail: user.upn,
     }
     return Api.post('projects', data)
-      .then(() => {
-        getSearchPageData(false)
+      .then((response) => {
+        if (response.status === 200) {
+          getSearchPageData(false)
+          showSuccessNotification('Project Updated successfully')
+        }
         handleClose()
-        showSuccessNotification('Project Updated successfully')
       })
       .catch((error) => {
         console.log('Error received', error.message)
