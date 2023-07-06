@@ -128,3 +128,20 @@ h3.ant-typography,
   background: #74b607;
   color: #fff;
 }
+
+
+.ant-table-body::-webkit-scrollbar {
+  width: 6px;
+  transition: max-height 0.5s ease-out;
+}
+
+.ant-table-body::-webkit-scrollbar-track {
+  height: 5px !important;
+}
+
+.ant-table-body::-webkit-scrollbar-thumb {
+  background-color: gray !important;
+  border-radius: 20px;
+  border: 1px  !important;
+  
+}

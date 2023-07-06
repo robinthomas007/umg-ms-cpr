@@ -61,6 +61,7 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
           props.getSearchPageData(false)
           showSuccessNotification('Project Created Successfully')
         }
+        form.resetFields()
         props.handleClose()
       })
       .catch((error) => {

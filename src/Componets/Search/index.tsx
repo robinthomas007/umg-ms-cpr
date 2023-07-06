@@ -474,11 +474,12 @@ const SearchInput: React.FC = () => {
         </Col>
         <Col span={8} push={3}>
           <Pagination
+            defaultCurrent={1}
             current={pageNumber}
             pageSize={itemsPerPage}
             onChange={handlePageChange}
             total={totalItems}
-            defaultCurrent={1}
+            showSizeChanger={false}
           />
         </Col>
 
