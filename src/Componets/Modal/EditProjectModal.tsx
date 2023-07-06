@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { BASE_URL } from '../../App'
-
 import { Button, Form, Input, InputNumber, Alert, DatePicker, Modal, Select, Row, Col, Upload, Space } from 'antd'
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons'
-import axios from 'axios'
 import type { DatePickerProps } from 'antd'
 import { useAuth } from '../../Context/authContext'
+import Api from '../../lib/api'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { showSuccessNotification, showErrorNotification } from '../../utils/notifications'
@@ -71,10 +69,8 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       isDeleted: false,
       userEmail: user.upn,
     }
-
-    axios
-      .post(BASE_URL + 'projects', data)
-      .then((response) => {
+    return Api.post('projects', data)
+      .then(() => {
         getSearchPageData(false)
         handleClose()
         showSuccessNotification('Project Updated successfully')
@@ -92,8 +88,6 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
     return e?.fileList
   }
   const onStartDateChange: DatePickerProps['onChange'] = (date, dateString) => {
-    // const modifiedProject = projects
-    // modifiedProject.startDate = dayjs(projects.startDate, dateFormat)
     setStartDateFormat(dateString)
   }
   const onEndDateChange: DatePickerProps['onChange'] = (date, dateString) => {

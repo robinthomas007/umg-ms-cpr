@@ -55,21 +55,9 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
       isDeleted: false,
       userEmail: user.upn,
     }
-    // return Api.post('projects', data)
-    //   .then(() => {
-    //     props.getSearchPageData(false)
-    //     showSuccessNotification('Project Created Successfully')
-    //     props.handleClose()
-    //   })
-    //   .catch((error) => {
-    //     showErrorNotification(error.message)
-    //   })
-
-    axios
-      .post(BASE_URL + 'projects', data)
-      .then((response) => {
-        props.getSearchPageData()
-        form.resetFields()
+    return Api.post('projects', data)
+      .then(() => {
+        props.getSearchPageData(false)
         showSuccessNotification('Project Created Successfully')
         props.handleClose()
       })
