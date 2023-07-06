@@ -1,48 +1,22 @@
 import getCookie from './cookie'
 import jwt_decode from 'jwt-decode'
-import { BASE_URL, PARTY_API_URL, WIDGET_URL } from './../../App'
+import { BASE_URL } from './../../App'
 import axios from 'axios'
 
 export const getUsername = () => {
   try {
-    const token = getCookie('cp3_auth')
-    let user = jwt_decode(token)
+    const token = getCookie('cpr_portal')
+    let user:{name:string} = jwt_decode(token)
     return user.name
   } catch (err) {
     console.log('Error getting Token', err)
   }
 }
 
-export const callPartyService = (track, index, handleOnchange, isSingle) => {
-  const splitArtist = track.artist.split(',').pop()
-  window.launchWidget({
-    width: '80%',
-    height: '80%',
-    widgetUrl: WIDGET_URL,
-    auth: 'oidc',
-    apiUrl: PARTY_API_URL,
-    tokenUrl: '',
-    r2Auth: '',
-    searchTerm: splitArtist,
-    mode: 'widgetSearchSelect',
-    sourceSystem: 'R2Party-Widget',
-    toggles: '',
-    userName: '',
-    callback: function (parties) {
-      let artistList = track.artist.split(',')
-      artistList[artistList.length - 1] = parties ? parties[0].name : ''
-      if (isSingle) {
-        handleOnchange({ ...track, artist: artistList.toLocaleString() })
-      } else {
-        handleOnchange({ ...track, artist: artistList.toLocaleString() }, index)
-      }
-    },
-  })
-}
 
 export const config = {
   headers: {
-    cp3_auth: getCookie('cp3_auth'),
+    cpr_portal: getCookie('cpr_portal'),
   },
 }
 
@@ -70,7 +44,7 @@ export const getApi = (params, url) => {
     .get(BASE_URL + url, {
       params: params,
       headers: {
-        cp3_auth: getCookie('cp3_auth'),
+        cpr_portal: getCookie('cpr_portal'),
       },
     })
     .then((res) => {

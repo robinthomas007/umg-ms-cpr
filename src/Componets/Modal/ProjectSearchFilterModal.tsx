@@ -13,19 +13,8 @@ dayjs.extend(customParseFormat)
 const { Option } = Select
 
 const dateFormat = 'MM-DD-YYYY'
-interface FilterProps {
-  open: boolean
-  close: boolean
-  platformFacets: Platform[]
-  teamFacets: Teams[]
-  statusFacets: Status[]
-  handleClose: () => void
-  state: any
-  dispatch: any
-  handleFlterModalSubmit: any
-}
 
-const FilterModal: React.FC<FilterProps> = (props) => {
+const FilterModal: React.FC<ModalProps> = (props) => {
   const [searchWithin, setSearchWithin] = useState<any>(['ALL'])
   const [startDateFormat, setStartDateFormat] = useState('')
   const [endDateFormat, setEndDateFormat] = useState('')
@@ -46,11 +35,7 @@ const FilterModal: React.FC<FilterProps> = (props) => {
     modifiedProject.startDate = startDateFormat
     modifiedProject.endDate = endDateFormat
     modifiedProject.searchWithin = searchWithin.join(',')
-
     props.handleFlterModalSubmit(modifiedProject)
-    // modifiedProject.startDate = ''
-    // modifiedProject.endDate = ''
-    console.log('modifedPro', modifiedProject)
     setStartDateFormat('')
     setEndDateFormat('')
     setSearchWithin(['ALL'])

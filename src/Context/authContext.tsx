@@ -2,7 +2,7 @@ import React from 'react'
 import { createContext, useState, useContext } from 'react'
 import jwt_decode from 'jwt-decode'
 import getCookie from '../Componets/Common/cookie'
-import { ADMIN, isSessionExpired } from '../Componets/Common/Utils.js'
+import { ADMIN, isSessionExpired } from '../Componets/Common/Utils'
 import { BASE_URL } from './../App'
 import axios from 'axios'
 

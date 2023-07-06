@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
+import Api from '../../lib/api'
+import axios from 'axios'
 import { BASE_URL } from '../../App'
 import { Button, Form, Input, InputNumber, DatePicker, Modal, Select, Row, Col, Upload, Space } from 'antd'
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons'
-import axios from 'axios'
 import type { DatePickerProps } from 'antd'
 import dayjs from 'dayjs'
+import { useAuth } from '../../Context/authContext'
 import { showSuccessNotification, showErrorNotification } from '../../utils/notifications'
 
 import customParseFormat from 'dayjs/plugin/customParseFormat'
@@ -30,21 +32,11 @@ const validateMessages = {
 }
 /* eslint-enable no-template-curly-in-string */
 
-interface ModalProps {
-  open: boolean
-  close: boolean
-  platformFacets: Platform[]
-  teamFacets: Teams[]
-  statusFacets: Status[]
-  handleClose: () => void
-  state: any
-  dispatch: any
-  getSearchPageData: any
-}
-
 const CreateProjectModal: React.FC<ModalProps> = (props) => {
   const [startDateFormat, setStartDateFormat] = useState('')
   const [endDateFormat, setEndDateFormat] = useState('')
+  const { user } = useAuth()
+  const [form] = Form.useForm()
 
   const onFinish = (values: any) => {
     const { artist, projectTitle, platforms, teams, status, startDate, endDate, dragger, notes } = values.project
@@ -61,12 +53,23 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
       notes: notes,
       userId: 1,
       isDeleted: false,
-      userEmail: 'vinoth.periyasamy@umusic.com',
+      userEmail: user.upn,
     }
+    // return Api.post('projects', data)
+    //   .then(() => {
+    //     props.getSearchPageData(false)
+    //     showSuccessNotification('Project Created Successfully')
+    //     props.handleClose()
+    //   })
+    //   .catch((error) => {
+    //     showErrorNotification(error.message)
+    //   })
+
     axios
       .post(BASE_URL + 'projects', data)
       .then((response) => {
         props.getSearchPageData()
+        form.resetFields()
         showSuccessNotification('Project Created Successfully')
         props.handleClose()
       })
@@ -92,7 +95,7 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
   return (
     <>
       <Modal open={props.open} title="Create Project" centered footer={null} width={750} onCancel={props.handleClose}>
-        <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
+        <Form {...layout} name="nest-messages" form={form} onFinish={onFinish} validateMessages={validateMessages}>
           <Row>
             <Col span={14}>
               <Form.Item

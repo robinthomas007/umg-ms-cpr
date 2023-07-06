@@ -1,25 +1,15 @@
+import axios from 'axios'
 import { Component } from 'react'
-import BASE_URL from '../App'
-
+import { BASE_URL } from '../App'
+import getCookie from '../Componets/Common/cookie'
 export default class Api extends Component {
-  static returnApiUrl(env) {
-    if (env === 'test') {
-      return 'https://api-qa.umusic.net/guardian'
-    }
-    return BASE_URL || 'https://api.dev.cpr-portal.umgapps.com/cpr/projects'
-  }
-
   static setAuthorizationToken() {
-    let hash = {
-      'content-type': 'application/json',
-      Authorization: sessionStorage.getItem('accessToken'),
-    }
-    const header = new Headers(hash)
+    const header = new Headers({ cpr_portal: localStorage.getItem('cpr_portal') })
     return header
   }
 
-  static get(url) {
-    return this.apiCall(url, null, 'GET')
+  static get(url, params) {
+    return this.apiCall(url, params, 'GET')
   }
 
   static put(url, params) {
@@ -35,12 +25,14 @@ export default class Api extends Component {
   }
 
   static apiCall(url, params, method) {
-    const host = this.returnApiUrl(process.env.NODE_ENV)
-    const fullUrl = `${host}${url}`
-    return fetch(fullUrl, {
+    return axios({
+      url: BASE_URL + url,
       method: method,
-      headers: this.setAuthorizationToken(),
-      body: params ? JSON.stringify(params) : null,
+      headers: {
+        cpr_portal: getCookie('cpr_portal'),
+      },
+      params: params && method === 'GET' ? params : null,
+      data: params && method === 'POST' ? params : null,
     })
       .then(function (response) {
         if (response.status === 401) {

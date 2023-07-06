@@ -29,3 +29,16 @@ interface Status {
   statusTypeId: number
   statusTypeDescription: string
 }
+
+interface ModalProps {
+  open: boolean
+  platformFacets: Platform[]
+  teamFacets: Teams[]
+  statusFacets: Status[]
+  handleClose: () => void
+  state?: any
+  dispatch?: any
+  handleFlterModalSubmit?: any
+  getSearchPageData?:any
+  projectData?:any
+}

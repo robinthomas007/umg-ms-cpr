@@ -70,6 +70,9 @@ export const searchReducer = (state: searchState, action: searchActions) => {
         ...state,
         loading: false,
         projects: action.payload.projects,
+        platformFacets: action.payload.platformFacets,
+        teamFacets: action.payload.teamFacets,
+        statusFacets: action.payload.statusFacets,
         totalPages: Number(action.payload.totalPages),
         totalItems: Number(action.payload.totalItems),
       }

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { BASE_URL } from '../../App'
+
 import { Button, Form, Input, InputNumber, Alert, DatePicker, Modal, Select, Row, Col, Upload, Space } from 'antd'
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import type { DatePickerProps } from 'antd'
+import { useAuth } from '../../Context/authContext'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { showSuccessNotification, showErrorNotification } from '../../utils/notifications'
@@ -30,28 +32,17 @@ const validateMessages = {
 }
 /* eslint-enable no-template-curly-in-string */
 
-interface ModalProps {
-  open: boolean
-  platformFacets: Platform[]
-  teamFacets: Teams[]
-  statusFacets: Status[]
-  handleClose: () => void
-  projectData: any
-  getSearchPageData: (isExport: any) => void
-}
-
 const EditProjectModal: React.FC<ModalProps> = (props) => {
   const [startDateFormat, setStartDateFormat] = useState('')
   const [endDateFormat, setEndDateFormat] = useState('')
   const [form] = Form.useForm()
   const { projectData, getSearchPageData, open, platformFacets, teamFacets, statusFacets, handleClose } = props
+  const { user } = useAuth()
 
   useEffect(() => {
     const copyProject = { ...projectData }
     const modifiedProject = copyProject
     const { startDate, endDate } = copyProject
-    console.log('startDate', startDate)
-    console.log('endDate', endDate)
     if (startDate) {
       setStartDateFormat(dayjs(projectData.startDate).format('MM-DD-YYYY'))
       modifiedProject.startDate = dayjs(projectData.startDate, dateFormat)
@@ -60,7 +51,6 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       setEndDateFormat(dayjs(projectData.endDate).format('MM-DD-YYYY'))
       modifiedProject.endDate = dayjs(projectData.endDate, dateFormat)
     }
-    console.log('test')
     form.setFieldsValue(modifiedProject)
   }, [projectData, form])
 
@@ -79,20 +69,18 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       notes: notes,
       userId: 1,
       isDeleted: false,
-      userEmail: 'vinoth.periyasamy@umusic.com',
+      userEmail: user.upn,
     }
 
     axios
       .post(BASE_URL + 'projects', data)
       .then((response) => {
-        console.log(response, 'response of editProject')
-
         getSearchPageData(false)
         handleClose()
         showSuccessNotification('Project Updated successfully')
       })
       .catch((error) => {
-        console.log('Error ', error.message)
+        console.log('Error received', error.message)
         showErrorNotification(error.message)
       })
   }

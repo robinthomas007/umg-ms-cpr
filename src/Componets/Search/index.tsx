@@ -3,7 +3,8 @@ import './search.css'
 import { Col, Row, Space, Button, Input, Tag, Select, Divider, Progress, Typography, Pagination } from 'antd'
 import type { PaginationProps } from 'antd'
 import Highlighter from 'react-highlight-words'
-import { showSuccessNotification, showErrorNotification } from '../../utils/notifications'
+import { showErrorNotification } from '../../utils/notifications'
+import Api from '../../lib/api'
 import {
   DownloadOutlined,
   PlusCircleOutlined,
@@ -54,36 +55,29 @@ const SearchInput: React.FC = () => {
   }
 
   const getSearchPageData = React.useCallback(
-    (isExport: any) => {
+    (isExport: any, isReporting?: any) => {
       const { searchTerm, itemsPerPage, pageNumber, sortColumn, sortOrder, filter, tableSearch } = state.searchCriteria
 
       dispatch({ type: 'FETCH_REQUEST', payload: '' })
-      axios
-        .get(BASE_URL + 'ProjectSearch', {
-          params: {
-            searchTerm: searchTerm,
-            itemsPerPage: isExport ? '' : itemsPerPage,
-            pageNumber: isExport ? '' : pageNumber,
-            sortColumns: sortColumn,
-            sortOrder: sortOrder,
-            searchWithin: filter.searchWithin ? filter.searchWithin.toString() : 'ALL',
-            platforms: filter.platform,
-            teams: filter.teams,
-            status: filter.status,
-            startDate: filter.startDate,
-            endDate: filter.endDate,
-          },
-          headers: {
-            cpr_portal: getCookie('cpr_portal'),
-          },
-        })
+      const params = {
+        searchTerm: searchTerm,
+        itemsPerPage: isExport ? '' : itemsPerPage,
+        pageNumber: isExport ? '' : pageNumber,
+        sortColumns: sortColumn,
+        sortOrder: sortOrder,
+        searchWithin: filter.searchWithin ? filter.searchWithin.toString() : 'ALL',
+        platforms: filter.platform,
+        teams: filter.teams,
+        status: filter.status,
+        startDate: filter.startDate,
+        endDate: filter.endDate,
+      }
+      return Api.get('ProjectSearch', params)
         .then((res) => {
-          console.log('fetched results', res.data)
+          dispatch({ type: 'FETCH_SUCCESS', payload: res.data })
           setProjects(res.data.projects)
           setTotalItems(res.data.totalItems)
           setTotalPages(Number(res.data.totalPages))
-          dispatch({ type: 'FETCH_SUCCESS', payload: res.data })
-          dispatch({ type: 'SET_FACETS', payload: res.data })
         })
         .catch((err) => {
           dispatch({ type: 'FETCH_FAILURE', payload: err.Message })
@@ -95,7 +89,7 @@ const SearchInput: React.FC = () => {
   )
 
   React.useEffect(() => {
-    getSearchPageData(false)
+    getSearchPageData(false, '')
   }, [getSearchPageData])
 
   const exportData = () => {
@@ -185,9 +179,6 @@ const SearchInput: React.FC = () => {
     )
   }
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    console.log('selectedKeys', selectedKeys[0])
-    console.log('setSearchedColumn', dataIndex)
-
     confirm()
     setSearchText(selectedKeys[0])
     setSearchedColumn(dataIndex)
@@ -436,7 +427,6 @@ const SearchInput: React.FC = () => {
             teamFacets={state.teamFacets}
             statusFacets={state.statusFacets}
             open={open}
-            close={true}
             handleClose={handleClose}
             state={state}
             dispatch={dispatch}
@@ -447,7 +437,6 @@ const SearchInput: React.FC = () => {
             teamFacets={state.teamFacets}
             statusFacets={state.statusFacets}
             open={openCreateProject}
-            close={true}
             getSearchPageData={getSearchPageData}
             handleClose={handleCreateProjectClose}
             state={state}

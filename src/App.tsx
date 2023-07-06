@@ -10,8 +10,6 @@ import customTheme from './globalTheme'
 const cpr_app_urls = cprUrls(process.env.REACT_APP_ENV || 'dev')
 
 export const BASE_URL = cpr_app_urls?.url
-export const WIDGET_URL = cpr_app_urls?.widgetUrl
-export const PARTY_API_URL = cpr_app_urls?.apiUrl
 
 function App() {
   const user = getAuthUser()
