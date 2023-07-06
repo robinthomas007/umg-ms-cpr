@@ -39,6 +39,6 @@ interface ModalProps {
   state?: any
   dispatch?: any
   handleFlterModalSubmit?: any
-  getSearchPageData?:any
-  projectData?:any
+  getSearchPageData?: any
+  projectData?: any
 }

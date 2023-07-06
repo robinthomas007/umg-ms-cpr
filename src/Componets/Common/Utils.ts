@@ -6,13 +6,12 @@ import axios from 'axios'
 export const getUsername = () => {
   try {
     const token = getCookie('cpr_portal')
-    let user:{name:string} = jwt_decode(token)
+    let user: { name: string } = jwt_decode(token)
     return user.name
   } catch (err) {
     console.log('Error getting Token', err)
   }
 }
-
 
 export const config = {
   headers: {
