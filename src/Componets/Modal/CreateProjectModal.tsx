@@ -55,6 +55,8 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
       isDeleted: false,
       userEmail: user.upn,
     }
+    setEndDateFormat('')
+    setStartDateFormat('')
     return Api.post('projects', data)
       .then((response) => {
         if (response.status === 200) {

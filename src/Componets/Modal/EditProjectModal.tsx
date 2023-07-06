@@ -42,12 +42,12 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
     const modifiedProject = copyProject
     const { startDate, endDate } = copyProject
     if (startDate) {
-      setStartDateFormat(dayjs(projectData.startDate).format('MM-DD-YYYY'))
-      modifiedProject.startDate = dayjs(projectData.startDate, dateFormat)
+      setStartDateFormat(dayjs(copyProject.startDate).format('MM-DD-YYYY'))
+      modifiedProject.startDate = dayjs(copyProject.startDate, dateFormat)
     }
     if (endDate) {
-      setEndDateFormat(dayjs(projectData.endDate).format('MM-DD-YYYY'))
-      modifiedProject.endDate = dayjs(projectData.endDate, dateFormat)
+      setEndDateFormat(dayjs(copyProject.endDate).format('MM-DD-YYYY'))
+      modifiedProject.endDate = dayjs(copyProject.endDate, dateFormat)
     }
     form.setFieldsValue(modifiedProject)
   }, [projectData, form])
@@ -69,6 +69,8 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       isDeleted: false,
       userEmail: user.upn,
     }
+    setEndDateFormat('')
+    setStartDateFormat('')
     return Api.post('projects', data)
       .then((response) => {
         if (response.status === 200) {
