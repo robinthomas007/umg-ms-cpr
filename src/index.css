@@ -1,7 +1,7 @@
 body {
   width: 100%;
-    height: 100%;
-    background: #000000;
+  height: 100%;
+  background: #000000;
 }
 /* Calendar */
 
@@ -90,12 +90,12 @@ body {
 /* .ant-upload-wrapper .ant-upload-drag .ant-upload-btn{
   background: #141414;
 } */
-.Release_listContainer__qN62s .ant-card .ant-card-body{
-  padding:5px !important
+.Release_listContainer__qN62s .ant-card .ant-card-body {
+  padding: 5px !important;
 }
-.Release_listContainer__qN62s .ant-card-bordered{
+.Release_listContainer__qN62s .ant-card-bordered {
   border-radius: 5px !important;
 }
-.Release_listContainer__qN62s .ant-card-body{
+.Release_listContainer__qN62s .ant-card-body {
   background: #191919;
 }
