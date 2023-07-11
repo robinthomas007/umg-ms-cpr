@@ -472,7 +472,7 @@ const SearchInput: React.FC = () => {
           &nbsp;&nbsp;
           <Text>of {totalItems} results</Text>
         </Col>
-        <Col span={8} push={3}>
+        <Col span={8} push={2}>
           <Pagination
             defaultCurrent={1}
             current={pageNumber}
@@ -480,6 +480,8 @@ const SearchInput: React.FC = () => {
             onChange={handlePageChange}
             total={totalItems}
             showSizeChanger={false}
+            responsive={true}
+            showLessItems={true}
           />
         </Col>
 

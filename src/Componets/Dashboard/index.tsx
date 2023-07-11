@@ -86,10 +86,10 @@ export default function Home() {
             </Row>
 
             <Row style={{ marginTop: '30px' }}>
-              <Col span={11} offset={1} className="background-overlay">
+              <Col span={7} offset={1} className="background-overlay">
                 <Release />
               </Col>
-              <Col span={11} offset={1} className="background-overlay">
+              <Col span={15} offset={1} className="background-overlay">
                 <TeamCalendar />
               </Col>
             </Row>

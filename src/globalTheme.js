@@ -1,7 +1,7 @@
 const darkTheme = {
   fontFamily: 'Roboto Condensed',
   colorPrimary: '#85D305',
-  borderRadius: '2px',
+  borderRadius: 2,
 }
 const lightTheme = {
   fontFamily: 'Roboto Condensed',
