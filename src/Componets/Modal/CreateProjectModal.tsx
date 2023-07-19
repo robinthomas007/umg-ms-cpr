@@ -60,7 +60,7 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
     return Api.post('projects', data)
       .then((response) => {
         if (response.status === 200) {
-          props.getSearchPageData(false)
+          props.getSearchPageData()
           showSuccessNotification('Project Created Successfully')
         }
         form.resetFields()

@@ -17,7 +17,7 @@ import ProjectSearchDataTable from './ProjectSearchDataTable'
 import ProjectSearchFilterModal from '../Modal/ProjectSearchFilterModal'
 import CreateProjectModal from '../Modal/CreateProjectModal'
 import type { ColumnsType, ColumnType } from 'antd/es/table'
-import { searchReducer, searchInitialState } from './searchReducer'
+// import { searchReducer } from './searchReducer'
 import axios from 'axios'
 import { BASE_URL } from '../../../src/App'
 import EditProjectModal from '../Modal/EditProjectModal'
@@ -29,13 +29,45 @@ import { SEARCH_TITLES } from '../Common/StaticDatas'
 const { Search } = Input
 const { Text } = Typography
 
+const searchInitialState = {
+  loading: false,
+  exportLoading: false,
+  isExport: false,
+  error: '',
+  projects: [],
+  platforms: null,
+  teams: null,
+  status: null,
+  platformFacets: [],
+  teamFacets: [],
+  statusFacets: [],
+
+  startDate: '',
+  endDate: '',
+  totalPages: 0,
+  totalItems: 0,
+  searchTerm: '',
+  itemsPerPage: '10',
+  pageNumber: 1,
+  sortColumns: 'updatedDate',
+  sortOrder: '',
+  searchWithin: ['ALL'],
+  tableSearch: {},
+}
+
 const SearchInput: React.FC = () => {
-  const [state, dispatch] = React.useReducer(searchReducer, searchInitialState)
+  const [searchFilters, setSearchFilters] = useState<searchState>(searchInitialState)
+  const [loading, setLoading] = useState<boolean>(false)
+  // const [state, dispatch] = React.useReducer(searchReducer, searchInitialState)
   const [search, setSearch] = React.useState('')
-  const [open, setOpen] = useState<boolean>(false)
-  const [editModal, setEditModal] = useState<boolean>(false)
-  const [openCreateProject, setOpenCreateProject] = useState<boolean>(false)
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false)
   const [openNotesModal, setNotesModal] = useState<boolean>(false)
+
+  const [platformFacets, setPlatformFacets] = useState<Platform[]>([])
+  const [teamFacets, setTeamFacets] = useState<Teams[]>([])
+  const [statusFacets, setStatusFacets] = useState<Status[]>([])
 
   const [projects, setProjects] = useState<Project[]>([])
   const [project, setProject] = useState<any>({})
@@ -49,52 +81,74 @@ const SearchInput: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const [csvData, setcsvData] = React.useState([])
   const csvLink = React.createRef<any>()
+  const [exportLoading, setExportLoading] = useState<boolean>(false)
 
   function getCookie(name: string) {
     return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
   }
 
-  const getSearchPageData = React.useCallback(
-    (isExport: any, isReporting?: any) => {
-      const { searchTerm, itemsPerPage, pageNumber, sortColumn, sortOrder, filter, tableSearch } = state.searchCriteria
+  const getSearchPageData = React.useCallback((isExport: any, isReporting?: any) => {}, [searchFilters])
 
-      dispatch({ type: 'FETCH_REQUEST', payload: '' })
+  // React.useEffect(() => {
+  //   getSearchPageData(false, '')
+  // }, [getSearchPageData])
+  useEffect(() => {
+    ;(async function () {
+      const {
+        searchTerm,
+        itemsPerPage,
+        pageNumber,
+        sortColumns,
+        sortOrder,
+        tableSearch,
+        searchWithin,
+        teams,
+        platforms,
+        status,
+        startDate,
+        endDate,
+      } = searchFilters
+      // if (searchFilters.isExport) setExportLoading(true)
+      setLoading(true)
       const params = {
         searchTerm: searchTerm,
-        itemsPerPage: isExport ? '' : itemsPerPage,
-        pageNumber: isExport ? '' : pageNumber,
-        sortColumns: sortColumn,
+        itemsPerPage: itemsPerPage,
+        pageNumber: pageNumber,
+        sortColumns: sortColumns,
         sortOrder: sortOrder,
-        searchWithin: filter.searchWithin ? filter.searchWithin.toString() : 'ALL',
-        platforms: filter.platform,
-        teams: filter.teams,
-        status: filter.status,
-        startDate: filter.startDate,
-        endDate: filter.endDate,
+        searchWithin: searchWithin ? searchWithin.toString() : 'ALL',
+        platforms: platforms,
+        teams: teams,
+        status: status,
+        isExport: searchFilters.isExport,
+        startDate: startDate,
+        endDate: endDate,
       }
       return Api.get('ProjectSearch', params)
         .then((res) => {
-          dispatch({ type: 'FETCH_SUCCESS', payload: res.data })
+          setLoading(false)
+          // if (res.isExport) {
+          //   setcsvData(res.data.projects)
+          //   setExportLoading(false)
+          // } else {
           setProjects(res.data.projects)
           setTotalItems(res.data.totalItems)
           setTotalPages(Number(res.data.totalPages))
+          setPlatformFacets(res.data.platformFacets)
+          setTeamFacets(res.data.teamFacets)
+          setStatusFacets(res.data.statusFacets)
+          // }
         })
         .catch((err) => {
-          dispatch({ type: 'FETCH_FAILURE', payload: err.Message })
+          setLoading(false)
           console.log('error feching data', err)
           showErrorNotification(err.message)
         })
-    },
-    [state.searchCriteria]
-  )
-
-  React.useEffect(() => {
-    getSearchPageData(false, '')
-  }, [getSearchPageData])
+    })()
+  }, [searchFilters])
 
   const exportData = () => {
-    getSearchPageData(true)
-    dispatch({ type: 'EXPORT_START', payload: '' })
+    setSearchFilters((prevState) => ({ ...prevState, isExport: true }))
   }
   React.useEffect(() => {
     if (csvData.length > 0 && csvLink) {
@@ -103,13 +157,7 @@ const SearchInput: React.FC = () => {
   }, [csvData, csvLink])
 
   const setSearchTerm = (searchTerm: string) => {
-    dispatch({
-      type: 'SET_SEARCH',
-      payload: {
-        searchTerm: searchTerm,
-        filter: state.searchCriteria.filter,
-      },
-    })
+    setSearchFilters((prev) => ({ ...prev, searchTerm }))
   }
   const clearSearch = () => {
     setSearch('')
@@ -118,42 +166,35 @@ const SearchInput: React.FC = () => {
 
   const handlePageChange: PaginationProps['onChange'] = (page) => {
     setPageNumber(page)
-    dispatch({ type: 'PAGE_CHANGE', payload: { pageNumber: page } })
+    setSearchFilters((prev) => ({ ...prev, pageNumber: page }))
   }
 
   const handleLimitChange = (limit: { value: string; label: React.ReactNode }) => {
     setItemsPerPage(Number(limit.value))
-    dispatch({ type: 'CHANGE_LIMIT', payload: limit.value })
+    setSearchFilters((prev) => ({ ...prev, itemsPerPage: limit.value }))
   }
 
   const handleFlterModalSubmit = (project: any) => {
     setSelectedFilters(Object.entries(project))
-
-    dispatch({
-      type: 'SET_FILTER',
-      payload: { filter: project },
-    })
-    handleClose()
+    setSearchFilters((prevState) => ({ ...prevState, ...project }))
+    closeFilterModal()
   }
 
   const handleTagClose = (removedTag) => {
     const modifiiedFilters = selectedFilters.filter((item) => item[0] !== removedTag)
     setSelectedFilters(modifiiedFilters)
-    dispatch({
-      type: 'SET_FILTER',
-      payload: { filter: Object.fromEntries(modifiiedFilters) },
-    })
+    setSearchFilters((prev) => ({ ...prev, [removedTag]: null }))
   }
 
   const renderFilterTags = (type: string, tag) => {
-    if (type === 'platform') {
-      return `${state.platformFacets[tag - 1].platformName}`
+    if (type === 'platforms') {
+      return `${platformFacets[tag - 1].platformName}`
     }
     if (type === 'status') {
-      return `${state.statusFacets[tag - 1].statusTypeDescription}`
+      return `${statusFacets[tag - 1].statusTypeDescription}`
     }
     if (type === 'teams') {
-      return `${state.teamFacets[tag - 1].teamName}`
+      return `${teamFacets[tag - 1].teamName}`
     }
     return tag
   }
@@ -182,25 +223,25 @@ const SearchInput: React.FC = () => {
     confirm()
     setSearchText(selectedKeys[0])
     setSearchedColumn(dataIndex)
-    dispatch({
-      type: 'SET_SEARCH',
-      payload: {
-        searchTerm: selectedKeys[0],
-        sortColumn: dataIndex,
-        filter: state.searchCriteria.filter,
-      },
-    })
+    // dispatch({
+    //   type: 'SET_SEARCH',
+    //   payload: {
+    //     searchTerm: selectedKeys[0],
+    //     sortColumn: dataIndex,
+    //     filter: state.searchCriteria.filter,
+    //   },
+    // })
   }
   const handleReset = (clearFilters) => {
     clearFilters()
     setSearchText('')
-    dispatch({
-      type: 'SET_SEARCH',
-      payload: {
-        searchTerm: '',
-        filter: state.searchCriteria.filter,
-      },
-    })
+    // dispatch({
+    //   type: 'SET_SEARCH',
+    //   payload: {
+    //     searchTerm: '',
+    //     filter: state.searchCriteria.filter,
+    //   },
+    // })
   }
 
   type DataIndex = keyof Project
@@ -288,25 +329,25 @@ const SearchInput: React.FC = () => {
       dataIndex: 'title',
       key: 'projectId',
       sorter: (a, b) => a.title.length - b.title.length,
-      ...getColumnSearchProps('title'),
+      // ...getColumnSearchProps('title'),
     },
     {
       title: 'Title/ Artist List',
       dataIndex: 'artistList',
       key: 'artistList',
-      ...getColumnSearchProps('artistList'),
+      // ...getColumnSearchProps('artistList'),
     },
     {
       title: 'Platform',
       dataIndex: 'platformName',
       key: 'platformName',
-      ...getColumnSearchProps('platformName'),
+      // ...getColumnSearchProps('platformName'),
     },
     {
       title: 'Teams',
       dataIndex: 'teamName',
       key: 'teams',
-      ...getColumnSearchProps('teamName'),
+      // ...getColumnSearchProps('teamName'),
     },
     {
       title: 'Links/Progress',
@@ -319,7 +360,7 @@ const SearchInput: React.FC = () => {
       title: 'Status',
       dataIndex: 'statusTypeDescription',
       key: 'statusTypeDescription',
-      ...getColumnSearchProps('statusTypeDescription'),
+      // ...getColumnSearchProps('statusTypeDescription'),
     },
     {
       title: 'Start Date',
@@ -343,21 +384,21 @@ const SearchInput: React.FC = () => {
   ]
 
   const showFilterModal = () => {
-    setOpen(true)
+    setIsFilterModalOpen(true)
   }
   const editProject = (projectId) => {
     const selectedProject = projects.find((project) => project.projectId === projectId)
     setProject(selectedProject)
-    setEditModal(true)
+    setIsEditModalOpen(true)
   }
   const showCreateProjectModal = () => {
-    setOpenCreateProject(true)
+    setIsCreateModalOpen(true)
   }
-  const handleClose = () => {
-    setOpen(false)
+  const closeFilterModal = () => {
+    setIsFilterModalOpen(false)
   }
   const showNotesModal = (projectId) => {
-    const selectedProject = state.projects.find((project) => project.projectId === projectId)
+    const selectedProject = projects.find((project) => project.projectId === projectId)
     setProject(selectedProject)
     setNotesModal(true)
   }
@@ -365,10 +406,10 @@ const SearchInput: React.FC = () => {
     setNotesModal(false)
   }
   const handleCreateProjectClose = () => {
-    setOpenCreateProject(false)
+    setIsCreateModalOpen(false)
   }
-  const handleEditProjectClose = () => {
-    setEditModal(false)
+  const closeEditModal = () => {
+    setIsEditModalOpen(false)
   }
 
   const onSearch = (value: string) => {
@@ -394,6 +435,9 @@ const SearchInput: React.FC = () => {
       label: '100',
     },
   ]
+  const getUpdatedProjectList = () => {
+    setSearchFilters({ ...searchFilters, pageNumber: 1 })
+  }
 
   return (
     <div className="search-wrapper">
@@ -411,6 +455,7 @@ const SearchInput: React.FC = () => {
                 onSearch={onSearch}
                 size="large"
                 enterButton="Search"
+                allowClear
               />
             </Col>
           </Row>
@@ -423,34 +468,38 @@ const SearchInput: React.FC = () => {
             })}
 
           <ProjectSearchFilterModal
-            platformFacets={state.platformFacets}
-            teamFacets={state.teamFacets}
-            statusFacets={state.statusFacets}
-            open={open}
-            handleClose={handleClose}
-            state={state}
-            dispatch={dispatch}
+            platformFacets={platformFacets}
+            teamFacets={teamFacets}
+            statusFacets={statusFacets}
+            open={isFilterModalOpen}
+            handleClose={closeFilterModal}
+            state={searchFilters}
             handleFlterModalSubmit={handleFlterModalSubmit}
+            loading={loading}
           />
-          <CreateProjectModal
-            platformFacets={state.platformFacets}
-            teamFacets={state.teamFacets}
-            statusFacets={state.statusFacets}
-            open={openCreateProject}
-            getSearchPageData={getSearchPageData}
-            handleClose={handleCreateProjectClose}
-            state={state}
-            dispatch={dispatch}
-          />
+          {isCreateModalOpen && (
+            <CreateProjectModal
+              platformFacets={platformFacets}
+              teamFacets={teamFacets}
+              statusFacets={statusFacets}
+              open={isCreateModalOpen}
+              getSearchPageData={getUpdatedProjectList}
+              handleClose={handleCreateProjectClose}
+              state={searchFilters}
+              loading={loading}
+            />
+          )}
           {Object.keys(project).length > 0 && (
             <EditProjectModal
-              platformFacets={state.platformFacets}
-              teamFacets={state.teamFacets}
-              statusFacets={state.statusFacets}
+              platformFacets={platformFacets}
+              teamFacets={teamFacets}
+              statusFacets={statusFacets}
+              loading={loading}
               projectData={project}
-              open={editModal}
-              handleClose={handleEditProjectClose}
-              getSearchPageData={getSearchPageData}
+              getSearchPageData={getUpdatedProjectList}
+              open={isEditModalOpen}
+              state={searchFilters}
+              handleClose={closeEditModal}
             />
           )}
           <NotesModal projectData={project} open={openNotesModal} handleClose={handleNotesModal} />
@@ -492,6 +541,7 @@ const SearchInput: React.FC = () => {
                 Create
               </Button>
               <Button type="primary" icon={<DownloadOutlined />} size={'middle'}>
+                {/* {exportLoading ? 'Exporting' : 'Export'} */}
                 Export
               </Button>
               <CSVLink
@@ -509,7 +559,7 @@ const SearchInput: React.FC = () => {
       <Divider plain className="divider" />
       <Row className="dataTable">
         <Col span={24}>
-          <ProjectSearchDataTable state={state} columsProjects={columnsProject} projects={projects} />
+          <ProjectSearchDataTable loading={loading} columsProjects={columnsProject} projects={projects} />
         </Col>
       </Row>
     </div>

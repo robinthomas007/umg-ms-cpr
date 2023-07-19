@@ -121,7 +121,7 @@ const FilterModal: React.FC<ModalProps> = (props) => {
           </Form.Item>
 
           <Form.Item label="Platform" style={{ marginBottom: 0 }} colon={false}>
-            <Form.Item name="platform" style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}>
+            <Form.Item name="platforms" style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}>
               <Select
                 style={{ width: '125px' }}
                 showSearch

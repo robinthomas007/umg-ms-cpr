@@ -74,7 +74,7 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
     return Api.post('projects', data)
       .then((response) => {
         if (response.status === 200) {
-          getSearchPageData(false)
+          getSearchPageData()
           showSuccessNotification('Project Updated successfully')
         }
         handleClose()

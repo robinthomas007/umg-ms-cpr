@@ -9,21 +9,11 @@ const onChange: TableProps<Project>['onChange'] = (pagination, filters, sorter, 
 interface ProjectsProps {
   columsProjects: ColumnsType<Project>
   projects: Project[]
-  state: any
+  loading: boolean
 }
 
-const DataGrid: React.FC<ProjectsProps> = ({ columsProjects, projects, state }) => {
+const DataGrid: React.FC<ProjectsProps> = ({ columsProjects, projects, loading }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
-  const [loading, setLoading] = useState(false)
-
-  const start = () => {
-    setLoading(true)
-    // ajax request after empty completing
-    setTimeout(() => {
-      setSelectedRowKeys([])
-      setLoading(false)
-    }, 1000)
-  }
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys)
@@ -43,7 +33,7 @@ const DataGrid: React.FC<ProjectsProps> = ({ columsProjects, projects, state }) 
       onChange={onChange}
       pagination={false}
       rowKey={'projectId'}
-      loading={state.loading}
+      loading={loading}
     />
   )
 }

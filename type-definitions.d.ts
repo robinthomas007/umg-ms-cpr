@@ -36,9 +36,34 @@ interface ModalProps {
   teamFacets: Teams[]
   statusFacets: Status[]
   handleClose: () => void
-  state?: any
-  dispatch?: any
+  loading:boolean
   handleFlterModalSubmit?: any
   getSearchPageData?: any
   projectData?: any
+  state:any
+}
+
+type searchState = {
+  loading: Boolean
+  exportLoading: Boolean
+  error: string
+  projects: Array<object>
+  platforms: number |null
+  teams: number | null
+  status:number | null
+  platformFacets: Platform[]
+  teamFacets: Teams[]
+  statusFacets:Status[]
+  startDate: string
+  endDate: string
+  totalPages: number
+  totalItems: number
+  pageNumber: number
+    searchTerm: string,
+  itemsPerPage: string,
+  sortColumns: string,
+  sortOrder: string,
+  searchWithin: string[],
+  tableSearch:object,
+  isExport:boolean
 }
