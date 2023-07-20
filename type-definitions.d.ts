@@ -44,8 +44,6 @@ interface ModalProps {
 }
 
 type searchState = {
-  loading: Boolean
-  exportLoading: Boolean
   error: string
   projects: Array<object>
   platforms: number |null
@@ -65,5 +63,4 @@ type searchState = {
   sortOrder: string,
   searchWithin: string[],
   tableSearch:object,
-  isExport:boolean
 }

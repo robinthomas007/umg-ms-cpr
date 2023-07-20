@@ -31,8 +31,6 @@ const { Text } = Typography
 
 const searchInitialState = {
   loading: false,
-  exportLoading: false,
-  isExport: false,
   error: '',
   projects: [],
   platforms: null,
@@ -120,24 +118,23 @@ const SearchInput: React.FC = () => {
         platforms: platforms,
         teams: teams,
         status: status,
-        isExport: searchFilters.isExport,
         startDate: startDate,
         endDate: endDate,
       }
       return Api.get('ProjectSearch', params)
         .then((res) => {
           setLoading(false)
-          // if (res.isExport) {
-          //   setcsvData(res.data.projects)
-          //   setExportLoading(false)
-          // } else {
-          setProjects(res.data.projects)
-          setTotalItems(res.data.totalItems)
-          setTotalPages(Number(res.data.totalPages))
-          setPlatformFacets(res.data.platformFacets)
-          setTeamFacets(res.data.teamFacets)
-          setStatusFacets(res.data.statusFacets)
-          // }
+          if (exportLoading) {
+            setcsvData(res.data.projects)
+            setExportLoading(false)
+          } else {
+            setProjects(res.data.projects)
+            setTotalItems(res.data.totalItems)
+            setTotalPages(Number(res.data.totalPages))
+            setPlatformFacets(res.data.platformFacets)
+            setTeamFacets(res.data.teamFacets)
+            setStatusFacets(res.data.statusFacets)
+          }
         })
         .catch((err) => {
           setLoading(false)
@@ -148,7 +145,8 @@ const SearchInput: React.FC = () => {
   }, [searchFilters])
 
   const exportData = () => {
-    setSearchFilters((prevState) => ({ ...prevState, isExport: true }))
+    setExportLoading(true)
+    setSearchFilters((prevState) => ({ ...prevState, itemsPerPage: '10000', pageNumber: 1 }))
   }
   React.useEffect(() => {
     if (csvData.length > 0 && csvLink) {
@@ -540,9 +538,8 @@ const SearchInput: React.FC = () => {
               <Button type="primary" onClick={showCreateProjectModal} icon={<PlusCircleOutlined />} size={'middle'}>
                 Create
               </Button>
-              <Button type="primary" icon={<DownloadOutlined />} size={'middle'}>
-                {/* {exportLoading ? 'Exporting' : 'Export'} */}
-                Export
+              <Button onClick={exportData} type="primary" icon={<DownloadOutlined />} size={'middle'}>
+                {exportLoading ? 'Exporting' : 'Export'}
               </Button>
               <CSVLink
                 data={csvData}
