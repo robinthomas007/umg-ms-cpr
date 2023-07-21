@@ -106,11 +106,10 @@ const SearchInput: React.FC = () => {
         startDate,
         endDate,
       } = searchFilters
-      // if (searchFilters.isExport) setExportLoading(true)
       setLoading(true)
       const params = {
         searchTerm: searchTerm,
-        itemsPerPage: itemsPerPage,
+        itemsPerPage: exportLoading ? '10000' : itemsPerPage,
         pageNumber: pageNumber,
         sortColumns: sortColumns,
         sortOrder: sortOrder,
@@ -146,13 +145,14 @@ const SearchInput: React.FC = () => {
 
   const exportData = () => {
     setExportLoading(true)
-    setSearchFilters((prevState) => ({ ...prevState, itemsPerPage: '10000', pageNumber: 1 }))
+    getUpdatedProjectList()
   }
+
   React.useEffect(() => {
     if (csvData.length > 0 && csvLink) {
       csvLink.current.link.click()
     }
-  }, [csvData, csvLink])
+  }, [csvData])
 
   const setSearchTerm = (searchTerm: string) => {
     setSearchFilters((prev) => ({ ...prev, searchTerm }))
@@ -172,9 +172,9 @@ const SearchInput: React.FC = () => {
     setSearchFilters((prev) => ({ ...prev, itemsPerPage: limit.value }))
   }
 
-  const handleFlterModalSubmit = (project: any) => {
-    setSelectedFilters(Object.entries(project))
-    setSearchFilters((prevState) => ({ ...prevState, ...project }))
+  const handleSelectedFilters = (filters) => {
+    setSelectedFilters(Object.entries(filters))
+    setSearchFilters((prevState) => ({ ...prevState, ...filters }))
     closeFilterModal()
   }
 
@@ -206,6 +206,7 @@ const SearchInput: React.FC = () => {
           e.preventDefault()
           handleTagClose(type)
         }}
+        style={{ margin: '5px' }}
       >
         {tag && renderFilterTags(type, tag)}
       </Tag>
@@ -472,8 +473,9 @@ const SearchInput: React.FC = () => {
             open={isFilterModalOpen}
             handleClose={closeFilterModal}
             state={searchFilters}
-            handleFlterModalSubmit={handleFlterModalSubmit}
+            handleSelectedFilters={handleSelectedFilters}
             loading={loading}
+            selectedFilters={selectedFilters}
           />
           {isCreateModalOpen && (
             <CreateProjectModal

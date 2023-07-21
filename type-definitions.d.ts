@@ -37,10 +37,11 @@ interface ModalProps {
   statusFacets: Status[]
   handleClose: () => void
   loading:boolean
-  handleFlterModalSubmit?: any
+  handleSelectedFilters?: any
   getSearchPageData?: any
   projectData?: any
   state:any
+  selectedFilters?:any
 }
 
 type searchState = {

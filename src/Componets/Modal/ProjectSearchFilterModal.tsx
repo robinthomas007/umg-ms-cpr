@@ -31,16 +31,34 @@ const FilterModal: React.FC<ModalProps> = (props) => {
     setEndDateFormat(dateString)
   }
   const onFinish = (values: any) => {
-    const modifiedProject = values
+    const modifiedProject = { ...values }
     modifiedProject.startDate = startDateFormat
     modifiedProject.endDate = endDateFormat
     modifiedProject.searchWithin = searchWithin.join(',')
-    props.handleFlterModalSubmit(modifiedProject)
-    setStartDateFormat('')
-    setEndDateFormat('')
-    setSearchWithin(['ALL'])
-    form.resetFields()
+    props.handleSelectedFilters(modifiedProject)
+    // setStartDateFormat('')
+    // setEndDateFormat('')
+    // setSearchWithin(sea)
+    // form.setFieldsValue
+    // form.resetFields()
   }
+  const defaultSelectedFilters = {
+    demo: undefined,
+    endDate: '',
+    platforms: undefined,
+    searchWithin: 'ALL',
+    startDate: '',
+    status: undefined,
+    teams: undefined,
+  }
+  useEffect(() => {
+    const newData = { ...defaultSelectedFilters, ...Object.fromEntries(props.selectedFilters) }
+    if (newData.searchWithin === 'ALL' && !searchWithin.includes('ALL')) {
+      setSearchWithin(['ALL'])
+    }
+    form.setFieldsValue(newData)
+  }, [props.selectedFilters, form])
+
   const onCheckAllChange = (e: any) => {
     if (e.target.type === 'checkbox') {
       let arr = searchWithin
@@ -95,6 +113,7 @@ const FilterModal: React.FC<ModalProps> = (props) => {
               </Checkbox>
               <Checkbox
                 id="title"
+                name="title"
                 defaultChecked={searchWithin.includes('title')}
                 checked={searchWithin.includes('title')}
                 onChange={onCheckAllChange}
@@ -103,6 +122,7 @@ const FilterModal: React.FC<ModalProps> = (props) => {
               </Checkbox>
               <Checkbox
                 id="artistList"
+                name="artistList"
                 defaultChecked={searchWithin.includes('artistList')}
                 checked={searchWithin.includes('artistList')}
                 onChange={onCheckAllChange}
@@ -111,6 +131,7 @@ const FilterModal: React.FC<ModalProps> = (props) => {
               </Checkbox>
               <Checkbox
                 id="notes"
+                name="notes"
                 defaultChecked={searchWithin.includes('notes')}
                 checked={searchWithin.includes('notes')}
                 onChange={onCheckAllChange}
