@@ -36,14 +36,13 @@ const FilterModal: React.FC<ModalProps> = (props) => {
     modifiedProject.endDate = endDateFormat
     modifiedProject.searchWithin = searchWithin.join(',')
     props.handleSelectedFilters(modifiedProject)
-    // setStartDateFormat('')
-    // setEndDateFormat('')
+    setStartDateFormat('')
+    setEndDateFormat('')
     // setSearchWithin(sea)
     // form.setFieldsValue
     // form.resetFields()
   }
   const defaultSelectedFilters = {
-    demo: undefined,
     endDate: '',
     platforms: undefined,
     searchWithin: 'ALL',
@@ -52,11 +51,17 @@ const FilterModal: React.FC<ModalProps> = (props) => {
     teams: undefined,
   }
   useEffect(() => {
-    const newData = { ...defaultSelectedFilters, ...Object.fromEntries(props.selectedFilters) }
-    if (newData.searchWithin === 'ALL' && !searchWithin.includes('ALL')) {
+    const modifiedFilters: any = { ...defaultSelectedFilters, ...Object.fromEntries(props.selectedFilters) }
+    if (modifiedFilters.searchWithin === 'ALL' && !searchWithin.includes('ALL')) {
       setSearchWithin(['ALL'])
     }
-    form.setFieldsValue(newData)
+    if (modifiedFilters.startDate) {
+      modifiedFilters.startDate = dayjs(modifiedFilters.startDate, dateFormat)
+    }
+    if (modifiedFilters.endDate) {
+      modifiedFilters.endDate = dayjs(modifiedFilters.endDate, dateFormat)
+    }
+    form.setFieldsValue(modifiedFilters)
   }, [props.selectedFilters, form])
 
   const onCheckAllChange = (e: any) => {

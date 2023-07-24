@@ -109,7 +109,7 @@ const SearchInput: React.FC = () => {
       setLoading(true)
       const params = {
         searchTerm: searchTerm,
-        itemsPerPage: exportLoading ? '10000' : itemsPerPage,
+        itemsPerPage: itemsPerPage,
         pageNumber: pageNumber,
         sortColumns: sortColumns,
         sortOrder: sortOrder,
@@ -120,7 +120,21 @@ const SearchInput: React.FC = () => {
         startDate: startDate,
         endDate: endDate,
       }
-      return Api.get('ProjectSearch', params)
+      const exportParams = {
+        searchTerm: '',
+        itemsPerPage: '10000',
+        pageNumber: 1,
+        sortColumns: 'updatedDate',
+        sortOrder: '',
+        searchWithin: 'ALL',
+        platforms: null,
+        teams: null,
+        status: null,
+        startDate: '',
+        endDate: '',
+      }
+
+      return Api.get('ProjectSearch', exportLoading ? exportParams : params)
         .then((res) => {
           setLoading(false)
           if (exportLoading) {
