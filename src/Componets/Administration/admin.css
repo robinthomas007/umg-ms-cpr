@@ -1,0 +1,52 @@
+.admin-wrapper .ant-menu-item-selected {
+    color: #50C1FF !important;
+  }
+
+.admin-wrapper .ant-menu-item-selected::after{
+  border-bottom-color:#50C1FF !important;
+}
+
+.admin-wrapper tbody td.ant-table-row-expand-icon-cell button{
+  position: absolute;
+  left: -125px;
+  top: 18px;
+}
+
+.admin-wrapper .ant-table-expanded-row > .ant-table-cell {
+  padding: 0;
+}
+.admin-wrapper .ant-table-thead .ant-table-cell {
+  background: #000 !important;
+}
+
+.admin-wrapper .ant-table-thead .ant-table-cell::before {
+  width: 0px !important;
+}
+
+.admin-wrapper .ant-table-header {
+  border-top: none;
+}
+.admin-wrapper  .ant-table-cell-scrollbar {
+  box-shadow: none !important;
+}
+
+.admin-wrapper .ant-select-selector {
+  background: #000 !important;
+  border-radius: 4px !important;
+}
+
+.admin-wrapper  .ant-select-arrow, .ant-select-selection-placeholder {
+  color: #fff !important;
+}
+
+.admin-wrapper  col.ant-table-expand-icon-col {
+  width: 1px !important;
+}
+
+.admin-wrapper .custom-secondary-search .ant-btn, .admin-wrapper .custom-secondary-search .ant-btn:hover  {
+  background-color: #50C1FF;
+}
+
+.ant-form-item-label {
+  text-align: left !important;
+}

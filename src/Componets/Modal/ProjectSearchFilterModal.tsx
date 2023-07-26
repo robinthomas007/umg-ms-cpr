@@ -73,9 +73,7 @@ const FilterModal: React.FC<ModalProps> = (props) => {
         } else {
           let index = arr.indexOf('ALL')
           if (index !== -1) {
-            console.log('before arr', arr)
             arr.splice(index, 1)
-            console.log('after arr', arr)
           }
         }
         arr.push(e.target.id)

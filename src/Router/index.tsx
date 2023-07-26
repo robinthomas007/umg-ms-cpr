@@ -5,6 +5,7 @@ import { ProtectedRoutes } from './ProtectedRoutes'
 // import Policy from '../Components/Policy';
 import Dashboard from '../Componets/Dashboard'
 import Search from '../Componets/Search'
+import Administration from '../Componets/Administration'
 import Sidebar from '../Componets/Sidebar'
 import { PublicRoutes } from './PublicRoutes'
 import { FCUserRoutes } from './FCUserRoutes'
@@ -22,6 +23,7 @@ function Routes() {
       children: [
         { path: '/', element: <Dashboard /> },
         { path: '/Search', element: <Search /> },
+        { path: '/admin', element: <Administration /> },
       ],
     },
     {

@@ -71,6 +71,9 @@ export default function Navbar() {
       case '/myQueue':
         setCurrent('myQueue')
         break
+      case '/admin':
+        setCurrent('administration')
+        break
       case '/tasking':
         setCurrent('tasking')
         break
@@ -87,6 +90,9 @@ export default function Navbar() {
         break
       case 'search':
         navigate('/search')
+        break
+      case 'administration':
+        navigate('/admin')
         break
 
       default:
