@@ -7,6 +7,7 @@ import type { DatePickerProps } from 'antd'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+import { format } from 'path'
 
 dayjs.extend(customParseFormat)
 
@@ -32,12 +33,16 @@ const FilterModal: React.FC<ModalProps> = (props) => {
   }
   const onFinish = (values: any) => {
     const modifiedProject = { ...values }
-    modifiedProject.startDate = startDateFormat
-    modifiedProject.endDate = endDateFormat
+    if (modifiedProject.startDate) {
+      modifiedProject.startDate = dayjs(modifiedProject.startDate).format('MM-DD-YYYY')
+    }
+    if (modifiedProject.endDate) {
+      modifiedProject.endDate = dayjs(modifiedProject.endDate).format('MM-DD-YYYY')
+    }
     modifiedProject.searchWithin = searchWithin.join(',')
     props.handleSelectedFilters(modifiedProject)
-    setStartDateFormat('')
-    setEndDateFormat('')
+    // setStartDateFormat('')
+    // setEndDateFormat('')
     // setSearchWithin(sea)
     // form.setFieldsValue
     // form.resetFields()
