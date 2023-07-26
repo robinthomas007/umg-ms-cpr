@@ -8,8 +8,9 @@
 
 .admin-wrapper tbody td.ant-table-row-expand-icon-cell button{
   position: absolute;
-  left: -125px;
+  left: -143px;
   top: 18px;
+  min-width: 50px;
 }
 
 .admin-wrapper .ant-table-expanded-row > .ant-table-cell {

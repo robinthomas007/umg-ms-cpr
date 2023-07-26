@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button, Typography, Input, Row, theme, Col, Select, Table } from 'antd'
 import { SearchOutlined, CloseSquareOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons'
 import CreateModal from './Modals/createTeamModal'
+import { deleteApi, postApi } from '../../Api/Api'
 const { Title } = Typography
 const { Search } = Input
 
@@ -18,7 +19,7 @@ export default function Team({
   teamColumns,
   teamData,
   dropZoneActive,
-  handleChangeTableData,
+  handleChangeTeamData,
   loading,
 }) {
   const { useToken }: { useToken: any } = theme
@@ -35,6 +36,16 @@ export default function Team({
   }
   const showCreateTeamModal = () => {
     setCreateTeamModalOpen(true)
+  }
+  const deleteUserFromTeam = (userId) => {
+    console.log('deleted user if from team', userId)
+    deleteApi(userId, '/teamuser')
+      .then((res: any) => {
+        handleChangeTeamData()
+      })
+      .catch((error: any) => {
+        console.log('error feching data', error)
+      })
   }
 
   const customExpandIcon = (props) => {
@@ -65,6 +76,21 @@ export default function Team({
     }
   }
 
+  const onPermissionRoleChange = (data, roleId) => {
+    const updatedMember = {
+      teamId: data.teamId,
+      roleId: roleId,
+      userRoleId: data.userRoleId,
+    }
+    postApi(updatedMember, '/teamuser', 'successfully assigned role')
+      .then((res: any) => {
+        // handleChangeTeamData(true)
+      })
+      .catch((error: any) => {
+        console.log('error feching data', error)
+      })
+  }
+
   const getMembersTable = (members, key) => {
     const memberColumn = [
       {
@@ -73,14 +99,14 @@ export default function Team({
       },
       {
         title: 'Permission Level',
-        dataIndex: 'roleId',
+        dataIndex: '',
         width: 300,
-        render: (roleId, row) => {
+        render: (data) => {
           return (
             <Select
-              mode="tags"
               showArrow
-              value={[roleId]}
+              defaultValue={data.roleId}
+              onChange={(val) => onPermissionRoleChange(data, val)}
               style={{ width: '80%' }}
               options={permissions}
               placeholder="Select Teams"
@@ -94,7 +120,9 @@ export default function Team({
         align: 'center' as const,
         width: 120,
         key: 'x',
-        render: (data) => <CloseSquareOutlined style={{ fontSize: '18px' }} />,
+        render: (data) => (
+          <CloseSquareOutlined onClick={() => deleteUserFromTeam(data.userRoleId)} style={{ fontSize: '18px' }} />
+        ),
       },
     ]
 
@@ -103,7 +131,7 @@ export default function Team({
         columns={memberColumn}
         dataSource={members}
         pagination={false}
-        // rowKey={'teamId'}
+        rowKey={'userId'}
         onRow={(record, rowIndex) => {
           return {
             onDragOver: (event) => handleDragOver(event),
@@ -121,7 +149,7 @@ export default function Team({
           isModalOpen={createTeamModalOpen}
           handleOk={createTeamSave}
           handleCancel={handleCreateTeamModalCancel}
-          handleChangeTeamData={handleChangeTableData}
+          handleChangeTeamData={handleChangeTeamData}
         />
       )}
       <Title level={3}>Teams</Title>
@@ -152,9 +180,9 @@ export default function Team({
             rowKey={'teamId'}
             loading={loading}
             expandable={{
-              expandedRowRender: (record) => {
+              expandedRowRender: (record, index) => {
                 return (
-                  <div className={`drop-zone ${dropZoneActive ? 'active' : ''}`}>
+                  <div key={index} className={`drop-zone ${dropZoneActive ? 'active' : ''}`}>
                     {getMembersTable(record.members, record.key)}
                   </div>
                 )

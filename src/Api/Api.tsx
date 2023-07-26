@@ -1,6 +1,7 @@
 import axios from 'axios'
 import getCookie from '../Componets/Common/cookie'
 import { message } from 'antd'
+import { showSuccessNotification } from '../utils/notifications'
 
 export const cprUrls = (env) => {
   switch (env) {
@@ -49,19 +50,21 @@ const showNotification = (status, customMessage) => {
     maxCount: 1,
   })
   if (status === 200) {
-    message.open({
-      type: 'success',
-      content: customMessage || 'Successfully Saved',
-      className: 'custom-message-top',
-      style: {
-        color: '#ffffff',
-        backgroundColor: 'rgba(116, 182, 7, 1)',
-        width: '100%',
-        padding: 0,
-        fontSize: 16,
-      },
-      duration: 2.5,
-    })
+    console.log('message')
+    showSuccessNotification(customMessage || 'Successfully Saved')
+    // message.open({
+    //   type: 'success',
+    //   content: customMessage || 'Successfully Saved',
+    //   className: 'custom-message-top',
+    //   style: {
+    //     color: '#ffffff',
+    //     backgroundColor: 'rgba(116, 182, 7, 1)',
+    //     width: '100%',
+    //     padding: 0,
+    //     fontSize: 16,
+    //   },
+    //   duration: 2.5,
+    // })
   }
 
   if (status !== 200) {

@@ -76,8 +76,13 @@ export default function Administration() {
     },
     {
       title: 'Team Admin(s)',
-      dataIndex: 'teamAdmin',
-      render: (teams, row) => <p>test</p>,
+      dataIndex: '',
+      render: (data, row) => {
+        const members = data.members && data.members.filter((member) => member.roleId && member.roleId === 2)
+        let teamAdmins: string[] = []
+        members.forEach((member: any) => teamAdmins.push(member.userName.split(' ')[0]))
+        return <p>{teamAdmins.join(', ')}</p>
+      },
     },
     {
       title: 'Members',
@@ -325,7 +330,7 @@ export default function Administration() {
               teamColumns={teamColumns}
               teamData={teamData}
               dropZoneActive={dropZoneActive}
-              handleChangeTableData={handleTeamData}
+              handleChangeTeamData={handleTeamData}
               loading={loadingTeamData}
             />
           </Col>
