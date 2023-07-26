@@ -50,7 +50,6 @@ const showNotification = (status, customMessage) => {
     maxCount: 1,
   })
   if (status === 200) {
-    console.log('message')
     showSuccessNotification(customMessage || 'Successfully Saved')
     // message.open({
     //   type: 'success',

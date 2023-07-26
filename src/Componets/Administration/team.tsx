@@ -38,7 +38,6 @@ export default function Team({
     setCreateTeamModalOpen(true)
   }
   const deleteUserFromTeam = (userId) => {
-    console.log('deleted user if from team', userId)
     deleteApi(userId, '/teamuser')
       .then((res: any) => {
         handleChangeTeamData()

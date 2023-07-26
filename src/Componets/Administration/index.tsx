@@ -251,7 +251,6 @@ export default function Administration() {
     getApi('', '/TeamUser')
       .then((res) => {
         setloadingTeamData(false)
-        console.log('teamsData', res)
         setTeamData(res)
       })
       .catch((error) => {
@@ -273,7 +272,6 @@ export default function Administration() {
   }
   const showEditModal = (userId) => {
     const user = userData.find((user: any) => user.userId === userId)
-    console.log('selectedUser', user)
     setEditRecord(user)
     setEditModalOpen(true)
   }
