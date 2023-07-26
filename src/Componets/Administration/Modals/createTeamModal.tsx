@@ -17,29 +17,9 @@ export default function CreateModal({ isModalOpen, handleOk, handleCancel, handl
   const [form] = Form.useForm()
 
   const onFinish = (values: any) => {
-    console.log('submitted value', values)
     const createTeamObj = { ...values }
     createTeamObj.teamId = 0
     console.log('create Team data', createTeamObj)
-    // createProjectObj.userId = 0
-    // postApi(createProjectObj, '/User', 'Successfuly created the User!!!')
-    //   .then((res) => {
-    //     console.log('user created response', res)
-    //     handleChangeUserData(true)
-    //     handleCancel()
-    //   })
-    //   .catch((err) => {
-    //     console.log('received ERROR while creating the user')
-    //   })
-
-    // let successMessage = 'Project Created Successfully!'
-    // if (data.projectId) {
-    //   values = { ...data, ...values }
-    //   successMessage = 'Project Updated Successfully!'
-    // }
-    // values.startDate = values.startDate ? values["startDate"].format("MM-DD-YYYY") : null
-    // values.endDate = values.endDate ? values["endDate"].format("MM-DD-YYYY") : null
-    // values.userEmail = 'Robin.Thomas@umusic.com'
     postApi(createTeamObj, '/team', 'successfully created team')
       .then((res: any) => {
         handleChangeTeamData(true)
