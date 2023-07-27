@@ -11,7 +11,8 @@ const { Title } = Typography
 export default function Administration() {
   const [current, setCurrent] = useState('user')
   const [draggedItem, setDraggedItem] = useState<any>(null)
-
+  const [reloadTeamDataFromUser, setReloadTeamDataFromUser] = useState<boolean>(false)
+  const [reloadUserDataFromTeam, setReloadUserDataFromTeam] = useState<boolean>(false)
   const { useToken }: { useToken: any } = theme
   const { token }: { token: any } = useToken()
 
@@ -38,6 +39,14 @@ export default function Administration() {
     setCurrent(e.key)
   }
 
+  const reloadTeamData = () => {
+    setReloadTeamDataFromUser(!reloadTeamDataFromUser)
+  }
+
+  const reloadUserData = () => {
+    setReloadUserDataFromTeam(!reloadUserDataFromTeam)
+  }
+
   return (
     <Layout>
       <Content style={{ padding: '70px 70px 60px' }} className="admin-wrapper">
@@ -54,11 +63,15 @@ export default function Administration() {
           <Col span={11}>
             <User
               handleDragStart={handleDragStart}
+              reloadTeamData={reloadTeamData}
+              reloadUserDataFromTeam={reloadUserDataFromTeam}
             />
           </Col>
           <Col span={11} offset={1}>
             <Team
               draggedItem={draggedItem}
+              reloadUserData={reloadUserData}
+              updateTeamDataFromUser={reloadTeamDataFromUser}
             />
           </Col>
         </Row>

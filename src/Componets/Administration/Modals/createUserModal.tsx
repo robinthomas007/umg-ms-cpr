@@ -50,8 +50,6 @@ export default function CreateModal({
   useEffect(() => {
     if (data) {
       const formValues = data
-      formValues.firstName = data.userName.split(' ')[0] ?? ''
-      formValues.lastName = data.userName.split(' ')[1] ?? ''
       formValues.teamAssignment = data.teamList
       form.setFieldsValue(formValues)
     }

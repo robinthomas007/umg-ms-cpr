@@ -24,7 +24,7 @@ const permissions = [
   { value: 3, label: 'Read-Only' },
 ]
 
-export default function Team({ draggedItem }) {
+export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserData }) {
   const { useToken }: { useToken: any } = theme
   const { token }: { token: any } = useToken()
 
@@ -46,17 +46,19 @@ export default function Team({ draggedItem }) {
       .catch((error) => {
         console.log('error feching data', error)
       })
-  }, [isTeamDataUpdated])
+  }, [isTeamDataUpdated, updateTeamDataFromUser])
 
   const deleteTeam = (teamId) => {
-    console.log('deleted Team', teamId)
-    deleteApi(teamId, '/team')
-      .then((res: any) => {
-        setIsTeamDataUpdated(!isTeamDataUpdated)
-      })
-      .catch((error: any) => {
-        console.log('error feching data', error)
-      })
+    const confirmed = window.confirm('Are you sure you want to delete this team?');
+    if (confirmed) {
+      deleteApi(teamId, '/team')
+        .then((res: any) => {
+          setIsTeamDataUpdated(!isTeamDataUpdated)
+        })
+        .catch((error: any) => {
+          console.log('error feching data', error)
+        })
+    }
   }
 
   const handleDrop = (event, key) => {
@@ -69,29 +71,27 @@ export default function Team({ draggedItem }) {
       }
       return val.teamId === key
     })[0]
-    console.log(dropTeamIndex, "dropTeamIndexdropTeamIndex")
-    console.log(draggedItem, "draggedItemdraggedItem")
 
-    dropTeamIndex['members'] = [...dropTeamIndex['members'], draggedItem]
-    if (index >= 0) {
-      modifiedTeamData[index] = dropTeamIndex
-      setTeamData(modifiedTeamData)
+    const updatedMember = {
+      teamId: [dropTeamIndex.teamId],
+      userId: [draggedItem.userId],
     }
-
-    // const updatedMember = {
-    //   teamId: dropTeamIndex.teamId,
-    //   userId: draggedItem.userId,
-    //   userRoleId: 0,
-    //   roleId: 0
-    // }
-    // postApi(updatedMember, '/teamuser', 'successfully assigned role')
-    //   .then((res: any) => {
-    //     console.log(res, "Asdasdasd respo")
-
-    //   })
-    //   .catch((error: any) => {
-    //     console.log('error feching data', error)
-    //   })
+    postApi(updatedMember, '/teamuser', 'successfully assigned role')
+      .then((res: any) => {
+        if (res.result) {
+          draggedItem.roleId = 3 // default user Role
+          dropTeamIndex['members'] = [...dropTeamIndex['members'], draggedItem]
+          if (index >= 0) {
+            modifiedTeamData[index] = dropTeamIndex
+            setTeamData(modifiedTeamData)
+          }
+          setIsTeamDataUpdated(!isTeamDataUpdated)
+          reloadUserData()
+        }
+      })
+      .catch((error: any) => {
+        console.log('error feching data', error)
+      })
   }
 
   const handleDragOver = (event) => {
@@ -159,13 +159,17 @@ export default function Team({ draggedItem }) {
     setCreateTeamModalOpen(true)
   }
   const deleteUserFromTeam = (userId) => {
-    deleteApi(userId, '/teamuser')
-      .then((res: any) => {
-        setIsTeamDataUpdated(!isTeamDataUpdated)
-      })
-      .catch((error: any) => {
-        console.log('error feching data', error)
-      })
+    const confirmed = window.confirm('Are you sure you want to delete this team user?');
+    if (confirmed) {
+      deleteApi(userId, '/teamuser')
+        .then((res: any) => {
+          setIsTeamDataUpdated(!isTeamDataUpdated)
+          reloadUserData()
+        })
+        .catch((error: any) => {
+          console.log('error feching data', error)
+        })
+    }
   }
 
   const customExpandIcon = (props) => {
@@ -198,13 +202,14 @@ export default function Team({ draggedItem }) {
 
   const onPermissionRoleChange = (data, roleId) => {
     const updatedMember = {
-      teamId: data.teamId,
+      teamId: [data.teamId],
       roleId: roleId,
       userRoleId: data.userRoleId,
     }
     postApi(updatedMember, '/teamuser', 'successfully assigned role')
       .then((res: any) => {
-        // handleChangeTeamData(true)
+        console.log(res.result)
+        setIsTeamDataUpdated(!isTeamDataUpdated)
       })
       .catch((error: any) => {
         console.log('error feching data', error)

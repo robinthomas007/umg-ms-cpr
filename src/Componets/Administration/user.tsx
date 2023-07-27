@@ -18,7 +18,7 @@ interface UserDataType {
   teams: any
 }
 
-export default function User({ handleDragStart }) {
+export default function User({ handleDragStart, reloadTeamData, reloadUserDataFromTeam }) {
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [userColumns, setUserColumns] = useState<ColumnsType<UserDataType>>([])
   const [loadingUserData, setLoadingUserData] = useState<boolean>(false)
@@ -43,30 +43,51 @@ export default function User({ handleDragStart }) {
       .catch((error) => {
         console.log('error feching data', error)
       })
-  }, [isUserDataUpdated])
+  }, [isUserDataUpdated, reloadUserDataFromTeam])
 
   const updateUserTeam = (val, row) => {
     const updatedMember = {
-      teamId: val,
-      userId: row.userId,
+      teamId: [val],
+      userId: [row.userId],
     }
     postApi(updatedMember, '/teamuser', 'successfully assigned role')
       .then((res: any) => {
-        // handleChangeTeamData(true)
+        reloadTeamData()
+        setIsUserDataUpdated(!isUserDataUpdated)
       })
       .catch((error: any) => {
         console.log('error feching data', error)
       })
   }
 
-  const deleteUser = (userId) => {
-    deleteApi(userId, '/user', "User has been deleted ")
+  const removeUserTeam = (val, row) => {
+    const index = row.teamList.indexOf(val);
+    if (index !== -1) {
+      row.teamList.splice(index, 1);
+    }
+    row.teamAssignment = row.teamList
+    postApi(row, '/User', 'successfully assigned role')
       .then((res: any) => {
-        handleReloadUserData()
+        setIsUserDataUpdated(!isUserDataUpdated)
+        reloadTeamData()
       })
       .catch((error: any) => {
         console.log('error feching data', error)
       })
+  }
+
+
+  const deleteUser = (userId) => {
+    const confirmed = window.confirm('Are you sure you want to delete this user?');
+    if (confirmed) {
+      deleteApi(userId, '/user', "User has been deleted ")
+        .then((res: any) => {
+          handleReloadUserData()
+        })
+        .catch((error: any) => {
+          console.log('error feching data', error)
+        })
+    }
   }
 
   const handleReloadUserData = () => {
@@ -106,8 +127,9 @@ export default function User({ handleDragStart }) {
           <Select
             mode="tags"
             showArrow
-            onChange={(val) => updateUserTeam(val, row)}
-            defaultValue={teams}
+            onSelect={(val) => updateUserTeam(val, row)}
+            onDeselect={(val) => removeUserTeam(val, row)}
+            value={teams}
             style={{ width: '80%' }}
             tokenSeparators={[',']}
             options={transformedTeamList}
