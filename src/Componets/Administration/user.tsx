@@ -1,16 +1,141 @@
-import React, { useState } from 'react'
-import { Button, Typography, Input, Row, Col, Table } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { Button, Typography, Input, Row, Col, Table, Select, Space } from 'antd'
 import ReactDragListView from 'react-drag-listview'
 import { SearchOutlined } from '@ant-design/icons'
 import CreateModal from './Modals/createUserModal'
+import { EditOutlined, DeleteOutlined, HolderOutlined } from '@ant-design/icons'
+import { deleteApi, postApi, getApi } from '../../Api/Api'
+import type { ColumnsType } from 'antd/es/table'
 
 const { Title } = Typography
 const { Search } = Input
 
-export default function User({ userColumns, userData, handleDragStart, teamList, loading, handleChangeUserData }) {
-  const [createModalOpen, setCreateModalOpen] = useState(false)
+interface UserDataType {
+  key: React.Key
+  username: string
+  country: string
+  timezone: string
+  teams: any
+}
 
+export default function User({ handleDragStart }) {
+  const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [userColumns, setUserColumns] = useState<ColumnsType<UserDataType>>([])
+  const [loadingUserData, setLoadingUserData] = useState<boolean>(false)
   const [editRecord, setEditRecord] = useState({})
+  const [userData, setUserData] = useState([])
+  const [teamList, setTeamList] = useState([])
+  const [isUserDataUpdated, setIsUserDataUpdated] = useState<boolean>(false)
+
+  useEffect(() => {
+    setUserColumns(userColumn)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userData])
+
+  useEffect(() => {
+    setLoadingUserData(true)
+    getApi('', '/user/getalluser')
+      .then((res) => {
+        setLoadingUserData(false)
+        setTeamList(res.teams)
+        setUserData(res.users)
+      })
+      .catch((error) => {
+        console.log('error feching data', error)
+      })
+  }, [isUserDataUpdated])
+
+  const updateUserTeam = (val, row) => {
+    const updatedMember = {
+      teamId: val,
+      userId: row.userId,
+    }
+    postApi(updatedMember, '/teamuser', 'successfully assigned role')
+      .then((res: any) => {
+        // handleChangeTeamData(true)
+      })
+      .catch((error: any) => {
+        console.log('error feching data', error)
+      })
+  }
+
+  const deleteUser = (userId) => {
+    deleteApi(userId, '/user', "User has been deleted ")
+      .then((res: any) => {
+        handleReloadUserData()
+      })
+      .catch((error: any) => {
+        console.log('error feching data', error)
+      })
+  }
+
+  const handleReloadUserData = () => {
+    setIsUserDataUpdated(!isUserDataUpdated)
+  }
+
+  const userColumn = [
+    {
+      title: '',
+      dataIndex: '',
+      width: 60,
+      render: (team) => <HolderOutlined style={{ fontSize: 18, marginRight: 8 }} />,
+    },
+    {
+      title: 'User Name',
+      dataIndex: 'userName',
+      width: 140,
+    },
+    {
+      title: 'Country',
+      dataIndex: 'country',
+    },
+    {
+      title: 'Timezone',
+      dataIndex: 'timeZone',
+    },
+    {
+      title: 'Team(s)',
+      dataIndex: 'teamList',
+      width: 260,
+      render: (teams, row) => {
+        const transformedTeamList = teamList.map(({ teamId, teamName }) => ({
+          value: teamId,
+          label: teamName
+        }));
+        return (
+          <Select
+            mode="tags"
+            showArrow
+            onChange={(val) => updateUserTeam(val, row)}
+            defaultValue={teams}
+            style={{ width: '80%' }}
+            tokenSeparators={[',']}
+            options={transformedTeamList}
+            placeholder="Select Teams"
+          />
+        )
+      },
+    },
+    {
+      title: 'Action',
+      dataIndex: '',
+      width: 100,
+      key: 'x',
+      render: (data) => {
+        return (
+          <Space>
+            <EditOutlined
+              onClick={() => {
+                showCreateModal(data)
+              }}
+              style={{ fontSize: '18px' }}
+            />
+            <DeleteOutlined onClick={() => deleteUser(data.userId)} style={{ fontSize: '18px' }} />
+          </Space>
+        )
+      },
+    },
+  ]
 
   const showCreateModal = (data) => {
     setEditRecord(data)
@@ -25,6 +150,7 @@ export default function User({ userColumns, userData, handleDragStart, teamList,
     createModalOpen && setCreateModalOpen(false)
   }
 
+
   return (
     <div>
       {createModalOpen && (
@@ -36,7 +162,7 @@ export default function User({ userColumns, userData, handleDragStart, teamList,
           teamAssignment={teamList}
           country={[]}
           timeZone={[]}
-          handleChangeUserData={handleChangeUserData}
+          handleChangeUserData={handleReloadUserData}
         />
       )}
 
@@ -52,19 +178,19 @@ export default function User({ userColumns, userData, handleDragStart, teamList,
           />
         </Col>
         <Col>
-          <Button type="primary" size="large" onClick={showCreateModal}>
+          <Button type="primary" size="large" onClick={() => showCreateModal(null)}>
             Create User
           </Button>
         </Col>
       </Row>
       <Row style={{ marginTop: 30 }}>
         <Col span={24}>
-          <ReactDragListView.DragColumn nodeSelector={'tr'} onDragEnd={(fromIndex, toIndex) => {}}>
+          <ReactDragListView.DragColumn nodeSelector={'tr'} onDragEnd={(fromIndex, toIndex) => { }}>
             <Table
               columns={userColumns}
               dataSource={userData}
               pagination={false}
-              loading={loading}
+              loading={loadingUserData}
               scroll={{ y: 500 }}
               rowKey={'userId'}
               onRow={(record, rowIndex) => {

@@ -1,26 +1,26 @@
 import React, { useEffect } from 'react'
-import { Button, Modal, Form, Input, Row, Col, Upload, Select, DatePicker } from 'antd'
-import { InboxOutlined } from '@ant-design/icons'
+import { Button, Modal, Form, Input, Row, Col } from 'antd'
 import { postApi } from '../../../Api/Api'
-import dayjs from 'dayjs'
-
-const { Option } = Select
 
 interface CreateModalProps {
   isModalOpen: boolean
   handleOk: () => void
   handleCancel: () => void
   handleChangeTeamData: any
+  data: any
 }
 
-export default function CreateModal({ isModalOpen, handleOk, handleCancel, handleChangeTeamData }: CreateModalProps) {
+export default function CreateModal({ isModalOpen, handleOk, handleCancel, handleChangeTeamData, data }: CreateModalProps) {
   const [form] = Form.useForm()
 
   const onFinish = (values: any) => {
-    const createTeamObj = { ...values }
-    createTeamObj.teamId = 0
-    console.log('create Team data', createTeamObj)
-    postApi(createTeamObj, '/team', 'successfully created team')
+    console.log('create Team data', values)
+    let successMessage = 'Team Created Successfuly !'
+    if (data?.teamId) {
+      values = { ...data, ...values }
+      successMessage = 'Team Updated Successfully!'
+    }
+    postApi(values, '/team', successMessage)
       .then((res: any) => {
         handleChangeTeamData(true)
         handleCancel()
@@ -29,20 +29,19 @@ export default function CreateModal({ isModalOpen, handleOk, handleCancel, handl
         handleCancel()
         console.log('error feching data', error)
       })
-    // {"userId":0,"firstName":"bbb","lastName":"ccc","email":"bbbccc@gmail.com",
-    // "country":"US","timeZone":"UTC","teamAssignment":[1,2],"isDelete":false}
   }
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
   }
 
-  const onHandleChange = () => {}
-
-  //   useEffect(() => {
-  //     const formValues = data
-  //     form.setFieldsValue(formValues)
-  //   }, [data, form])
+  useEffect(() => {
+    console.log(data, "datadata")
+    if (data) {
+      const formValues = data
+      form.setFieldsValue(formValues)
+    }
+  }, [data, form])
 
   return (
     <Modal

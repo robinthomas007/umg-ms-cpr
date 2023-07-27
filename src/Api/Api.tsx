@@ -29,12 +29,13 @@ export const getApi = async (params, url) => {
   })
   return res.data
 }
-export const deleteApi = async (id, url) => {
+export const deleteApi = async (id, url, customMessage?) => {
   const res = await axios.delete(BASE_URL + url + `/${id}`, {
     headers: {
       cpr_portal: getCookie('cpr_portal'),
     },
   })
+  showNotification(res.status, customMessage)
   return res.data
 }
 
@@ -51,19 +52,19 @@ const showNotification = (status, customMessage) => {
   })
   if (status === 200) {
     showSuccessNotification(customMessage || 'Successfully Saved')
-    // message.open({
-    //   type: 'success',
-    //   content: customMessage || 'Successfully Saved',
-    //   className: 'custom-message-top',
-    //   style: {
-    //     color: '#ffffff',
-    //     backgroundColor: 'rgba(116, 182, 7, 1)',
-    //     width: '100%',
-    //     padding: 0,
-    //     fontSize: 16,
-    //   },
-    //   duration: 2.5,
-    // })
+    message.open({
+      type: 'success',
+      content: customMessage || 'Successfully Saved',
+      className: 'custom-message-top',
+      style: {
+        color: '#ffffff',
+        backgroundColor: 'rgba(116, 182, 7, 1)',
+        width: '100%',
+        padding: 0,
+        fontSize: 16,
+      },
+      duration: 2.5,
+    })
   }
 
   if (status !== 200) {

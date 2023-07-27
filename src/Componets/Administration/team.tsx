@@ -1,10 +1,22 @@
-import React, { useState } from 'react'
-import { Button, Typography, Input, Row, theme, Col, Select, Table } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { Button, Typography, Input, Row, theme, Col, Select, Table, Space } from 'antd'
 import { SearchOutlined, CloseSquareOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons'
 import CreateModal from './Modals/createTeamModal'
-import { deleteApi, postApi } from '../../Api/Api'
+import type { ColumnsType } from 'antd/es/table'
+import { EditOutlined, DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons'
+import { deleteApi, postApi, getApi } from '../../Api/Api'
+import { deepClone } from '../Common/Utils'
+
 const { Title } = Typography
 const { Search } = Input
+
+interface teamDataType {
+  teamId: React.Key
+  teamName: string
+  teamAdmin: string
+  members: any
+  percentage: string
+}
 
 const permissions = [
   { value: 1, label: 'Admin' },
@@ -12,20 +24,128 @@ const permissions = [
   { value: 3, label: 'Read-Only' },
 ]
 
-export default function Team({
-  handleDragOver,
-  handleDrop,
-  addToTeam,
-  teamColumns,
-  teamData,
-  dropZoneActive,
-  handleChangeTeamData,
-  loading,
-}) {
+export default function Team({ draggedItem }) {
   const { useToken }: { useToken: any } = theme
   const { token }: { token: any } = useToken()
 
   const [createTeamModalOpen, setCreateTeamModalOpen] = useState<boolean>(false)
+  const [teamColumns, setTeamColumns] = useState<ColumnsType<teamDataType>>([])
+  const [loadingTeamData, setloadingTeamData] = useState<boolean>(false)
+  const [teamData, setTeamData] = useState([])
+  const [isTeamDataUpdated, setIsTeamDataUpdated] = useState<boolean>(false)
+  const [dropZoneActive, setDropZoneActive] = useState(false)
+  const [editRecord, setEditRecord] = useState({})
+
+  useEffect(() => {
+    setloadingTeamData(true)
+    getApi('', '/TeamUser')
+      .then((res) => {
+        setloadingTeamData(false)
+        setTeamData(res)
+      })
+      .catch((error) => {
+        console.log('error feching data', error)
+      })
+  }, [isTeamDataUpdated])
+
+  const deleteTeam = (teamId) => {
+    console.log('deleted Team', teamId)
+    deleteApi(teamId, '/team')
+      .then((res: any) => {
+        setIsTeamDataUpdated(!isTeamDataUpdated)
+      })
+      .catch((error: any) => {
+        console.log('error feching data', error)
+      })
+  }
+
+  const handleDrop = (event, key) => {
+    event.preventDefault()
+    const modifiedTeamData = deepClone(teamData)
+    let index = -1
+    const dropTeamIndex = modifiedTeamData.filter((val, i) => {
+      if (val.teamId === key) {
+        index = i
+      }
+      return val.teamId === key
+    })[0]
+    console.log(dropTeamIndex, "dropTeamIndexdropTeamIndex")
+    console.log(draggedItem, "draggedItemdraggedItem")
+
+    dropTeamIndex['members'] = [...dropTeamIndex['members'], draggedItem]
+    if (index >= 0) {
+      modifiedTeamData[index] = dropTeamIndex
+      setTeamData(modifiedTeamData)
+    }
+
+    // const updatedMember = {
+    //   teamId: dropTeamIndex.teamId,
+    //   userId: draggedItem.userId,
+    //   userRoleId: 0,
+    //   roleId: 0
+    // }
+    // postApi(updatedMember, '/teamuser', 'successfully assigned role')
+    //   .then((res: any) => {
+    //     console.log(res, "Asdasdasd respo")
+
+    //   })
+    //   .catch((error: any) => {
+    //     console.log('error feching data', error)
+    //   })
+  }
+
+  const handleDragOver = (event) => {
+    event.preventDefault()
+    setDropZoneActive(true)
+  }
+
+  const teamColumn = [
+    {
+      title: 'Team Name',
+      dataIndex: 'teamName',
+    },
+    {
+      title: 'Team Admin(s)',
+      dataIndex: '',
+      render: (data, row) => {
+        const members = data.members && data.members.filter((member) => member.roleId && member.roleId === 2)
+        let teamAdmins: string[] = []
+        members && members.forEach((member: any) => teamAdmins.push(member.userName.split(' ')[0]))
+        return <p>{teamAdmins.join(', ')}</p>
+      },
+    },
+    {
+      title: 'Members',
+      dataIndex: 'members',
+      render: (members, row) => '',
+    },
+    Table.EXPAND_COLUMN,
+    {
+      title: 'Capacity',
+      dataIndex: 'percentage',
+      render: (percentage) => <Typography style={{ color: '#85D305' }}>{percentage} %</Typography>,
+    },
+    {
+      title: 'Action',
+      dataIndex: '',
+      width: 120,
+      key: 'x',
+      render: (data) => {
+        return (
+          <Space>
+            <EditOutlined onClick={() => showCreateTeamModal(data)} style={{ fontSize: '18px' }} />
+            <PlusSquareOutlined style={{ fontSize: '18px' }} />
+            <DeleteOutlined onClick={() => deleteTeam(data.teamId)} style={{ fontSize: '18px' }} />
+          </Space>
+        )
+      },
+    },
+  ]
+
+  useEffect(() => {
+    setTeamColumns(teamColumn)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [teamData])
 
   // Create Team Modal Handling changes
   const createTeamSave = () => {
@@ -34,13 +154,14 @@ export default function Team({
   const handleCreateTeamModalCancel = () => {
     createTeamModalOpen && setCreateTeamModalOpen(false)
   }
-  const showCreateTeamModal = () => {
+  const showCreateTeamModal = (data) => {
+    setEditRecord(data)
     setCreateTeamModalOpen(true)
   }
   const deleteUserFromTeam = (userId) => {
     deleteApi(userId, '/teamuser')
       .then((res: any) => {
-        handleChangeTeamData()
+        setIsTeamDataUpdated(!isTeamDataUpdated)
       })
       .catch((error: any) => {
         console.log('error feching data', error)
@@ -57,7 +178,7 @@ export default function Team({
             props.onExpand(props.record, e)
           }}
         >
-          {props.record.members && props.record.members.length} <CaretUpOutlined />
+          {(props.record.members && props.record.members.length) || 0} <CaretUpOutlined />
         </Button>
       )
     } else {
@@ -69,7 +190,7 @@ export default function Team({
             props.onExpand(props.record, e)
           }}
         >
-          {props.record.members && props.record.members.length} <CaretDownOutlined />
+          {(props.record.members && props.record.members.length) || 0} <CaretDownOutlined />
         </Button>
       )
     }
@@ -125,12 +246,23 @@ export default function Team({
       },
     ]
 
+    const renderEmptyRow = () => {
+      return (
+        <div onDrop={(event) => handleDrop(event, key)} onDragOver={(event) => handleDragOver(event)} >
+          <div>No data found</div>
+        </div>
+      );
+    };
+
     return (
       <Table
         columns={memberColumn}
         dataSource={members}
         pagination={false}
         rowKey={'userId'}
+        locale={{
+          emptyText: renderEmptyRow,
+        }}
         onRow={(record, rowIndex) => {
           return {
             onDragOver: (event) => handleDragOver(event),
@@ -148,7 +280,8 @@ export default function Team({
           isModalOpen={createTeamModalOpen}
           handleOk={createTeamSave}
           handleCancel={handleCreateTeamModalCancel}
-          handleChangeTeamData={handleChangeTeamData}
+          handleChangeTeamData={setIsTeamDataUpdated}
+          data={editRecord}
         />
       )}
       <Title level={3}>Teams</Title>
@@ -164,7 +297,7 @@ export default function Team({
           />
         </Col>
         <Col>
-          <Button onClick={showCreateTeamModal} style={{ background: token.colorSecondary }} size="large">
+          <Button className='secondary-btn' onClick={() => showCreateTeamModal(null)} style={{ background: token.colorSecondary }} size="large">
             Create Team
           </Button>
         </Col>
@@ -177,12 +310,12 @@ export default function Team({
             pagination={false}
             scroll={{ y: 500 }}
             rowKey={'teamId'}
-            loading={loading}
+            loading={loadingTeamData}
             expandable={{
               expandedRowRender: (record, index) => {
                 return (
                   <div key={index} className={`drop-zone ${dropZoneActive ? 'active' : ''}`}>
-                    {getMembersTable(record.members, record.key)}
+                    {getMembersTable(record.members, record.teamId)}
                   </div>
                 )
               },

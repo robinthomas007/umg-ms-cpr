@@ -5,6 +5,9 @@
 .admin-wrapper .ant-menu-item-selected::after{
   border-bottom-color:#50C1FF !important;
 }
+.admin-wrapper .ant-menu-item:hover::after{
+  border-bottom-color:#50C1FF !important;
+}
 
 .admin-wrapper tbody td.ant-table-row-expand-icon-cell button{
   position: absolute;
@@ -50,4 +53,13 @@
 
 .ant-form-item-label {
   text-align: left !important;
+}
+.admin-wrapper .custom-secondary-search .ant-input-affix-wrapper:hover, 
+.admin-wrapper .custom-secondary-search .ant-input-affix-wrapper-focused {
+  border-color: #50C1FF !important;
+}
+
+.secondary-btn:hover {
+  color: #FFF !important;
+  border-color: #50C1FF !important;
 }

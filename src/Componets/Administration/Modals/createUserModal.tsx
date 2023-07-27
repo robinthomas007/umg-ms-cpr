@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react'
-import { Button, Modal, Form, Input, Row, Col, Upload, Select, DatePicker } from 'antd'
-import { InboxOutlined } from '@ant-design/icons'
+import { Button, Modal, Form, Input, Row, Col, Select } from 'antd'
 import { postApi } from '../../../Api/Api'
-import dayjs from 'dayjs'
 
 const { Option } = Select
 
@@ -30,9 +28,12 @@ export default function CreateModal({
   const [form] = Form.useForm()
 
   const onFinish = (values: any) => {
-    const createProjectObj = { ...values }
-    createProjectObj.userId = 0
-    postApi(createProjectObj, '/User', 'Successfuly created the User!!!')
+    let successMessage = 'User Created Successfuly!'
+    if (data?.userId) {
+      values = { ...data, ...values }
+      successMessage = 'User Updated Successfully!'
+    }
+    postApi(values, '/User', successMessage)
       .then((res) => {
         handleChangeUserData(true)
         handleCancel()
@@ -46,13 +47,14 @@ export default function CreateModal({
     console.log('Failed:', errorInfo)
   }
 
-  const onHandleChange = () => {}
-
   useEffect(() => {
-    const formValues = data
-    formValues.startDate = data.startDate ? dayjs(data.startDate) : null
-    formValues.endDate = data.endDate ? dayjs(data.endDate) : null
-    form.setFieldsValue(formValues)
+    if (data) {
+      const formValues = data
+      formValues.firstName = data.userName.split(' ')[0] ?? ''
+      formValues.lastName = data.userName.split(' ')[1] ?? ''
+      formValues.teamAssignment = data.teamList
+      form.setFieldsValue(formValues)
+    }
   }, [data, form])
 
   return (
@@ -139,7 +141,7 @@ export default function CreateModal({
                 },
               ]}
             >
-              <Select placeholder="Select" mode="multiple" onChange={onHandleChange} allowClear>
+              <Select placeholder="Select" mode="multiple" allowClear>
                 {teamAssignment.map((item) => (
                   <Option key={item.teamId} value={item.teamId}>
                     {item.teamName}
@@ -158,7 +160,7 @@ export default function CreateModal({
                 },
               ]}
             >
-              <Select placeholder="Select" value={'UTC'} onChange={onHandleChange} allowClear>
+              <Select placeholder="Select" value={'UTC'} allowClear>
                 {country.map((item) => (
                   <Option key={Number(item.teamId)} value={Number(item.teamId)}>
                     {item.teamName}
@@ -177,7 +179,7 @@ export default function CreateModal({
                 },
               ]}
             >
-              <Select placeholder="Select" onChange={onHandleChange} allowClear>
+              <Select placeholder="Select" allowClear>
                 {timeZone.map((item) => (
                   <Option key={item.statusTypeId} value={item.statusTypeId}>
                     {item.statusTypeDescription}
