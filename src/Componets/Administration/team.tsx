@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Typography, Input, Row, theme, Col, Select, Table, Space } from 'antd'
+import { Button, Typography, Input, Row, theme, Col, Select, Table, Space, Pagination } from 'antd'
 import { SearchOutlined, CloseSquareOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons'
 import CreateModal from './Modals/createTeamModal'
 import type { ColumnsType } from 'antd/es/table'
@@ -19,12 +19,12 @@ interface teamDataType {
 }
 
 const permissions = [
-  { value: 1, label: 'Admin' },
-  { value: 2, label: 'Team Admin' },
+  { value: 1, label: 'Team Admin' },
+  { value: 2, label: 'Team Member' },
   { value: 3, label: 'Read-Only' },
 ]
 
-export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserData }) {
+export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserData, setTeamList }) {
   const { useToken }: { useToken: any } = theme
   const { token }: { token: any } = useToken()
 
@@ -35,18 +35,37 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
   const [isTeamDataUpdated, setIsTeamDataUpdated] = useState<boolean>(false)
   const [dropZoneActive, setDropZoneActive] = useState(false)
   const [editRecord, setEditRecord] = useState({})
+  const [searchTeam, setSearchTeam] = useState('')
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+  const [pageNumber, setPageNumber] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
 
   useEffect(() => {
     setloadingTeamData(true)
-    getApi('', '/TeamUser')
+    const params = {
+      SearchTerm: searchTeam,
+      ItemsPerPage: itemsPerPage,
+      PageNumber: pageNumber
+    }
+    getApi(params, '/teamsearch')
       .then((res) => {
         setloadingTeamData(false)
-        setTeamData(res)
+        setTeamData(res.teamList)
+        setTeamList(res.teamList)
+        setTotalItems(res.totalItems)
       })
       .catch((error) => {
         console.log('error feching data', error)
       })
-  }, [isTeamDataUpdated, updateTeamDataFromUser])
+  }, [isTeamDataUpdated, updateTeamDataFromUser, searchTeam, itemsPerPage, pageNumber])
+
+  const setSearchWord = (searchVal) => {
+    setSearchTeam(searchVal)
+  }
+
+  const handlePageChange = (page) => {
+    setPageNumber(page)
+  }
 
   const deleteTeam = (teamId) => {
     const confirmed = window.confirm('Are you sure you want to delete this team?');
@@ -279,7 +298,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
   }
 
   return (
-    <div>
+    <div style={{ paddingLeft: 40 }}>
       {createTeamModalOpen && (
         <CreateModal
           isModalOpen={createTeamModalOpen}
@@ -293,7 +312,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
       <Row justify={'space-between'}>
         <Col>
           <Search
-            // onSearch={setSearchWord}
+            onSearch={setSearchWord}
             allowClear
             enterButton="Search"
             size="large"
@@ -307,7 +326,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
           </Button>
         </Col>
       </Row>
-      <Row style={{ marginTop: 30 }}>
+      <Row style={{ marginTop: 30 }} justify={'end'}>
         <Col span={24}>
           <Table
             columns={teamColumns}
@@ -327,6 +346,20 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
               expandIcon: (props) => customExpandIcon(props),
             }}
           />
+        </Col>
+        <Col>
+          <div style={{ marginTop: 10 }}>
+            <Pagination
+              defaultCurrent={1}
+              current={pageNumber}
+              pageSize={itemsPerPage}
+              onChange={handlePageChange}
+              total={totalItems}
+              showSizeChanger={false}
+              responsive={true}
+              showLessItems={true}
+            />
+          </div>
         </Col>
       </Row>
     </div>

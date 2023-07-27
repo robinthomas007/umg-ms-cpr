@@ -63,3 +63,8 @@
   color: #FFF !important;
   border-color: #50C1FF !important;
 }
+
+.admin-wrapper .ant-select-selection-item {
+  background-color: #000;
+  /* border:none; */
+}

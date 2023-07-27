@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Typography, Input, Row, Col, Table, Select, Space } from 'antd'
+import { Button, Typography, Input, Row, Col, Table, Select, Space, Pagination } from 'antd'
 import ReactDragListView from 'react-drag-listview'
 import { SearchOutlined } from '@ant-design/icons'
 import CreateModal from './Modals/createUserModal'
@@ -18,14 +18,17 @@ interface UserDataType {
   teams: any
 }
 
-export default function User({ handleDragStart, reloadTeamData, reloadUserDataFromTeam }) {
+export default function User({ handleDragStart, reloadTeamData, reloadUserDataFromTeam, teamList }) {
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [userColumns, setUserColumns] = useState<ColumnsType<UserDataType>>([])
   const [loadingUserData, setLoadingUserData] = useState<boolean>(false)
   const [editRecord, setEditRecord] = useState({})
   const [userData, setUserData] = useState([])
-  const [teamList, setTeamList] = useState([])
   const [isUserDataUpdated, setIsUserDataUpdated] = useState<boolean>(false)
+  const [searchTeam, setSearchTeam] = useState('')
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+  const [pageNumber, setPageNumber] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
 
   useEffect(() => {
     setUserColumns(userColumn)
@@ -34,16 +37,30 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
 
   useEffect(() => {
     setLoadingUserData(true)
-    getApi('', '/user/getalluser')
+    const params = {
+      SearchTerm: searchTeam,
+      ItemsPerPage: itemsPerPage,
+      PageNumber: pageNumber
+    }
+    getApi(params, '/usersearch')
       .then((res) => {
         setLoadingUserData(false)
-        setTeamList(res.teams)
-        setUserData(res.users)
+        // setTeamList(res.teams)
+        setUserData(res.userList)
+        setTotalItems(res.totalItems)
       })
       .catch((error) => {
         console.log('error feching data', error)
       })
-  }, [isUserDataUpdated, reloadUserDataFromTeam])
+  }, [isUserDataUpdated, reloadUserDataFromTeam, searchTeam, itemsPerPage, pageNumber])
+
+  const setSearchWord = (searchVal) => {
+    setSearchTeam(searchVal)
+  }
+
+  const handlePageChange = (page) => {
+    setPageNumber(page)
+  }
 
   const updateUserTeam = (val, row) => {
     const updatedMember = {
@@ -94,6 +111,16 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
     setIsUserDataUpdated(!isUserDataUpdated)
   }
 
+  // const tagRender = (props) => {
+  //   const { label } = props;
+  //   return (
+  //     <span style={{ marginRight: 3 }}>
+  //       {label} {','}
+  //     </span>
+  //   );
+  // };
+
+
   const userColumn = [
     {
       title: '',
@@ -117,7 +144,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
     {
       title: 'Team(s)',
       dataIndex: 'teamList',
-      width: 260,
+      width: 300,
       render: (teams, row) => {
         const transformedTeamList = teamList.map(({ teamId, teamName }) => ({
           value: teamId,
@@ -126,14 +153,15 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
         return (
           <Select
             mode="tags"
+            // tagRender={tagRender}
             showArrow
             onSelect={(val) => updateUserTeam(val, row)}
             onDeselect={(val) => removeUserTeam(val, row)}
             value={teams}
-            style={{ width: '80%' }}
-            tokenSeparators={[',']}
+            style={{ width: '100%' }}
             options={transformedTeamList}
             placeholder="Select Teams"
+            clearIcon={false}
           />
         )
       },
@@ -141,7 +169,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
     {
       title: 'Action',
       dataIndex: '',
-      width: 100,
+      width: 70,
       key: 'x',
       render: (data) => {
         return (
@@ -174,7 +202,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
 
 
   return (
-    <div>
+    <div style={{ paddingRight: 40 }}>
       {createModalOpen && (
         <CreateModal
           data={editRecord}
@@ -192,7 +220,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
       <Row justify={'space-between'}>
         <Col>
           <Search
-            // onSearch={setSearchWord}
+            onSearch={setSearchWord}
             allowClear
             enterButton="Search"
             size="large"
@@ -205,7 +233,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
           </Button>
         </Col>
       </Row>
-      <Row style={{ marginTop: 30 }}>
+      <Row style={{ marginTop: 30 }} justify={'end'}>
         <Col span={24}>
           <ReactDragListView.DragColumn nodeSelector={'tr'} onDragEnd={(fromIndex, toIndex) => { }}>
             <Table
@@ -222,6 +250,20 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
               }}
             />
           </ReactDragListView.DragColumn>
+        </Col>
+        <Col>
+          <div style={{ marginTop: 10 }}>
+            <Pagination
+              defaultCurrent={1}
+              current={pageNumber}
+              pageSize={itemsPerPage}
+              onChange={handlePageChange}
+              total={totalItems}
+              showSizeChanger={false}
+              responsive={true}
+              showLessItems={true}
+            />
+          </div>
         </Col>
       </Row>
     </div>

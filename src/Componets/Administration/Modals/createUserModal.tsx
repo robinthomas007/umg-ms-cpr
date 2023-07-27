@@ -139,7 +139,7 @@ export default function CreateModal({
                 },
               ]}
             >
-              <Select placeholder="Select" mode="multiple" allowClear>
+              <Select placeholder="Select" mode="tags" showArrow allowClear>
                 {teamAssignment.map((item) => (
                   <Option key={item.teamId} value={item.teamId}>
                     {item.teamName}
