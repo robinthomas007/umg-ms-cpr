@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Typography, Input, Row, theme, Col, Select, Table, Space, Pagination } from 'antd'
+import { Button, Typography, Input, Row, theme, Col, Select, Table, Space } from 'antd'
 import { SearchOutlined, CloseSquareOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons'
 import CreateModal from './Modals/createTeamModal'
 import type { ColumnsType } from 'antd/es/table'
-import { EditOutlined, DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons'
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { deleteApi, postApi, getApi, deleteApiWithReqBody } from '../../Api/Api'
 import { deepClone } from '../Common/Utils'
 
@@ -24,7 +24,7 @@ const permissions = [
   { value: 3, label: 'Read-Only' },
 ]
 
-export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserData, setTeamList }) {
+export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserData }) {
   const { useToken }: { useToken: any } = theme
   const { token }: { token: any } = useToken()
 
@@ -36,35 +36,24 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
   const [dropZoneActive, setDropZoneActive] = useState(false)
   const [editRecord, setEditRecord] = useState({})
   const [searchTeam, setSearchTeam] = useState('')
-  const [itemsPerPage, setItemsPerPage] = useState(10)
-  const [pageNumber, setPageNumber] = useState(1)
-  const [totalItems, setTotalItems] = useState(0)
 
   useEffect(() => {
     setloadingTeamData(true)
     const params = {
       SearchTerm: searchTeam,
-      ItemsPerPage: itemsPerPage,
-      PageNumber: pageNumber
     }
     getApi(params, '/teamsearch')
       .then((res) => {
         setloadingTeamData(false)
         setTeamData(res.teamList)
-        setTeamList(res.teamList)
-        setTotalItems(res.totalItems)
       })
       .catch((error) => {
         console.log('error feching data', error)
       })
-  }, [isTeamDataUpdated, updateTeamDataFromUser, searchTeam, itemsPerPage, pageNumber])
+  }, [isTeamDataUpdated, updateTeamDataFromUser, searchTeam])
 
   const setSearchWord = (searchVal) => {
     setSearchTeam(searchVal)
-  }
-
-  const handlePageChange = (page) => {
-    setPageNumber(page)
   }
 
   const deleteTeam = (teamId) => {
