@@ -7,7 +7,7 @@ import { showErrorNotification } from '../../utils/notifications'
 import Api from '../../lib/api'
 import {
   DownloadOutlined,
-  PlusCircleOutlined,
+  PlusCircleFilled,
   WechatOutlined,
   SettingOutlined,
   SearchOutlined,
@@ -81,15 +81,10 @@ const SearchInput: React.FC = () => {
   const csvLink = React.createRef<any>()
   const [exportLoading, setExportLoading] = useState<boolean>(false)
 
-  function getCookie(name: string) {
-    return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
-  }
+  useEffect(() => {
+    console.log('isndjfj')
+  }, [selectedFilters])
 
-  const getSearchPageData = React.useCallback((isExport: any, isReporting?: any) => {}, [searchFilters])
-
-  // React.useEffect(() => {
-  //   getSearchPageData(false, '')
-  // }, [getSearchPageData])
   useEffect(() => {
     ;(async function () {
       const {
@@ -109,8 +104,8 @@ const SearchInput: React.FC = () => {
       setLoading(true)
       const params = {
         searchTerm: searchTerm,
-        itemsPerPage: itemsPerPage,
-        pageNumber: pageNumber,
+        itemsPerPage: exportLoading ? '10000' : itemsPerPage,
+        pageNumber: exportLoading ? 1 : pageNumber,
         sortColumns: sortColumns,
         sortOrder: sortOrder,
         searchWithin: searchWithin ? searchWithin.toString() : 'ALL',
@@ -120,21 +115,8 @@ const SearchInput: React.FC = () => {
         startDate: startDate,
         endDate: endDate,
       }
-      const exportParams = {
-        searchTerm: '',
-        itemsPerPage: '10000',
-        pageNumber: 1,
-        sortColumns: 'updatedDate',
-        sortOrder: '',
-        searchWithin: 'ALL',
-        platforms: null,
-        teams: null,
-        status: null,
-        startDate: '',
-        endDate: '',
-      }
 
-      return Api.get('ProjectSearch', exportLoading ? exportParams : params)
+      return Api.get('ProjectSearch', params)
         .then((res) => {
           setLoading(false)
           if (exportLoading) {
@@ -194,6 +176,7 @@ const SearchInput: React.FC = () => {
 
   const handleTagClose = (removedTag) => {
     const modifiiedFilters = selectedFilters.filter((item) => item[0] !== removedTag)
+    console.log('modified Filters', modifiiedFilters)
     setSelectedFilters(modifiiedFilters)
     setSearchFilters((prev) => ({ ...prev, [removedTag]: null }))
   }
@@ -206,12 +189,13 @@ const SearchInput: React.FC = () => {
       return `${statusFacets[tag - 1].statusTypeDescription}`
     }
     if (type === 'teams') {
-      return `${teamFacets[tag - 1].teamName}`
+      return `${teamFacets.find((teams) => teams.teamId === tag)?.teamName}`
     }
     return tag
   }
 
   const tagElement = (type, tag) => {
+    console.log('tag elem')
     const tagElem = (
       <Tag
         color={'#85D305'}
@@ -475,7 +459,7 @@ const SearchInput: React.FC = () => {
           <br />
           {selectedFilters &&
             selectedFilters.map((item) => {
-              if (typeof item[1] !== 'undefined' && item[1]) {
+              if (typeof item[1] !== 'undefined' && item[1] !== '' && item[1]) {
                 return tagElement(item[0], item[1])
               }
             })}
@@ -551,10 +535,10 @@ const SearchInput: React.FC = () => {
         <Col span={4} offset={4}>
           <Row justify="end">
             <Space wrap>
-              <Button type="primary" onClick={showCreateProjectModal} icon={<PlusCircleOutlined />} size={'middle'}>
+              <Button onClick={showCreateProjectModal} icon={<PlusCircleFilled />} size={'middle'}>
                 Create
               </Button>
-              <Button onClick={exportData} type="primary" icon={<DownloadOutlined />} size={'middle'}>
+              <Button onClick={exportData} icon={<DownloadOutlined />} size={'middle'}>
                 {exportLoading ? 'Exporting' : 'Export'}
               </Button>
               <CSVLink

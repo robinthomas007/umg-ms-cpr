@@ -193,7 +193,6 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
                 labelAlign="left"
                 className="notesContent"
                 colon={false}
-                rules={[{ required: true, message: 'Please input Notes' }]}
               >
                 <Input.TextArea showCount maxLength={100} />
               </Form.Item>
