@@ -1,0 +1,8 @@
+.search-wrapper {
+  color: #ffffff !important;
+  padding: 30px;
+  height: 100vh;
+}
+.search-wrapper .divider {
+  border-color: gray;
+}

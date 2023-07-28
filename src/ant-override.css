@@ -4,7 +4,7 @@ body {
   font-family: 'Roboto Condensed', sans-serif;
 }
 
-:root {
+/* :root {
   --error: #d32f2f;
   --green-1: #74b607;
   --white: #ffffff;
@@ -14,7 +14,7 @@ body {
   --list-background: #141414;
   --header-color: #ffffff;
   --menu-highlight-color: #74b607;
-}
+} */
 
 /* Button */
 .ant-btn:not(.ant-btn-icon-only) {
@@ -23,18 +23,19 @@ body {
 
 /* Header */
 .ant-layout-header {
-  background: var(--header-background) !important;
-  color: var(--header-color);
+  /* background: var(--header-background) !important;
+  color: var(--header-color); */
   padding-inline: 40px !important;
   height: 56px !important;
   line-height: 56px !important;
+  background: #222222 !important;
 }
 
 /* Header - Menu */
 .ant-layout-header .ant-menu {
   border: 1px;
   min-width: 300px;
-  background-color: inherit;
+  /* background-color: inherit; */
 }
 /* Header - Menu Item */
 .ant-layout-header .ant-menu .ant-menu-item {
@@ -51,7 +52,7 @@ body {
   left: 0;
 }
 .ant-layout-header .ant-menu-item-selected::after {
-  border-bottom: 5px solid var(--menu-highlight-color) !important;
+  /* border-bottom: 5px solid var(--menu-highlight-color) !important; */
   inset-inline: 0px !important;
 }
 .ant-layout-header .ant-menu .ant-menu-item .anticon {
@@ -60,21 +61,21 @@ body {
 
 /* Side Menu */
 .ant-layout-sider {
-  background-color: var(--black) !important;
+  /* background-color: var(--black) !important; */
 }
 aside .ant-menu {
   border-inline-end: none !important;
-  background: var(--background);
+  /* background: var(--background); */
 }
 aside .ant-menu-item {
-  background: var(--background);
+  /* background: var(--background); */
   margin-bottom: 8px !important;
   margin-inline: 0px !important;
   width: 100% !important;
   border-radius: 2px !important;
 }
 aside .ant-menu-item-selected {
-  border-bottom: 1px solid var(--green-1);
+  /* border-bottom: 1px solid var(--green-1); */
 }
 
 /* Typography */
@@ -106,8 +107,39 @@ h3.ant-typography,
   display: inline;
   margin-left: 5px;
   padding: 4px 8px;
-  color: var(--green-1);
-  background-color: var(--error);
+  /* color: var(--green-1); */
+  /* background-color: var(--error); */
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
+}
+.ant-layout .ant-layout-sider {
+  background: #333333;
+}
+
+.custom-calendar :where(.css-dev-only-do-not-override-1ityi0u).ant-radio-button-wrapper {
+  background: #333333;
+}
+.custom-calendar
+  :where(.css-dev-only-do-not-override-1ityi0u).ant-select:not(.ant-select-customize-input)
+  .ant-select-selector {
+  background: #333333;
+}
+.header-typography .ant-badge .ant-badge-count {
+  background: #74b607;
+  color: #fff;
+}
+
+.ant-table-body::-webkit-scrollbar {
+  width: 6px;
+  transition: max-height 0.5s ease-out;
+}
+
+.ant-table-body::-webkit-scrollbar-track {
+  height: 5px !important;
+}
+
+.ant-table-body::-webkit-scrollbar-thumb {
+  background-color: gray !important;
+  border-radius: 20px;
+  border: 1px !important;
 }

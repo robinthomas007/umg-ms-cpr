@@ -1,0 +1,30 @@
+.chartContainer {
+  border-radius: 4px;
+  /* background-color: var(--header-background); */
+}
+
+.chartHeader {
+  padding: 20px 20px 0 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.chart {
+  height: 280px;
+  padding: 20px 40px;
+}
+
+.chartFooter {
+  padding-left: 20px;
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.footerSettings {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.85);
+  float: left;
+  margin-top: -36px;
+  margin-left: 20px;
+}

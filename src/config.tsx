@@ -1,0 +1,20 @@
+export function cprUrls(env: string) {
+  const cpr_app_urls = {
+    url: 'https://api.dev.cpr.umgapps.com/api/',
+  }
+  // eslint-disable-next-line default-case
+  switch (env) {
+    case 'qa':
+      cpr_app_urls.url = 'https://api.qa.cpr-portal.umgapps.com/gateway/cpr/'
+      return cpr_app_urls
+    case 'dev':
+      cpr_app_urls.url = 'https://api.dev.cpr-portal.umgapps.com/gateway/cpr/'
+      return cpr_app_urls
+    case 'uat':
+      cpr_app_urls.url = 'https://api.uat.cpr.umgapps.com/api/'
+      return cpr_app_urls
+    case 'prod':
+      cpr_app_urls.url = 'https://api.cpr.umgapps.com/api/'
+      return cpr_app_urls
+  }
+}
