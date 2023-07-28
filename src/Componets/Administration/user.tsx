@@ -4,8 +4,9 @@ import ReactDragListView from 'react-drag-listview'
 import { SearchOutlined } from '@ant-design/icons'
 import CreateModal from './Modals/createUserModal'
 import { EditOutlined, DeleteOutlined, HolderOutlined } from '@ant-design/icons'
-import { deleteApi, postApi, getApi } from '../../Api/Api'
+import { deleteApi, postApi, getApi, deleteApiWithReqBody } from '../../Api/Api'
 import type { ColumnsType } from 'antd/es/table'
+import { tagRender } from './../Common/common'
 
 const { Title } = Typography
 const { Search } = Input
@@ -78,12 +79,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
   }
 
   const removeUserTeam = (val, row) => {
-    const index = row.teamList.indexOf(val);
-    if (index !== -1) {
-      row.teamList.splice(index, 1);
-    }
-    row.teamAssignment = row.teamList
-    postApi(row, '/User', 'successfully assigned role')
+    deleteApiWithReqBody({ "userId": [row.userId], "teamId": [val] }, '/teamuser', 'successfully re-assigned team')
       .then((res: any) => {
         setIsUserDataUpdated(!isUserDataUpdated)
         reloadTeamData()
@@ -92,7 +88,6 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
         console.log('error feching data', error)
       })
   }
-
 
   const deleteUser = (userId) => {
     const confirmed = window.confirm('Are you sure you want to delete this user?');
@@ -111,27 +106,17 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
     setIsUserDataUpdated(!isUserDataUpdated)
   }
 
-  // const tagRender = (props) => {
-  //   const { label } = props;
-  //   return (
-  //     <span style={{ marginRight: 3 }}>
-  //       {label} {','}
-  //     </span>
-  //   );
-  // };
-
-
   const userColumn = [
     {
       title: '',
       dataIndex: '',
-      width: 60,
+      width: 40,
       render: (team) => <HolderOutlined style={{ fontSize: 18, marginRight: 8 }} />,
     },
     {
       title: 'User Name',
       dataIndex: 'userName',
-      width: 140,
+      width: 200,
     },
     {
       title: 'Country',
@@ -144,16 +129,16 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
     {
       title: 'Team(s)',
       dataIndex: 'teamList',
-      width: 300,
+      width: 240,
       render: (teams, row) => {
         const transformedTeamList = teamList.map(({ teamId, teamName }) => ({
           value: teamId,
-          label: teamName
+          label: teamName,
         }));
         return (
           <Select
-            mode="tags"
-            // tagRender={tagRender}
+            mode="multiple"
+            tagRender={tagRender}
             showArrow
             onSelect={(val) => updateUserTeam(val, row)}
             onDeselect={(val) => removeUserTeam(val, row)}
@@ -162,6 +147,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
             options={transformedTeamList}
             placeholder="Select Teams"
             clearIcon={false}
+            maxTagCount={'responsive'}
           />
         )
       },
@@ -213,6 +199,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
           country={[]}
           timeZone={[]}
           handleChangeUserData={handleReloadUserData}
+          reloadTeamData={reloadTeamData}
         />
       )}
 
@@ -251,7 +238,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
             />
           </ReactDragListView.DragColumn>
         </Col>
-        <Col>
+        {/* <Col>
           <div style={{ marginTop: 10 }}>
             <Pagination
               defaultCurrent={1}
@@ -264,7 +251,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
               showLessItems={true}
             />
           </div>
-        </Col>
+        </Col> */}
       </Row>
     </div>
   )

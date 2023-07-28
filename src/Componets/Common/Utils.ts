@@ -64,16 +64,16 @@ export const isSessionExpired = (err) => {
 }
 export function deepClone(obj: any): any {
   if (typeof obj !== 'object' || obj === null) {
-    return obj;
+    return obj
   }
 
-  let clonedObj: any = Array.isArray(obj) ? [] : {};
+  let clonedObj: any = Array.isArray(obj) ? [] : {}
 
   for (const key in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      clonedObj[key] = deepClone(obj[key]);
+      clonedObj[key] = deepClone(obj[key])
     }
   }
 
-  return clonedObj;
+  return clonedObj
 }

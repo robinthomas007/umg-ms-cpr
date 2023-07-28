@@ -35,7 +35,7 @@
 }
 
 .admin-wrapper .ant-select-selector {
-  background: #000 !important;
+  background: #141414 !important;
   border-radius: 4px !important;
 }
 
@@ -64,7 +64,11 @@
   border-color: #50C1FF !important;
 }
 
-.admin-wrapper .ant-select-selection-item {
-  background-color: #000;
-  /* border:none; */
+span.ant-select-selection-item, .ant-select-selection-overflow-item {
+  background: #141414 !important;
+  border: none !important;
+}
+
+.ant-select-selector:first-child .ant-select-selection-overflow-item:first-child .remove-first-coma::first-letter{
+  visibility: hidden;
 }

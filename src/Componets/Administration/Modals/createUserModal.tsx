@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { Button, Modal, Form, Input, Row, Col, Select } from 'antd'
 import { postApi } from '../../../Api/Api'
+import { tagRender } from './../../Common/common'
 
 const { Option } = Select
 
@@ -13,6 +14,7 @@ interface CreateModalProps {
   country: any
   timeZone: any
   handleChangeUserData: any
+  reloadTeamData: any
 }
 
 export default function CreateModal({
@@ -24,6 +26,7 @@ export default function CreateModal({
   country,
   timeZone,
   handleChangeUserData,
+  reloadTeamData
 }: CreateModalProps) {
   const [form] = Form.useForm()
 
@@ -36,6 +39,7 @@ export default function CreateModal({
     postApi(values, '/User', successMessage)
       .then((res) => {
         handleChangeUserData(true)
+        reloadTeamData()
         handleCancel()
       })
       .catch((err) => {
@@ -139,7 +143,7 @@ export default function CreateModal({
                 },
               ]}
             >
-              <Select placeholder="Select" mode="tags" showArrow allowClear>
+              <Select tagRender={tagRender} placeholder="Select" mode="tags" maxTagCount='responsive' style={{ width: '100%' }} showArrow allowClear>
                 {teamAssignment.map((item) => (
                   <Option key={item.teamId} value={item.teamId}>
                     {item.teamName}
@@ -188,6 +192,6 @@ export default function CreateModal({
           </Col>
         </Row>
       </Form>
-    </Modal>
+    </Modal >
   )
 }

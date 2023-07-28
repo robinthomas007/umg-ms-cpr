@@ -100,14 +100,24 @@ body {
   background: #191919;
 }
 
+.ant-message-notice {
+  padding: 0;
+}
 .custom-message-top .ant-message-notice-content{
-  background-color: rgba(116, 182, 7, 0.5);
-  border-radius:0;
-  box-shadow:unset;
+  background-color: #74b605;
+  border-radius: 0;
+  box-shadow: unset;
   width: 100%;
-  padding: 20px;
+  color: #fff;
+  padding: 17px;
 }
 
 .custom-message-top .ant-message-success>.anticon {
   color: #ffffff;
+}
+
+.ant-select-selection-item {
+  margin-inline-end:0px !important;
+  padding-inline-start:2px !important;
+  padding-inline-end:0px !important;
 }

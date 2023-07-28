@@ -4,7 +4,7 @@ import { SearchOutlined, CloseSquareOutlined, CaretUpOutlined, CaretDownOutlined
 import CreateModal from './Modals/createTeamModal'
 import type { ColumnsType } from 'antd/es/table'
 import { EditOutlined, DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons'
-import { deleteApi, postApi, getApi } from '../../Api/Api'
+import { deleteApi, postApi, getApi, deleteApiWithReqBody } from '../../Api/Api'
 import { deepClone } from '../Common/Utils'
 
 const { Title } = Typography
@@ -19,8 +19,8 @@ interface teamDataType {
 }
 
 const permissions = [
-  { value: 1, label: 'Team Admin' },
-  { value: 2, label: 'Team Member' },
+  { value: 1, label: 'Team Member' },
+  { value: 2, label: 'Team Admin' },
   { value: 3, label: 'Read-Only' },
 ]
 
@@ -153,7 +153,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
         return (
           <Space>
             <EditOutlined onClick={() => showCreateTeamModal(data)} style={{ fontSize: '18px' }} />
-            <PlusSquareOutlined style={{ fontSize: '18px' }} />
+            {/* <PlusSquareOutlined style={{ fontSize: '18px' }} /> */}
             <DeleteOutlined onClick={() => deleteTeam(data.teamId)} style={{ fontSize: '18px' }} />
           </Space>
         )
@@ -177,10 +177,10 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
     setEditRecord(data)
     setCreateTeamModalOpen(true)
   }
-  const deleteUserFromTeam = (userId) => {
+  const deleteUserFromTeam = (userRoleId) => {
     const confirmed = window.confirm('Are you sure you want to delete this team user?');
     if (confirmed) {
-      deleteApi(userId, '/teamuser')
+      deleteApiWithReqBody({ userRoleId: userRoleId }, '/teamuser')
         .then((res: any) => {
           setIsTeamDataUpdated(!isTeamDataUpdated)
           reloadUserData()
@@ -347,7 +347,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
             }}
           />
         </Col>
-        <Col>
+        {/* <Col>
           <div style={{ marginTop: 10 }}>
             <Pagination
               defaultCurrent={1}
@@ -360,7 +360,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
               showLessItems={true}
             />
           </div>
-        </Col>
+        </Col> */}
       </Row>
     </div>
   )

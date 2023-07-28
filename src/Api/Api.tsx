@@ -29,6 +29,7 @@ export const getApi = async (params, url) => {
   })
   return res.data
 }
+
 export const deleteApi = async (id, url, customMessage?) => {
   const res = await axios.delete(BASE_URL + url + `/${id}`, {
     headers: {
@@ -38,6 +39,18 @@ export const deleteApi = async (id, url, customMessage?) => {
   showNotification(res.status, customMessage)
   return res.data
 }
+
+export const deleteApiWithReqBody = async (payload, url, customMessage?) => {
+  const res = await axios.delete(BASE_URL + url, {
+    headers: {
+      cpr_portal: getCookie('cpr_portal'),
+    },
+    data: payload
+  })
+  showNotification(res.status, customMessage)
+  return res.data
+}
+
 
 export const postApi = async (data, url, customMessage) => {
   const res = await axios.post(BASE_URL + url, data, config)
@@ -56,13 +69,6 @@ const showNotification = (status, customMessage) => {
       type: 'success',
       content: customMessage || 'Successfully Saved',
       className: 'custom-message-top',
-      style: {
-        color: '#ffffff',
-        backgroundColor: 'rgba(116, 182, 7, 1)',
-        width: '100%',
-        padding: 0,
-        fontSize: 16,
-      },
       duration: 2.5,
     })
   }
