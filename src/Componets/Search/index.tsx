@@ -82,10 +82,6 @@ const SearchInput: React.FC = () => {
   const [exportLoading, setExportLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    console.log('isndjfj')
-  }, [selectedFilters])
-
-  useEffect(() => {
     ;(async function () {
       const {
         searchTerm,
@@ -176,26 +172,24 @@ const SearchInput: React.FC = () => {
 
   const handleTagClose = (removedTag) => {
     const modifiiedFilters = selectedFilters.filter((item) => item[0] !== removedTag)
-    console.log('modified Filters', modifiiedFilters)
     setSelectedFilters(modifiiedFilters)
     setSearchFilters((prev) => ({ ...prev, [removedTag]: null }))
   }
 
   const renderFilterTags = (type: string, tag) => {
     if (type === 'platforms') {
-      return `${platformFacets[tag - 1].platformName}`
+      return `${type}:${platformFacets[tag - 1].platformName}`
     }
     if (type === 'status') {
-      return `${statusFacets[tag - 1].statusTypeDescription}`
+      return `${type}:${statusFacets[tag - 1].statusTypeDescription}`
     }
     if (type === 'teams') {
-      return `${teamFacets.find((teams) => teams.teamId === tag)?.teamName}`
+      return `$${type}:${teamFacets.find((teams) => teams.teamId === tag)?.teamName}`
     }
-    return tag
+    return `${type}:${tag}`
   }
 
   const tagElement = (type, tag) => {
-    console.log('tag elem')
     const tagElem = (
       <Tag
         color={'#85D305'}
@@ -209,12 +203,7 @@ const SearchInput: React.FC = () => {
         {tag && renderFilterTags(type, tag)}
       </Tag>
     )
-    return (
-      <span key={tag} style={{ display: 'inline-block' }}>
-        {}
-        {type}: {tagElem}
-      </span>
-    )
+    return tagElem
   }
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm()
@@ -462,6 +451,7 @@ const SearchInput: React.FC = () => {
               if (typeof item[1] !== 'undefined' && item[1] !== '' && item[1]) {
                 return tagElement(item[0], item[1])
               }
+              return null
             })}
 
           <ProjectSearchFilterModal
