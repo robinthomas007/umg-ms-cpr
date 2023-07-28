@@ -19,17 +19,15 @@ interface UserDataType {
   teams: any
 }
 
-export default function User({ handleDragStart, reloadTeamData, reloadUserDataFromTeam, teamList }) {
+export default function User({ handleDragStart, reloadTeamData, reloadUserDataFromTeam }) {
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [userColumns, setUserColumns] = useState<ColumnsType<UserDataType>>([])
   const [loadingUserData, setLoadingUserData] = useState<boolean>(false)
   const [editRecord, setEditRecord] = useState({})
   const [userData, setUserData] = useState([])
+  const [teamList, setTeamList] = useState([])
   const [isUserDataUpdated, setIsUserDataUpdated] = useState<boolean>(false)
   const [searchTeam, setSearchTeam] = useState('')
-  const [itemsPerPage, setItemsPerPage] = useState(10)
-  const [pageNumber, setPageNumber] = useState(1)
-  const [totalItems, setTotalItems] = useState(0)
 
   useEffect(() => {
     setUserColumns(userColumn)
@@ -40,27 +38,20 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
     setLoadingUserData(true)
     const params = {
       SearchTerm: searchTeam,
-      ItemsPerPage: itemsPerPage,
-      PageNumber: pageNumber
     }
     getApi(params, '/usersearch')
       .then((res) => {
         setLoadingUserData(false)
-        // setTeamList(res.teams)
-        setUserData(res.userList)
-        setTotalItems(res.totalItems)
+        setTeamList(res.userList.teams)
+        setUserData(res.userList.users)
       })
       .catch((error) => {
         console.log('error feching data', error)
       })
-  }, [isUserDataUpdated, reloadUserDataFromTeam, searchTeam, itemsPerPage, pageNumber])
+  }, [isUserDataUpdated, reloadUserDataFromTeam, searchTeam])
 
   const setSearchWord = (searchVal) => {
     setSearchTeam(searchVal)
-  }
-
-  const handlePageChange = (page) => {
-    setPageNumber(page)
   }
 
   const updateUserTeam = (val, row) => {

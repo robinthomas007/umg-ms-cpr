@@ -13,7 +13,6 @@ export default function Administration() {
   const [draggedItem, setDraggedItem] = useState<any>(null)
   const [reloadTeamDataFromUser, setReloadTeamDataFromUser] = useState<boolean>(false)
   const [reloadUserDataFromTeam, setReloadUserDataFromTeam] = useState<boolean>(false)
-  const [teamList, setTeamList] = useState([])
 
   const { useToken }: { useToken: any } = theme
   const { token }: { token: any } = useToken()
@@ -64,7 +63,6 @@ export default function Administration() {
         <Row justify={'space-between'}>
           <Col span={12}>
             <User
-              teamList={teamList}
               handleDragStart={handleDragStart}
               reloadTeamData={reloadTeamData}
               reloadUserDataFromTeam={reloadUserDataFromTeam}
@@ -72,7 +70,6 @@ export default function Administration() {
           </Col>
           <Col span={12}>
             <Team
-              setTeamList={setTeamList}
               draggedItem={draggedItem}
               reloadUserData={reloadUserData}
               updateTeamDataFromUser={reloadTeamDataFromUser}
