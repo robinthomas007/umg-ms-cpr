@@ -7,8 +7,18 @@ export const cprUrls = (env) => {
   switch (env) {
     case 'dev':
       return 'https://api.dev.cpr-portal.umgapps.com/gateway/cpr'
+
+    case 'qa':
+      return 'https://api.qa.cpr-portal.umgapps.com/gateway/cpr'
+
+    case 'uat':
+      return 'https://api.uat.cpr-portal.umgapps.com/gateway/cpr'
+
+    case 'prod':
+      return 'https://api.cpr-portal.umgapps.com/gateway/cpr'
+
     default:
-      return 'https://api.dev.cpr-portal.umgapps.com/cpr'
+      return 'https://api.dev.cpr-portal.umgapps.com/gateway/cpr'
   }
 }
 
@@ -45,12 +55,11 @@ export const deleteApiWithReqBody = async (payload, url, customMessage?) => {
     headers: {
       cpr_portal: getCookie('cpr_portal'),
     },
-    data: payload
+    data: payload,
   })
   showNotification(res.status, customMessage)
   return res.data
 }
-
 
 export const postApi = async (data, url, customMessage) => {
   const res = await axios.post(BASE_URL + url, data, config)
