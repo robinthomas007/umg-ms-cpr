@@ -178,30 +178,33 @@ const SearchInput: React.FC = () => {
 
   const renderFilterTags = (type: string, tag) => {
     if (type === 'platforms') {
-      return `${type}:${platformFacets[tag - 1].platformName}`
+      return `${platformFacets[tag - 1].platformName}`
     }
     if (type === 'status') {
-      return `${type}:${statusFacets[tag - 1].statusTypeDescription}`
+      return `${statusFacets[tag - 1].statusTypeDescription}`
     }
     if (type === 'teams') {
-      return `$${type}:${teamFacets.find((teams) => teams.teamId === tag)?.teamName}`
+      return `${teamFacets.find((teams) => teams.teamId === tag)?.teamName}`
     }
-    return `${type}:${tag}`
+    return `${tag}`
   }
 
   const tagElement = (type, tag) => {
     const tagElem = (
-      <Tag
-        color={'#85D305'}
-        closable
-        onClose={(e) => {
-          e.preventDefault()
-          handleTagClose(type)
-        }}
-        style={{ margin: '5px' }}
-      >
-        {tag && renderFilterTags(type, tag)}
-      </Tag>
+      <>
+        <span>{`${type}:`}</span>
+        <Tag
+          color={'#85D305'}
+          closable
+          onClose={(e) => {
+            e.preventDefault()
+            handleTagClose(type)
+          }}
+          style={{ margin: '5px' }}
+        >
+          {tag && renderFilterTags(type, tag)}
+        </Tag>
+      </>
     )
     return tagElem
   }
@@ -209,14 +212,6 @@ const SearchInput: React.FC = () => {
     confirm()
     setSearchText(selectedKeys[0])
     setSearchedColumn(dataIndex)
-    // dispatch({
-    //   type: 'SET_SEARCH',
-    //   payload: {
-    //     searchTerm: selectedKeys[0],
-    //     sortColumn: dataIndex,
-    //     filter: state.searchCriteria.filter,
-    //   },
-    // })
   }
   const handleReset = (clearFilters) => {
     clearFilters()
@@ -502,12 +497,12 @@ const SearchInput: React.FC = () => {
           <Select
             labelInValue
             defaultValue={countValues[0]}
-            style={{ width: 60 }}
+            style={{ width: 56 }}
             onChange={handleLimitChange}
             options={countValues}
           />
           &nbsp;&nbsp;
-          <Text>of {totalItems} results</Text>
+          <Text>of {totalItems} Results</Text>
         </Col>
         <Col span={8} push={2}>
           <Pagination
@@ -543,7 +538,7 @@ const SearchInput: React.FC = () => {
           </Row>
         </Col>
       </Row>
-      <Divider plain className="divider" />
+      <Divider plain className="divider" style={{ marginBottom: '0px' }} />
       <Row className="dataTable">
         <Col span={24}>
           <ProjectSearchDataTable loading={loading} columsProjects={columnsProject} projects={projects} />
