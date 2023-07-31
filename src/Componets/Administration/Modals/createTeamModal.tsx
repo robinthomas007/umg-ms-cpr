@@ -10,11 +10,16 @@ interface CreateModalProps {
   data: any
 }
 
-export default function CreateModal({ isModalOpen, handleOk, handleCancel, handleChangeTeamData, data }: CreateModalProps) {
+export default function CreateModal({
+  isModalOpen,
+  handleOk,
+  handleCancel,
+  handleChangeTeamData,
+  data,
+}: CreateModalProps) {
   const [form] = Form.useForm()
 
   const onFinish = (values: any) => {
-    console.log('create Team data', values)
     let successMessage = 'Team Created Successfuly !'
     if (data?.teamId) {
       values = { ...data, ...values }
@@ -36,7 +41,6 @@ export default function CreateModal({ isModalOpen, handleOk, handleCancel, handl
   }
 
   useEffect(() => {
-    console.log(data, "datadata")
     if (data) {
       const formValues = data
       form.setFieldsValue(formValues)
