@@ -62,6 +62,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
       deleteApi(teamId, '/team')
         .then((res: any) => {
           setIsTeamDataUpdated(!isTeamDataUpdated)
+          reloadUserData()
         })
         .catch((error: any) => {
           console.log('error feching data', error)
@@ -297,6 +298,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
           isTeamDataUpdated={isTeamDataUpdated}
           handleChangeTeamData={setIsTeamDataUpdated}
           data={editRecord}
+          reloadUserData={reloadUserData}
           teamData={teamData}
         />
       )}

@@ -503,7 +503,7 @@ const SearchInput: React.FC = () => {
           &nbsp;&nbsp;
           <Text>of {totalItems} Results</Text>
         </Col>
-        <Col span={8} push={2}>
+        <Col span={8} push={3}>
           <Pagination
             defaultCurrent={1}
             current={pageNumber}

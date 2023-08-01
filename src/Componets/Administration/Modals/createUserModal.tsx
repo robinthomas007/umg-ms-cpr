@@ -138,7 +138,7 @@ export default function CreateModal({
                 {
                   validator: (_, value) =>
                     userData.some((user) => user.email === value)
-                      ? Promise.reject(new Error('userName already exists'))
+                      ? Promise.reject(new Error('Email already exists'))
                       : Promise.resolve(),
                 },
               ]}

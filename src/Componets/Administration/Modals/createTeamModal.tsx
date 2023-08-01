@@ -10,6 +10,7 @@ interface CreateModalProps {
   data: any
   isTeamDataUpdated: boolean
   teamData: any
+  reloadUserData: any
 }
 
 export default function CreateModal({
@@ -20,6 +21,7 @@ export default function CreateModal({
   data,
   isTeamDataUpdated,
   teamData,
+  reloadUserData,
 }: CreateModalProps) {
   const [form] = Form.useForm()
 
@@ -32,6 +34,7 @@ export default function CreateModal({
     postApi(values, '/team', successMessage)
       .then((res: any) => {
         handleChangeTeamData(!isTeamDataUpdated)
+        if (data?.teamId) reloadUserData()
         handleCancel()
       })
       .catch((error: any) => {

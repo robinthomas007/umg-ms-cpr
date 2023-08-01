@@ -54,13 +54,13 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
   }, [projectData, form])
 
   const onFinish = (values: any) => {
-    const { artistList, title, platformId, teamId, statusTypeId, dragger, notes } = values
+    const { artistList, title, platformId, teamName, statusTypeId, dragger, notes } = values
     const data = {
       projectId: projectData.projectId,
       artistList: artistList,
       title: title,
       platformId: platformId,
-      teamId: teamId,
+      teamId: teamName,
       statusTypeId: statusTypeId,
       progress: 50,
       startDate: startDateFormat,
@@ -73,10 +73,8 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
     setEndDateFormat('')
     setStartDateFormat('')
     postApi(data, '/projects', 'Project Updated Successfully!')
-      .then((response) => {
-        if (response.status === 200) {
-          getSearchPageData()
-        }
+      .then(() => {
+        getSearchPageData()
         handleClose()
       })
       .catch((error) => {
@@ -122,8 +120,8 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
                     })}
                 </Select>
               </Form.Item>
-              <Form.Item labelAlign="left" name="teamId" label="Team Assignment" colon={false}>
-                <Select>
+              <Form.Item labelAlign="left" name="teamName" label="Team Assignment" colon={false}>
+                <Select placeholder="Select Team">
                   {teamFacets &&
                     teamFacets.map((team, index) => {
                       return (

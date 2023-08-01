@@ -59,10 +59,8 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
     setEndDateFormat('')
     setStartDateFormat('')
     postApi(data, '/projects', 'Project Created Successfully!')
-      .then((response) => {
-        if (response.status === 200) {
-          props.getSearchPageData()
-        }
+      .then(() => {
+        props.getSearchPageData()
         form.resetFields()
         props.handleClose()
       })
@@ -116,7 +114,7 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
                 label="Platform(s)"
                 colon={false}
               >
-                <Select>
+                <Select placeholder="Select Platform">
                   {props.platformFacets &&
                     props.platformFacets.map((platform, index) => {
                       return (
@@ -134,7 +132,7 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
                 label="Team Assignment"
                 colon={false}
               >
-                <Select>
+                <Select placeholder="Select Team">
                   {props.teamFacets &&
                     props.teamFacets.map((team, index) => {
                       return (
@@ -152,7 +150,7 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
                 label="Status"
                 colon={false}
               >
-                <Select>
+                <Select placeholder="Select Status">
                   {props.statusFacets &&
                     props.statusFacets.map((status, index) => {
                       return (
