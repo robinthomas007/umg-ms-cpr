@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Button, Modal, Form, Input, Row, Col, Select } from 'antd'
 import { postApi } from '../../../Api/Api'
 import { tagRender } from './../../Common/common'
+import { showErrorNotification } from '../../../utils/notifications'
 
 const { Option } = Select
 
@@ -34,6 +35,10 @@ export default function CreateModal({
 
   const onFinish = (values: any) => {
     let successMessage = 'User Created Successfuly!'
+    if (userData.some((user) => user.email === form.getFieldValue('email') && data?.userId !== user.userId)) {
+      showErrorNotification('user Email already exits')
+      return null
+    }
     if (data?.userId) {
       values = { ...data, ...values }
       successMessage = 'User Updated Successfully!'
@@ -134,12 +139,6 @@ export default function CreateModal({
                 {
                   required: true,
                   message: 'Email is required',
-                },
-                {
-                  validator: (_, value) =>
-                    userData.some((user) => user.email === value)
-                      ? Promise.reject(new Error('Email already exists'))
-                      : Promise.resolve(),
                 },
               ]}
             >

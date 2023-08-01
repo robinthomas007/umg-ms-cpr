@@ -4,7 +4,12 @@ export const showSuccessNotification = (description) => {
   message.success(description, 3)
 }
 export const showErrorNotification = (description) => {
-  message.error(description, 3)
+  message.open({
+    type: 'error',
+    content: description,
+    className: 'custom-message-top-error',
+    duration: 2.5,
+  })
 }
 export const showInfoNotification = (description) => {
   message.info(description, 3)

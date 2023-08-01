@@ -115,6 +115,19 @@ body {
 .custom-message-top .ant-message-success>.anticon {
   color: #ffffff;
 }
+.custom-message-top-error .ant-message-notice-content{
+  background-color: #D32F2F;
+  border-radius: 0;
+  box-shadow: unset;
+  width: 100%;
+  color: #fff;
+  padding: 17px;
+}
+
+.custom-message-top-error .ant-message-error>.anticon {
+  color: #ffffff;
+}
+
 
 .ant-select-selection-item {
   margin-inline-end:0px !important;
