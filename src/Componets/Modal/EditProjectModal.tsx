@@ -6,7 +6,8 @@ import { useAuth } from '../../Context/authContext'
 import Api from '../../lib/api'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
-import { showSuccessNotification, showErrorNotification } from '../../utils/notifications'
+import { showErrorNotification } from '../../utils/notifications'
+import { postApi } from '../../Api/Api'
 
 const dateFormat = 'MM-DD-YYYY'
 dayjs.extend(customParseFormat)
@@ -71,11 +72,10 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
     }
     setEndDateFormat('')
     setStartDateFormat('')
-    return Api.post('projects', data)
+    postApi(data, '/projects', 'Project Updated Successfully!')
       .then((response) => {
         if (response.status === 200) {
           getSearchPageData()
-          showSuccessNotification('Project Updated successfully')
         }
         handleClose()
       })

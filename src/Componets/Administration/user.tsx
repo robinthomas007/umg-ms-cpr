@@ -70,7 +70,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
   }
 
   const removeUserTeam = (val, row) => {
-    deleteApiWithReqBody({ "userId": [row.userId], "teamId": [val] }, '/teamuser', 'successfully re-assigned team')
+    deleteApiWithReqBody({ userId: [row.userId], teamId: [val] }, '/teamuser', 'successfully re-assigned team')
       .then((res: any) => {
         setIsUserDataUpdated(!isUserDataUpdated)
         reloadTeamData()
@@ -81,9 +81,9 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
   }
 
   const deleteUser = (userId) => {
-    const confirmed = window.confirm('Are you sure you want to delete this user?');
+    const confirmed = window.confirm('Are you sure you want to delete this user?')
     if (confirmed) {
-      deleteApi(userId, '/user', "User has been deleted ")
+      deleteApi(userId, '/user', 'User has been deleted ')
         .then((res: any) => {
           handleReloadUserData()
         })
@@ -125,7 +125,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
         const transformedTeamList = teamList.map(({ teamId, teamName }) => ({
           value: teamId,
           label: teamName,
-        }));
+        }))
         return (
           <Select
             mode="multiple"
@@ -177,7 +177,6 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
     createModalOpen && setCreateModalOpen(false)
   }
 
-
   return (
     <div style={{ paddingRight: 40 }}>
       {createModalOpen && (
@@ -187,6 +186,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
           handleOk={userCreateSave}
           handleCancel={handleCreateModalCancel}
           teamAssignment={teamList}
+          userData={userData}
           country={[]}
           timeZone={[]}
           handleChangeUserData={handleReloadUserData}
@@ -197,13 +197,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
       <Title level={3}>Users</Title>
       <Row justify={'space-between'}>
         <Col>
-          <Search
-            onSearch={setSearchWord}
-            allowClear
-            enterButton="Search"
-            size="large"
-            prefix={<SearchOutlined />}
-          />
+          <Search onSearch={setSearchWord} allowClear enterButton="Search" size="large" prefix={<SearchOutlined />} />
         </Col>
         <Col>
           <Button type="primary" size="large" onClick={() => showCreateModal(null)}>
@@ -213,7 +207,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
       </Row>
       <Row style={{ marginTop: 30 }} justify={'end'}>
         <Col span={24}>
-          <ReactDragListView.DragColumn nodeSelector={'tr'} onDragEnd={(fromIndex, toIndex) => { }}>
+          <ReactDragListView.DragColumn nodeSelector={'tr'} onDragEnd={(fromIndex, toIndex) => {}}>
             <Table
               columns={userColumns}
               dataSource={userData}

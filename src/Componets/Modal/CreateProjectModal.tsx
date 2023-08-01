@@ -7,7 +7,8 @@ import { InboxOutlined, UploadOutlined } from '@ant-design/icons'
 import type { DatePickerProps } from 'antd'
 import dayjs from 'dayjs'
 import { useAuth } from '../../Context/authContext'
-import { showSuccessNotification, showErrorNotification } from '../../utils/notifications'
+import { showErrorNotification } from '../../utils/notifications'
+import { postApi } from '../../Api/Api'
 
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 const dateFormat = 'MM-DD-YYYY'
@@ -57,11 +58,10 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
     }
     setEndDateFormat('')
     setStartDateFormat('')
-    return Api.post('projects', data)
+    postApi(data, '/projects', 'Project Created Successfully!')
       .then((response) => {
         if (response.status === 200) {
           props.getSearchPageData()
-          showSuccessNotification('Project Created Successfully')
         }
         form.resetFields()
         props.handleClose()

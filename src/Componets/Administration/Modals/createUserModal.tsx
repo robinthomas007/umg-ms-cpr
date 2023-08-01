@@ -15,6 +15,7 @@ interface CreateModalProps {
   timeZone: any
   handleChangeUserData: any
   reloadTeamData: any
+  userData: any
 }
 
 export default function CreateModal({
@@ -26,7 +27,8 @@ export default function CreateModal({
   country,
   timeZone,
   handleChangeUserData,
-  reloadTeamData
+  reloadTeamData,
+  userData,
 }: CreateModalProps) {
   const [form] = Form.useForm()
 
@@ -126,8 +128,18 @@ export default function CreateModal({
               name="email"
               rules={[
                 {
+                  type: 'email',
+                  message: 'The input is not valid E-mail!',
+                },
+                {
                   required: true,
-                  message: 'Email is required!',
+                  message: 'Email is required',
+                },
+                {
+                  validator: (_, value) =>
+                    userData.some((user) => user.email === value)
+                      ? Promise.reject(new Error('userName already exists'))
+                      : Promise.resolve(),
                 },
               ]}
             >
@@ -143,7 +155,15 @@ export default function CreateModal({
                 },
               ]}
             >
-              <Select tagRender={tagRender} placeholder="Select" mode="tags" maxTagCount='responsive' style={{ width: '100%' }} showArrow allowClear>
+              <Select
+                tagRender={tagRender}
+                placeholder="Select"
+                mode="tags"
+                maxTagCount="responsive"
+                style={{ width: '100%' }}
+                showArrow
+                allowClear
+              >
                 {teamAssignment.map((item) => (
                   <Option key={item.teamId} value={item.teamId}>
                     {item.teamName}
@@ -192,6 +212,6 @@ export default function CreateModal({
           </Col>
         </Row>
       </Form>
-    </Modal >
+    </Modal>
   )
 }
