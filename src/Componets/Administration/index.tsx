@@ -52,14 +52,7 @@ export default function Administration() {
     <Layout>
       <Content style={{ padding: '70px 70px 60px' }} className="admin-wrapper">
         <Title level={3}>User & Team Management</Title>
-        <Menu
-          style={{ background: token.colorDark, margin: '30px auto' }}
-          onClick={onClick}
-          selectedKeys={[current]}
-          mode="horizontal"
-          items={items}
-        />
-        ;
+        <Menu className="admin-menu" onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />;
         <Row justify={'space-between'}>
           <Col span={12}>
             <User

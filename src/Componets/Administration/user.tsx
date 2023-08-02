@@ -197,7 +197,14 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
       <Title level={3}>Users</Title>
       <Row justify={'space-between'}>
         <Col>
-          <Search onSearch={setSearchWord} allowClear enterButton="Search" size="large" prefix={<SearchOutlined />} />
+          <Search
+            style={{ width: '400px' }}
+            onSearch={setSearchWord}
+            allowClear
+            enterButton="Search"
+            size="large"
+            prefix={<SearchOutlined />}
+          />
         </Col>
         <Col>
           <Button type="primary" size="large" onClick={() => showCreateModal(null)}>
