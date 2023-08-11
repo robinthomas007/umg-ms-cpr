@@ -7,7 +7,8 @@ import { InboxOutlined, UploadOutlined } from '@ant-design/icons'
 import type { DatePickerProps } from 'antd'
 import dayjs from 'dayjs'
 import { useAuth } from '../../Context/authContext'
-import { showSuccessNotification, showErrorNotification } from '../../utils/notifications'
+import { showErrorNotification } from '../../utils/notifications'
+import { postApi } from '../../Api/Api'
 
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 const dateFormat = 'MM-DD-YYYY'
@@ -57,12 +58,9 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
     }
     setEndDateFormat('')
     setStartDateFormat('')
-    return Api.post('projects', data)
-      .then((response) => {
-        if (response.status === 200) {
-          props.getSearchPageData()
-          showSuccessNotification('Project Created Successfully')
-        }
+    postApi(data, '/projects', 'Project Created Successfully!')
+      .then(() => {
+        props.getSearchPageData()
         form.resetFields()
         props.handleClose()
       })
@@ -116,7 +114,7 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
                 label="Platform(s)"
                 colon={false}
               >
-                <Select>
+                <Select placeholder="Select Platform">
                   {props.platformFacets &&
                     props.platformFacets.map((platform, index) => {
                       return (
@@ -134,7 +132,7 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
                 label="Team Assignment"
                 colon={false}
               >
-                <Select>
+                <Select placeholder="Select Team">
                   {props.teamFacets &&
                     props.teamFacets.map((team, index) => {
                       return (
@@ -152,7 +150,7 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
                 label="Status"
                 colon={false}
               >
-                <Select>
+                <Select placeholder="Select Status">
                   {props.statusFacets &&
                     props.statusFacets.map((status, index) => {
                       return (

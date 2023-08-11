@@ -8,6 +8,9 @@ interface CreateModalProps {
   handleCancel: () => void
   handleChangeTeamData: any
   data: any
+  isTeamDataUpdated: boolean
+  teamData: any
+  reloadUserData: any
 }
 
 export default function CreateModal({
@@ -16,18 +19,22 @@ export default function CreateModal({
   handleCancel,
   handleChangeTeamData,
   data,
+  isTeamDataUpdated,
+  teamData,
+  reloadUserData,
 }: CreateModalProps) {
   const [form] = Form.useForm()
 
   const onFinish = (values: any) => {
-    let successMessage = 'Team Created Successfuly !'
+    let successMessage = 'Team Created Successfuly!'
     if (data?.teamId) {
       values = { ...data, ...values }
       successMessage = 'Team Updated Successfully!'
     }
     postApi(values, '/team', successMessage)
       .then((res: any) => {
-        handleChangeTeamData(true)
+        handleChangeTeamData(!isTeamDataUpdated)
+        if (data?.teamId) reloadUserData()
         handleCancel()
       })
       .catch((error: any) => {
@@ -92,6 +99,12 @@ export default function CreateModal({
                 {
                   required: true,
                   message: 'Team Name is required!',
+                },
+                {
+                  validator: (_, value) =>
+                    teamData.some((team) => team.teamName.toLowerCase() === value.toLowerCase())
+                      ? Promise.reject(new Error('teamName already exists'))
+                      : Promise.resolve(),
                 },
               ]}
             >

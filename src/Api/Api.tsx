@@ -12,7 +12,7 @@ export const cprUrls = (env) => {
       return 'https://api.qa.cpr-portal.umgapps.com/gateway/cpr'
 
     case 'uat':
-      return 'https://api.uat.cpr-portal.umgapps.com/gateway/cpr'
+      return 'https://api.stage.cpr-portal.umgapps.com/gateway/cpr'
 
     case 'prod':
       return 'https://api.cpr-portal.umgapps.com/gateway/cpr'

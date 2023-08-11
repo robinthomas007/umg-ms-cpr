@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Button, Modal, Form, Input, Row, Col, Select } from 'antd'
 import { postApi } from '../../../Api/Api'
 import { tagRender } from './../../Common/common'
+import { showErrorNotification } from '../../../utils/notifications'
 
 const { Option } = Select
 
@@ -15,6 +16,7 @@ interface CreateModalProps {
   timeZone: any
   handleChangeUserData: any
   reloadTeamData: any
+  userData: any
 }
 
 export default function CreateModal({
@@ -26,12 +28,17 @@ export default function CreateModal({
   country,
   timeZone,
   handleChangeUserData,
-  reloadTeamData
+  reloadTeamData,
+  userData,
 }: CreateModalProps) {
   const [form] = Form.useForm()
 
   const onFinish = (values: any) => {
     let successMessage = 'User Created Successfuly!'
+    if (userData.some((user) => user.email === form.getFieldValue('email') && data?.userId !== user.userId)) {
+      showErrorNotification('user Email already exits')
+      return null
+    }
     if (data?.userId) {
       values = { ...data, ...values }
       successMessage = 'User Updated Successfully!'
@@ -126,8 +133,12 @@ export default function CreateModal({
               name="email"
               rules={[
                 {
+                  type: 'email',
+                  message: 'The input is not valid E-mail!',
+                },
+                {
                   required: true,
-                  message: 'Email is required!',
+                  message: 'Email is required',
                 },
               ]}
             >
@@ -143,7 +154,15 @@ export default function CreateModal({
                 },
               ]}
             >
-              <Select tagRender={tagRender} placeholder="Select" mode="tags" maxTagCount='responsive' style={{ width: '100%' }} showArrow allowClear>
+              <Select
+                tagRender={tagRender}
+                placeholder="Select"
+                mode="tags"
+                maxTagCount="responsive"
+                style={{ width: '100%' }}
+                showArrow
+                allowClear
+              >
                 {teamAssignment.map((item) => (
                   <Option key={item.teamId} value={item.teamId}>
                     {item.teamName}
@@ -192,6 +211,6 @@ export default function CreateModal({
           </Col>
         </Row>
       </Form>
-    </Modal >
+    </Modal>
   )
 }

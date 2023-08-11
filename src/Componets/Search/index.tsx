@@ -4,6 +4,7 @@ import { Col, Row, Space, Button, Input, Tag, Select, Divider, Progress, Typogra
 import type { PaginationProps } from 'antd'
 import Highlighter from 'react-highlight-words'
 import { showErrorNotification } from '../../utils/notifications'
+import { getApi } from '../../Api/Api'
 import Api from '../../lib/api'
 import {
   DownloadOutlined,
@@ -82,57 +83,55 @@ const SearchInput: React.FC = () => {
   const [exportLoading, setExportLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    ;(async function () {
-      const {
-        searchTerm,
-        itemsPerPage,
-        pageNumber,
-        sortColumns,
-        sortOrder,
-        tableSearch,
-        searchWithin,
-        teams,
-        platforms,
-        status,
-        startDate,
-        endDate,
-      } = searchFilters
-      setLoading(true)
-      const params = {
-        searchTerm: searchTerm,
-        itemsPerPage: exportLoading ? '10000' : itemsPerPage,
-        pageNumber: exportLoading ? 1 : pageNumber,
-        sortColumns: sortColumns,
-        sortOrder: sortOrder,
-        searchWithin: searchWithin ? searchWithin.toString() : 'ALL',
-        platforms: platforms,
-        teams: teams,
-        status: status,
-        startDate: startDate,
-        endDate: endDate,
-      }
+    const {
+      searchTerm,
+      itemsPerPage,
+      pageNumber,
+      sortColumns,
+      sortOrder,
+      tableSearch,
+      searchWithin,
+      teams,
+      platforms,
+      status,
+      startDate,
+      endDate,
+    } = searchFilters
+    setLoading(true)
+    const params = {
+      searchTerm: searchTerm,
+      itemsPerPage: exportLoading ? '10000' : itemsPerPage,
+      pageNumber: exportLoading ? 1 : pageNumber,
+      sortColumns: sortColumns,
+      sortOrder: sortOrder,
+      searchWithin: searchWithin ? searchWithin.toString() : 'ALL',
+      platforms: platforms,
+      teams: teams,
+      status: status,
+      startDate: startDate,
+      endDate: endDate,
+    }
 
-      return Api.get('ProjectSearch', params)
-        .then((res) => {
-          setLoading(false)
-          if (exportLoading) {
-            setcsvData(res.data.projects)
-            setExportLoading(false)
-          } else {
-            setProjects(res.data.projects)
-            setTotalItems(res.data.totalItems)
-            setTotalPages(Number(res.data.totalPages))
-            setPlatformFacets(res.data.platformFacets)
-            setTeamFacets(res.data.teamFacets)
-            setStatusFacets(res.data.statusFacets)
-          }
-        })
-        .catch((err) => {
-          setLoading(false)
-          console.log('error feching data', err)
-          showErrorNotification(err.message)
-        })
-    })()
+    getApi(params, '/projectSearch')
+      .then((res) => {
+        setLoading(false)
+        if (exportLoading) {
+          setcsvData(res.projects)
+          setExportLoading(false)
+        } else {
+          setProjects(res.projects)
+          setTotalItems(res.totalItems)
+          setTotalPages(Number(res.totalPages))
+          setPlatformFacets(res.platformFacets)
+          setTeamFacets(res.teamFacets)
+          setStatusFacets(res.statusFacets)
+        }
+      })
+      .catch((err) => {
+        setLoading(false)
+        console.log('error feching data', err)
+        showErrorNotification(err.message)
+      })
   }, [searchFilters])
 
   const exportData = () => {
@@ -504,7 +503,7 @@ const SearchInput: React.FC = () => {
           &nbsp;&nbsp;
           <Text>of {totalItems} Results</Text>
         </Col>
-        <Col span={8} push={2}>
+        <Col span={8} push={3}>
           <Pagination
             defaultCurrent={1}
             current={pageNumber}

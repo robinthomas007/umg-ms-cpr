@@ -57,11 +57,12 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
   }
 
   const deleteTeam = (teamId) => {
-    const confirmed = window.confirm('Are you sure you want to delete this team?');
+    const confirmed = window.confirm('Are you sure you want to delete this team?')
     if (confirmed) {
       deleteApi(teamId, '/team')
         .then((res: any) => {
           setIsTeamDataUpdated(!isTeamDataUpdated)
+          reloadUserData()
         })
         .catch((error: any) => {
           console.log('error feching data', error)
@@ -88,7 +89,8 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
       .then((res: any) => {
         if (res.result) {
           draggedItem.roleId = 3 // default user Role
-          dropTeamIndex['members'] = [...dropTeamIndex['members'], draggedItem]
+          const updatedMembers = dropTeamIndex.members ? [...dropTeamIndex['members'], draggedItem] : [draggedItem]
+          dropTeamIndex['members'] = updatedMembers
           if (index >= 0) {
             modifiedTeamData[index] = dropTeamIndex
             setTeamData(modifiedTeamData)
@@ -167,7 +169,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
     setCreateTeamModalOpen(true)
   }
   const deleteUserFromTeam = (userRoleId) => {
-    const confirmed = window.confirm('Are you sure you want to delete this team user?');
+    const confirmed = window.confirm('Are you sure you want to delete this team user?')
     if (confirmed) {
       deleteApiWithReqBody({ userRoleId: userRoleId }, '/teamuser')
         .then((res: any) => {
@@ -261,11 +263,11 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
 
     const renderEmptyRow = () => {
       return (
-        <div onDrop={(event) => handleDrop(event, key)} onDragOver={(event) => handleDragOver(event)} >
+        <div onDrop={(event) => handleDrop(event, key)} onDragOver={(event) => handleDragOver(event)}>
           <div>No data found</div>
         </div>
-      );
-    };
+      )
+    }
 
     return (
       <Table
@@ -293,8 +295,11 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
           isModalOpen={createTeamModalOpen}
           handleOk={createTeamSave}
           handleCancel={handleCreateTeamModalCancel}
+          isTeamDataUpdated={isTeamDataUpdated}
           handleChangeTeamData={setIsTeamDataUpdated}
           data={editRecord}
+          reloadUserData={reloadUserData}
+          teamData={teamData}
         />
       )}
       <Title level={3}>Teams</Title>
@@ -310,7 +315,12 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
           />
         </Col>
         <Col>
-          <Button className='secondary-btn' onClick={() => showCreateTeamModal(null)} style={{ background: token.colorSecondary }} size="large">
+          <Button
+            className="secondary-btn"
+            onClick={() => showCreateTeamModal(null)}
+            style={{ background: token.colorSecondary }}
+            size="large"
+          >
             Create Team
           </Button>
         </Col>

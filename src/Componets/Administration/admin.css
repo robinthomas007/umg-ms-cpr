@@ -46,6 +46,9 @@
 .admin-wrapper  col.ant-table-expand-icon-col {
   width: 1px !important;
 }
+.admin-wrapper .custom-secondary-search{
+  width:400px !important
+}
 
 .admin-wrapper .custom-secondary-search .ant-btn, .admin-wrapper .custom-secondary-search .ant-btn:hover  {
   background-color: #50C1FF;
@@ -71,4 +74,14 @@ span.ant-select-selection-item, .ant-select-selection-overflow-item {
 
 .ant-select-selector:first-child .ant-select-selection-overflow-item:first-child .remove-first-coma::first-letter{
   visibility: hidden;
+}
+
+.admin-menu {
+  background: none;
+  margin: '30px auto';
+  border-bottom-width:1px;
+  border-bottom-color:#9E9E9E
+}
+.admin-menu li{
+  margin: 0 40px !important;
 }
