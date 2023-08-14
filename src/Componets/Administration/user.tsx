@@ -112,10 +112,12 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
     {
       title: 'Country',
       dataIndex: 'country',
+      width: 100,
     },
     {
       title: 'Timezone',
       dataIndex: 'timeZone',
+      width: 100,
     },
     {
       title: 'Team(s)',

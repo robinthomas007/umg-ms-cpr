@@ -113,6 +113,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
     {
       title: 'Team Name',
       dataIndex: 'teamName',
+      width: 100,
     },
     {
       title: 'Team Admin(s)',

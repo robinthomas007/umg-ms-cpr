@@ -131,6 +131,7 @@ h3.ant-typography,
 
 .ant-table-body::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
   transition: max-height 0.5s ease-out;
 }
 
