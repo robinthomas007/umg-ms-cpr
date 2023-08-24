@@ -1,5 +1,9 @@
 import { Layout, Row, Col, Space, Button, Badge, Typography, Menu, Switch } from 'antd'
 import './header.css'
+import { BASE_URL } from '../../../App'
+import getCookie from '../cookie'
+import { config } from '../../../Componets/Common/Utils'
+import axios from 'axios'
 import logo from '../../../images/cpr.png'
 import retool from '../../../images/retro.png'
 import guardian from '../../../images/guardian.png'
@@ -10,12 +14,14 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../../Context/authContext'
 import React from 'react'
+import { getApi } from '../../../Api/Api'
 import type { MenuProps } from 'antd'
+import moment from 'moment'
 const { Header } = Layout
 const { Text } = Typography
 
 // type Items={ key?: string | null; label?: string; icon?: React.JSX.Element |undefined; path?: string; }
-
+const hexArray = ['#FDD981', '#F88E86', '#F57F17', '#FBC02D']
 const items: MenuProps['items'] = [
   {
     key: 'dashboard',
@@ -54,6 +60,9 @@ export default function Navbar() {
   const [current, setCurrent] = useState('')
   const { pathname } = useLocation()
   const [toggle, setToggle] = useState(false)
+  const [notifications, setNotifications] = useState<any>([])
+  const [showNoti, setShowNoti] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     setDarkMode(toggle)
@@ -104,6 +113,182 @@ export default function Navbar() {
     // handleThemeColor(checked)
   }
 
+  const openNotification = () => {
+    if (notifications.length > 0) setShowNoti(!showNoti)
+  }
+  const clearNotification = () => {
+    setNotifications([])
+    setShowNoti(false)
+    // setLoading(true)
+    axios
+      .get(BASE_URL + 'Notification/ClearNotification', {
+        headers: {
+          cp3_auth: getCookie('cp3_auth'),
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          getAllNotifications()
+        }
+      })
+      .catch((err) => {
+        setLoading(false)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
+  useEffect(() => {
+    getAllNotifications()
+    const interval = setInterval(() => {
+      getAllNotifications()
+    }, 60000)
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      clearInterval(interval)
+    }
+  }, [])
+
+  const handleClickOutside = (event: any) => {
+    const elem = document.querySelector('.notification-wrapper-div')
+    if (
+      elem &&
+      !elem.contains(event.target) &&
+      event.target.id !== 'notify-wrapper' &&
+      event.target.parentElement.id !== 'notify-wrapper'
+    ) {
+      if (document.querySelector('.notification-wrapper')) {
+        setShowNoti(false)
+        event.preventDefault()
+      }
+    }
+  }
+
+  const getAllNotifications = () => {
+    setLoading(true)
+    getApi({}, '/notification/getunreadnotification')
+      .then((res) => {
+        console.log('notifications data', res)
+        setNotifications(res)
+      })
+      .catch((error) => {
+        console.log('error feching data', error)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
+  const getAlias = (name: any) => {
+    if (name) {
+      const nameArr = name.split(' ')
+      return nameArr[0].charAt().toUpperCase() + nameArr[0].charAt(1).toUpperCase()
+    }
+    return 'UK'
+  }
+
+  const naviagetNotificationPage = (source: string, notificationId: string) => {
+    switch (source) {
+      case 'Projects':
+        navigate('/Search', {
+          state: { notificationId: notificationId },
+          replace: true,
+        })
+        break
+      case 'GL':
+        navigate('/green_list', {
+          state: { notificationId: notificationId },
+          replace: true,
+        })
+        break
+      case 'CP3':
+        navigate('/', {
+          state: { notificationId: notificationId },
+          replace: true,
+        })
+        break
+      default:
+        navigate('/', {
+          state: { notificationId: notificationId },
+          replace: true,
+        })
+    }
+    setShowNoti(false)
+  }
+
+  const markAsRead = (id: number, source: string) => {
+    return false
+    // mark as read api on hold for client varification
+    // axios
+    //   .get(BASE_URL + "Notification/ReadNotification", {
+    //     params: { notificationId: id },
+    //     headers: {
+    //       cp3_auth: getCookie("cp3_auth"),
+    //     }
+    //   })
+    //   .then((response) => {
+    //     if (response.status === 200) {
+    //       const updatedNotification: any = notifications.map((noti: any) => {
+    //         if (noti.notificationId === id) {
+    //           return { ...noti, isRead: true };
+    //         }
+    //         return noti
+    //       })
+    //       setNotifications(updatedNotification)
+    //       setLoading(false)
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     setLoading(false)
+    //   })
+    //   .finally(() => {
+    //     setLoading(false)
+    //   });
+  }
+
+  const renderNotifications = () => {
+    return notifications.map((noti: any, i) => {
+      return (
+        <div key={i} className={`${noti.isRead ? 'read' : ''} noti-item`}>
+          <div className="alias">
+            <span
+              style={{
+                background: hexArray[Math.floor(Math.random() * hexArray.length)],
+              }}
+            >
+              {' '}
+              {getAlias(noti.userName)}
+            </span>
+          </div>
+          <div
+            className="noti-content"
+            onClick={() => naviagetNotificationPage(noti.source, noti.notificationId)}
+            onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
+          >
+            {noti.notificationType.toLowerCase() === 'created' && (
+              <>
+                <strong>{noti.userName}</strong> {noti.notificationType.toLowerCase()} a new{' '}
+                {noti.source === 'Projects' ? 'project' : noti.source === 'CP3' ? 'CP3' : 'Greenlist'} of{' '}
+                <strong>"{noti.projectName}"</strong>
+                <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
+              </>
+            )}
+            {noti.notificationType.toLowerCase() === 'updated' && (
+              <>
+                <strong>{noti.userName}</strong> {noti.notificationType.toLowerCase()} a{' '}
+                {noti.source === 'Projects' ? 'project' : noti.source === 'CP3' ? 'CP3' : 'Greenlist'} of{' '}
+                <strong>"{noti.projectName}"</strong>
+                <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
+              </>
+            )}
+          </div>
+        </div>
+      )
+    })
+  }
+
   return (
     <>
       <Header>
@@ -124,9 +309,10 @@ export default function Navbar() {
           </Col>
           <Col className="header-typography">
             <Space size={'large'}>
-              <Badge size="small" count={5}>
-                <Button type="primary" shape="circle" icon={<BellFilled />} />
+              <Badge size="small" count={notifications.length}>
+                <Button onClick={openNotification} type="primary" shape="circle" icon={<BellFilled />} />
               </Badge>
+
               <Text>Welcome, {user ? user.name : ''}</Text>
               <Text>{user ? 'Log Out' : 'Log In'}</Text>
             </Space>
@@ -141,6 +327,18 @@ export default function Navbar() {
         items={items}
         activeKey={current}
       />
+      <div className="notification-wrapper-div">
+        {showNoti && (
+          <div className="notification-wrapper arrow-top" style={{ background: '#000', color: '#fff' }}>
+            {renderNotifications()}
+            {/* <Button size="large" type="primary" style={{ float: 'right' }}>
+              Clear All
+            </Button> */}
+
+            {/* <span onClick={clearNotification}>Clear</span> */}
+          </div>
+        )}
+      </div>
     </>
   )
 }
