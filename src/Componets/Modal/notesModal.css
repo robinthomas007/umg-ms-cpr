@@ -1,0 +1,4 @@
+.notesContents {
+    max-height: '260px' !important;
+    overflow: 'scroll';
+}

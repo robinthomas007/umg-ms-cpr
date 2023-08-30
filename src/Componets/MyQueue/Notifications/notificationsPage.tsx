@@ -83,8 +83,8 @@ function NotificationsPage() {
       updatedFrom,
       updatedTo,
       type: type,
-      itemsPerPage: 10,
-      pageNumber: 1,
+      itemsPerPage: itemsPerPage,
+      pageNumber: pageNumber,
     }
     console.log('params of notoficatiuon search', params)
 
@@ -110,6 +110,9 @@ function NotificationsPage() {
   const onSearch = (value: string) => {
     setSearchTerm(value)
     setSearch('')
+  }
+  const getUpdatedNotificationList = () => {
+    setSearchFilters({ ...searchFilters, pageNumber: 1 })
   }
   const setSearchTerm = (searchTerm: string) => {
     setSearchFilters((prev) => ({ ...prev, searchTerm }))
@@ -171,7 +174,6 @@ function NotificationsPage() {
       title: 'Actions',
       render: (_, record) => (
         <Space size="middle">
-          <Button onClick={() => console.log('onclcick')} icon={<EditOutlined />} size={'middle'} />
           <Button onClick={() => console.log('onclcick')} icon={<WechatOutlined />} size={'middle'} />
         </Space>
       ),
@@ -294,6 +296,7 @@ function NotificationsPage() {
             loading={loading}
             columnsNotifications={columnsNotification}
             notifications={notifications}
+            getUpdatedNotificationList={getUpdatedNotificationList}
           />
         </Col>
       </Row>

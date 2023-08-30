@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { SettingOutlined, DownOutlined } from '@ant-design/icons'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
-import { Input, Space, Modal, Form, Checkbox, message, Dropdown, Button, Select, DatePicker, Row, Col } from 'antd'
+import {
+  Input,
+  Space,
+  Modal,
+  Mentions,
+  Form,
+  Checkbox,
+  message,
+  Dropdown,
+  Button,
+  Select,
+  DatePicker,
+  Row,
+  Col,
+} from 'antd'
 import type { MenuProps } from 'antd'
 import type { DatePickerProps } from 'antd'
 import dayjs from 'dayjs'
@@ -54,26 +68,25 @@ const FilterModal: React.FC<MyQueueModalProps> = (props) => {
     // form.resetFields()
   }
   const defaultSelectedFilters = {
-    endDate: '',
-    platforms: undefined,
+    updatedTo: '',
+    updatedFrom: '',
     searchWithin: 'ALL',
-    startDate: '',
-    status: undefined,
-    teams: undefined,
+    reportedBy: '',
+    type: '',
   }
-  // useEffect(() => {
-  //   const modifiedFilters: any = { ...defaultSelectedFilters, ...Object.fromEntries(props.selectedFilters) }
-  //   if (modifiedFilters.searchWithin === 'ALL' && !searchWithin.includes('ALL')) {
-  //     setSearchWithin(['ALL'])
-  //   }
-  //   if (modifiedFilters.startDate) {
-  //     modifiedFilters.startDate = dayjs(modifiedFilters.startDate, dateFormat)
-  //   }
-  //   if (modifiedFilters.endDate) {
-  //     modifiedFilters.endDate = dayjs(modifiedFilters.endDate, dateFormat)
-  //   }
-  //   form.setFieldsValue(modifiedFilters)
-  // }, [props.selectedFilters, form])
+  useEffect(() => {
+    const modifiedFilters: any = { ...defaultSelectedFilters, ...Object.fromEntries(props.selectedFilters) }
+    if (modifiedFilters.searchWithin === 'ALL' && !searchWithin.includes('ALL')) {
+      setSearchWithin(['ALL'])
+    }
+    if (modifiedFilters.updatedFrom) {
+      modifiedFilters.updatedFrom = dayjs(modifiedFilters.updatedFrom).format('MM-DD-YYYY')
+    }
+    if (modifiedFilters.updatedTo) {
+      modifiedFilters.updatedTo = dayjs(modifiedFilters.updatedTo).format('MM-DD-YYYY')
+    }
+    form.setFieldsValue(modifiedFilters)
+  }, [props.selectedFilters, form])
 
   const onCheckAllChange = (e: any) => {
     if (e.target.type === 'checkbox') {
@@ -125,7 +138,7 @@ const FilterModal: React.FC<MyQueueModalProps> = (props) => {
               >
                 All
               </Checkbox>
-              <Checkbox
+              {/* <Checkbox
                 id="updatedDateTime"
                 name="updatedDateTime"
                 defaultChecked={searchWithin.includes('updatedDateTime')}
@@ -133,7 +146,7 @@ const FilterModal: React.FC<MyQueueModalProps> = (props) => {
                 onChange={onCheckAllChange}
               >
                 Updated Date
-              </Checkbox>
+              </Checkbox> */}
               <Checkbox
                 id="reportedBy"
                 name="reportedBy"
@@ -178,6 +191,9 @@ const FilterModal: React.FC<MyQueueModalProps> = (props) => {
                 placeholder="Select a option"
                 optionFilterProp="children"
                 optionLabelProp="label"
+                filterOption={(input: any, option: any) =>
+                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                }
               >
                 {props.userFacets &&
                   props.userFacets.map((user, index) => {
@@ -189,7 +205,12 @@ const FilterModal: React.FC<MyQueueModalProps> = (props) => {
                   })}
               </Select>
             </Form.Item>
-            <Form.Item label="Type" name="type" style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}>
+            <Form.Item
+              label="Type"
+              name="type"
+              style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+              colon={false}
+            >
               <Select
                 style={{ width: '125px' }}
                 showSearch

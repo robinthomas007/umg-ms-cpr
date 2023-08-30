@@ -23,7 +23,7 @@ function Routes() {
       element: <PublicRoutes />,
       children: [
         { path: '/', element: <Dashboard /> },
-        { path: '/Search', element: <Search /> },
+        { path: '/search', element: <Search /> },
         { path: '/admin', element: <Administration /> },
         { path: '/myqueue', element: <MyQueue /> },
       ],

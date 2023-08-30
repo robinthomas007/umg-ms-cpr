@@ -196,7 +196,7 @@ export default function Navbar() {
     !isRead && markAsRead(Number(notificationId), source)
     switch (source) {
       case 'Projects':
-        navigate('/Search', {
+        navigate('/search', {
           state: { notificationId: notificationId },
           replace: true,
         })
@@ -223,36 +223,10 @@ export default function Navbar() {
   }
 
   const markAsRead = (id: number, source: string) => {
-    // return false
-    // mark as read api on hold for client varification
+    // mark as read api on hold for client verification
     postApi({ notificationId: id }, '/notification/readnotification', 'marked as read nottification').then((res) => {
       console.log('response', res)
     })
-    // axios
-    //   .get(BASE_URL + "Notification/ReadNotification", {
-    //     params: { notificationId: id },
-    //     headers: {
-    //       cp3_auth: getCookie("cp3_auth"),
-    //     }
-    //   })
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       const updatedNotification: any = notifications.map((noti: any) => {
-    //         if (noti.notificationId === id) {
-    //           return { ...noti, isRead: true };
-    //         }
-    //         return noti
-    //       })
-    //       setNotifications(updatedNotification)
-    //       setLoading(false)
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     setLoading(false)
-    //   })
-    //   .finally(() => {
-    //     setLoading(false)
-    //   });
   }
 
   const renderNotifications = () => {
@@ -278,7 +252,7 @@ export default function Navbar() {
               <>
                 <strong>{noti.userName}</strong> {noti.notificationType.toLowerCase()} a new{' '}
                 {noti.source === 'Projects' ? 'project' : noti.source === 'CP3' ? 'CP3' : 'Greenlist'} of{' '}
-                <strong>"{noti.projectName}"</strong>
+                <strong>"{noti.projectName}"</strong> and assigned it to {noti.teamName}
                 <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
               </>
             )}
@@ -309,9 +283,9 @@ export default function Navbar() {
 
             {noti.notificationType.toLowerCase() === 'notes' && (
               <>
-                <strong>{noti.userName}</strong> left a note for you for the{' '}
-                {noti.source === 'Projects' ? 'project' : noti.source === 'Links' ? 'links' : 'Greenlist'} of{' '}
-                <strong>"{noti.projectName}"</strong>
+                <strong>{noti.userName}</strong> left a note for you, "{noti.notes}"
+                {/* {noti.source === 'Projects' ? 'project' : noti.source === 'Links' ? 'links' : 'Greenlist'} of{' '}
+                <strong>"{noti.projectName}"</strong> */}
                 <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
               </>
             )}

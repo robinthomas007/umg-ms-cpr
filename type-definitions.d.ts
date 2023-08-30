@@ -133,7 +133,9 @@ type Notification = {
       notes: string|null,
       description: string,
       type: string,
-      linksCount: number
+      linksCount: number,
+      isRead:boolean
+
   
   // // notificationId?: React.Key
   // updatedDate:string,
