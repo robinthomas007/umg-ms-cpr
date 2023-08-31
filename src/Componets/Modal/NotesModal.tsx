@@ -1,19 +1,23 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { Modal, Form, Input, Row, Col, Button, Space, Mentions } from 'antd'
+import { Modal, Form, Input, Row, Col, Button, Space, Mentions, Spin } from 'antd'
+import { LoadingOutlined } from '@ant-design/icons'
 import { getApi, postApi } from '../../Api/Api'
 import moment from 'moment'
 import './notesModal.css'
 interface ModalProps {
   open: boolean
   handleClose: () => void
-  projectData: any
+  soure: string
+  soureName: string
+  sourceId: string | number
 }
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
 }
 const { getMentions } = Mentions
+const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 
 const NotesModal: React.FC<ModalProps> = (props) => {
   const [notes, setNotes] = useState<any>([])
@@ -23,20 +27,20 @@ const NotesModal: React.FC<ModalProps> = (props) => {
 
   const invokeGetNotesApi = React.useCallback(() => {
     setLoading(true)
-    getApi({ sourceId: props.projectData.projectId, source: 'Projects' }, '/notes/getnotes')
+    getApi({ sourceId: props.sourceId, source: props.soure }, '/notes/getnotes')
       .then((res) => {
         setNotes(res)
       })
       .finally(() => {
         setLoading(false)
       })
-  }, [props.projectData])
+  }, [props.sourceId, props.soure])
   useEffect(() => {
     invokeGetNotesApi()
   }, [])
   useEffect(() => {
     invokeGetNotesApi()
-  }, [invokeGetNotesApi, props.projectData])
+  }, [invokeGetNotesApi, props.sourceId])
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComments(e.target.value)
@@ -44,15 +48,14 @@ const NotesModal: React.FC<ModalProps> = (props) => {
   const handleSubmit = () => {
     postApi(
       {
-        sourceId: props.projectData.projectId,
+        sourceId: props.sourceId,
         comments: comments,
-        source: 'Projects',
-        sourceName: props.projectData.title,
+        source: props.soure,
+        sourceName: props.soureName,
       },
       '/notes/updatenotes',
       'successfully added the notes'
     ).then((res) => {
-      console.log('response of the added notes ', res)
       invokeGetNotesApi()
       setComments('')
       form.resetFields()
@@ -67,7 +70,7 @@ const NotesModal: React.FC<ModalProps> = (props) => {
         <br />
         <br />
         <div className="notesContents">
-          {loading && <p>...loading</p>}
+          {loading && <Spin indicator={antIcon} style={{ display: 'block' }} />}
           {notes.map((note, index) => {
             return (
               <p key={index} style={{ background: '#000', borderRadius: '43px', padding: '16px' }}>
@@ -91,7 +94,7 @@ const NotesModal: React.FC<ModalProps> = (props) => {
               style={{ marginTop: '150px', height: '100px' }}
             />
           </Form.Item>
-          <Form.Item name="bio" labelCol={{ span: 6 }} wrapperCol={{ span: 32 }} rules={[{ required: true }]}>
+          {/* <Form.Item name="bio" labelCol={{ span: 6 }} wrapperCol={{ span: 32 }} rules={[{ required: true }]}>
             <Mentions
               rows={4}
               placeholder="Create A New Note"
@@ -110,7 +113,7 @@ const NotesModal: React.FC<ModalProps> = (props) => {
                 },
               ]}
             />
-          </Form.Item>
+          </Form.Item> */}
           <Row justify="end">
             <Space>
               <Col>

@@ -6,7 +6,7 @@ import { showSuccessNotification } from '../utils/notifications'
 export const cprUrls = (env) => {
   switch (env) {
     case 'dev':
-      return 'https://api.qa.cpr-portal.umgapps.com/gateway/cpr'
+      return 'https://api.dev.cpr-portal.umgapps.com/gateway/cpr'
 
     case 'qa':
       return 'https://api.qa.cpr-portal.umgapps.com/gateway/cpr'
