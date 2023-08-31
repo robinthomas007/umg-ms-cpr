@@ -521,7 +521,13 @@ const SearchInput: React.FC = () => {
               handleClose={closeEditModal}
             />
           )}
-          <NotesModal projectData={project} open={openNotesModal} handleClose={handleNotesModal} />
+          <NotesModal
+            soureName={project.title}
+            sourceId={project.projectId}
+            soure={'Projects'}
+            open={openNotesModal}
+            handleClose={handleNotesModal}
+          />
         </Col>
       </Row>
       <br />

@@ -75,16 +75,16 @@ function NotificationsPage() {
     } = searchFilters
     setLoading(true)
     const params = {
-      searchTerm: searchTerm,
-      sortColumns: sortColumns,
-      sortOrder: sortOrder,
+      searchTerm,
+      sortColumns,
+      sortOrder,
       searchWithins: searchWithin ? searchWithin.toString() : 'ALL',
       reportedBy,
       updatedFrom,
       updatedTo,
-      type: type,
-      itemsPerPage: itemsPerPage,
-      pageNumber: pageNumber,
+      type,
+      itemsPerPage,
+      pageNumber,
     }
     console.log('params of notoficatiuon search', params)
 

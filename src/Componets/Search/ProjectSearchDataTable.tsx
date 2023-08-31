@@ -39,6 +39,7 @@ const DataGrid: React.FC<ProjectsProps> = ({ columsProjects, projects, loading }
           },
         }
       }}
+      rootClassName="tableRowSelection"
       columns={columsProjects}
       scroll={{ y: 450 }}
       rowSelection={rowSelection}
