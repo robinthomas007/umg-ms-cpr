@@ -11,7 +11,7 @@ import {
   EditOutlined,
 } from '@ant-design/icons'
 import type { PaginationProps } from 'antd'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 import type { ColumnsType } from 'antd/es/table'
 import FilterModal from './ProjectSearchFilterModal'
 import CreateProjectModal from './CreateProjectModal'
@@ -32,7 +32,7 @@ const facetsInitalState = {
   userFacets: [],
   categoryFacets: [],
   statusFacets: [],
-  totalItems: ''
+  totalItems: '',
 }
 
 const searchInitialState = {
@@ -45,7 +45,7 @@ const searchInitialState = {
   statusId: '',
   categoryId: null,
   reviewDate: '',
-  searchWithin: 'ALL'
+  searchWithin: 'ALL',
 }
 
 export default function ProjectDetails() {
@@ -61,7 +61,7 @@ export default function ProjectDetails() {
   const [csvData, setcsvData] = React.useState([])
   const [exportLoading, setExportLoading] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const { projectId, teamId } = useParams();
+  const { projectId, teamId } = useParams()
 
   const auth = useAuth()
 
@@ -95,7 +95,7 @@ export default function ProjectDetails() {
             statusFacets: res.statusFacets,
             userFacets: res.userFacets,
             categoryFacets: res.categoryFacets,
-            totalItems: res.totalItems
+            totalItems: res.totalItems,
           })
           setProjectLinks(res.projectLinks)
         }
@@ -111,8 +111,7 @@ export default function ProjectDetails() {
 
   useEffect(() => {
     getProjectLinks()
-    return () => {
-    }
+    return () => {}
   }, [getProjectLinks])
 
   React.useEffect(() => {
@@ -126,23 +125,24 @@ export default function ProjectDetails() {
     setSearchFilters({ ...searchFilters, pageNumber: 1, itemsPerPage: '10000' })
   }
 
-
   const onSearch = (value: string) => {
     setSearchFilters({
-      ...searchFilters, searchTerm: value
+      ...searchFilters,
+      searchTerm: value,
     })
   }
 
   const handleLimitChange = (limit: { value: string; label: React.ReactNode }) => {
     setSearchFilters({
-      ...searchFilters, itemsPerPage: limit.value
+      ...searchFilters,
+      itemsPerPage: limit.value,
     })
   }
 
-
   const handlePageChange: PaginationProps['onChange'] = (page) => {
     setSearchFilters({
-      ...searchFilters, pageNumber: page
+      ...searchFilters,
+      pageNumber: page,
     })
   }
 
@@ -187,7 +187,8 @@ export default function ProjectDetails() {
 
   const handleChangeAssignee = (data) => {
     setSearchFilters({
-      ...searchFilters, assignedTo: data
+      ...searchFilters,
+      assignedTo: data,
     })
   }
 
@@ -204,17 +205,13 @@ export default function ProjectDetails() {
       title: 'URL',
       key: 'url',
       sorter: {},
-      render: (_, record) => (
-        <a href={record.url}>{record.url}</a>
-      ),
+      render: (_, record) => <a href={record.url}>{record.url}</a>,
     },
     {
       title: 'Account URL',
       key: 'accountUrl',
       sorter: {},
-      render: (_, record) => (
-        <a href={record.accountUrl}>{record.accountUrl}</a>
-      ),
+      render: (_, record) => <a href={record.accountUrl}>{record.accountUrl}</a>,
     },
     {
       title: 'Artist',
@@ -232,7 +229,7 @@ export default function ProjectDetails() {
       title: 'Category',
       key: 'categoryName',
       sorter: {},
-      dataIndex: 'categoryName'
+      dataIndex: 'categoryName',
     },
     {
       title: 'Assigned To',
@@ -270,11 +267,11 @@ export default function ProjectDetails() {
 
   const tagElement = (type, tag) => {
     const labels = {
-      statusId: "Status",
-      categoryId: "Category",
-      assignedTo: "Assigned To",
-      reviewDate: "Review Date",
-      searchWithin: "Search Within"
+      statusId: 'Status',
+      categoryId: 'Category',
+      assignedTo: 'Assigned To',
+      reviewDate: 'Review Date',
+      searchWithin: 'Search Within',
     }
     const tagElem = (
       <>
@@ -299,7 +296,7 @@ export default function ProjectDetails() {
     const dropDownFacets = {
       statusId: facets.statusFacets,
       categoryId: facets.categoryFacets,
-      assignedTo: facets.userFacets
+      assignedTo: facets.userFacets,
     }
     if (dropDownFacets[type]) {
       return dropDownFacets[type].find((item) => item.id === tag).name
@@ -349,11 +346,9 @@ export default function ProjectDetails() {
           <br />
           {selectedFilters &&
             selectedFilters.map((item, i) => {
-              console.log(item, "Asdasdads")
+              console.log(item, 'Asdasdads')
               if (typeof item[1] !== 'undefined' && item[1] !== '' && item[1]) {
-                return <span key={i}>
-                  {tagElement(item[0], item[1])}
-                </span>
+                return <span key={i}>{tagElement(item[0], item[1])}</span>
               }
               return null
             })}
@@ -401,7 +396,7 @@ export default function ProjectDetails() {
           )}
           {/* <NotesModal projectData={project} open={openNotesModal} handleClose={handleNotesModal} /> */}
         </Col>
-      </Row >
+      </Row>
       <br />
 
       <Row justify="space-evenly">
@@ -434,7 +429,12 @@ export default function ProjectDetails() {
         <Col span={5} offset={3}>
           <Row justify="end">
             <Space wrap>
-              <Button onClick={showBulkProjectModal} disabled={projectLinkIds.length === 0} icon={<EditOutlined />} size={'middle'}>
+              <Button
+                onClick={showBulkProjectModal}
+                disabled={projectLinkIds.length === 0}
+                icon={<EditOutlined />}
+                size={'middle'}
+              >
                 Bulk Edit
               </Button>
               <Button onClick={showCreateProjectModal} icon={<PlusCircleFilled />} size={'middle'}>
@@ -458,10 +458,15 @@ export default function ProjectDetails() {
       <Divider plain className="divider" style={{ marginBottom: '0px' }} />
       <Row className="dataTable">
         <Col span={24}>
-
-          <ProjectSearchDetailsDataTable setSort={setSort} loading={loading} setSelectedRows={setprojectLinkIds} columsProjects={columnsProject} projectsDetails={projectLinks} />
+          <ProjectSearchDetailsDataTable
+            setSort={setSort}
+            loading={loading}
+            setSelectedRows={setprojectLinkIds}
+            columsProjects={columnsProject}
+            projectsDetails={projectLinks}
+          />
         </Col>
       </Row>
-    </div >
+    </div>
   )
 }

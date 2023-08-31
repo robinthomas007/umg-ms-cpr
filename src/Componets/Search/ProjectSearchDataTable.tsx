@@ -3,9 +3,7 @@ import { Table, Tag, Select } from 'antd'
 import type { ColumnsType, TableProps } from 'antd/es/table'
 import { TableRowSelection } from 'antd/es/table/interface'
 import { useNavigate } from 'react-router-dom'
-import {
-  EditOutlined,
-} from '@ant-design/icons'
+import { EditOutlined } from '@ant-design/icons'
 
 const onChange: TableProps<Project>['onChange'] = (pagination, filters, sorter, extra) => {
   console.log('params', pagination, filters, sorter, extra)
@@ -34,12 +32,12 @@ const DataGrid: React.FC<ProjectsProps> = ({ columsProjects, projects, loading }
     <Table
       onRow={(record, rowIndex) => {
         return {
-          onClick: event => {
+          onClick: (event) => {
             if (event.target) {
               navigate(`/search/${record.projectId}/${record.teamId}`)
             }
           },
-        };
+        }
       }}
       columns={columsProjects}
       scroll={{ y: 450 }}

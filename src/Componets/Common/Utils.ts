@@ -95,15 +95,14 @@ export function deepClone(obj: any): any {
   return clonedObj
 }
 
-
 export function removeEmptyAttributes(obj) {
-  const newObj = {};
+  const newObj = {}
 
   for (const key in obj) {
     if (obj[key] !== null && obj[key] !== undefined && obj[key] !== '') {
-      newObj[key] = obj[key];
+      newObj[key] = obj[key]
     }
   }
 
-  return newObj;
+  return newObj
 }

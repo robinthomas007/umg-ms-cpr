@@ -32,7 +32,6 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
 
     modifiedProject.searchWithin = searchWithin.join(',')
     props.handleSelectedFilters(modifiedProject)
-
   }
   const defaultSelectedFilters = {
     endDate: '',
@@ -146,9 +145,9 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
                   placeholder="Select a option"
                   optionFilterProp="children"
                   optionLabelProp="label"
-                // filterOption={(input: any, option: any) =>
-                //   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                // }
+                  // filterOption={(input: any, option: any) =>
+                  //   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                  // }
                 >
                   {props.categoryFacets &&
                     props.categoryFacets.map((category, index) => {
@@ -162,18 +161,14 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
               </Form.Item>
             </Col>
             <Col md={12}>
-              <Form.Item
-                label="Assigned To"
-                name="assignedTo"
-                colon={false}
-              >
+              <Form.Item label="Assigned To" name="assignedTo" colon={false}>
                 <Select
                   showSearch
                   placeholder="Select a option"
                   optionFilterProp="children"
-                // filterOption={(input: any, option: any) =>
-                //   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                // }
+                  // filterOption={(input: any, option: any) =>
+                  //   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                  // }
                 >
                   {props.reviewerFacets &&
                     props.reviewerFacets.map((team, index) => {
@@ -194,9 +189,9 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
                   showSearch
                   placeholder="Select a option"
                   optionFilterProp="children"
-                // filterOption={(input: any, option: any) =>
-                //   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                // }
+                  // filterOption={(input: any, option: any) =>
+                  //   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                  // }
                 >
                   {props.statusFacets &&
                     props.statusFacets.map((status, index) => {

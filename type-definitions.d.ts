@@ -16,7 +16,7 @@ interface Project {
   notes: string
   updatedOn: string
   priorityName: string
-  teamId: any,
+  teamId: any
 }
 
 interface Platform {
@@ -73,12 +73,12 @@ type searchState = {
   totalPages: number
   totalItems: number
   pageNumber: number
-  searchTerm: string,
-  itemsPerPage: string,
-  sortColumns: string,
-  sortOrder: string,
-  searchWithin: string[],
-  tableSearch: object,
+  searchTerm: string
+  itemsPerPage: string
+  sortColumns: string
+  sortOrder: string
+  searchWithin: string[]
+  tableSearch: object
 }
 type notificationSearchState = {
   error: string
@@ -187,18 +187,17 @@ type LinksearchState = {
   endDate?: string
   totalPages?: number
   pageNumber?: number
-  searchTerm?: string,
-  itemsPerPage?: string,
-  sortColumns?: string,
-  sortOrder?: string,
-  tableSearch?: object,
-  assignedTo?: any,
-  statusId?: any,
-  categoryId?: any,
-  reviewDate?: any,
+  searchTerm?: string
+  itemsPerPage?: string
+  sortColumns?: string
+  sortOrder?: string
+  tableSearch?: object
+  assignedTo?: any
+  statusId?: any
+  categoryId?: any
+  reviewDate?: any
   searchWithin?: string
 }
-
 
 interface ProjectDetails {
   accountUrl: string | undefined

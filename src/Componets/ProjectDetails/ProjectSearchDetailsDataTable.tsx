@@ -5,8 +5,8 @@ import type { ColumnsType } from 'antd/es/table'
 interface ProjectsProps {
   columsProjects: ColumnsType<ProjectDetails>
   projectsDetails: ProjectDetails[]
-  loading: boolean,
-  setSelectedRows: any,
+  loading: boolean
+  setSelectedRows: any
   setSort: any
 }
 

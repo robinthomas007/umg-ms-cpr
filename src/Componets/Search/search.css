@@ -8,41 +8,40 @@
 }
 
 .priority-img {
-
 }
 
-.priority-img.None .anticon{
-  background: #F5FA20;
+.priority-img.None .anticon {
+  background: #f5fa20;
   color: #000;
   font-size: 15px;
   border-radius: 3px;
   padding: 2px;
 }
-.priority-img.Low{
-  background: #85D305;
+.priority-img.Low {
+  background: #85d305;
   color: #000;
   font-size: 16px;
   border-radius: 3px;
   padding: 2px;
 }
-.priority-img.Medium{
-  background: #F5FA20;
+.priority-img.Medium {
+  background: #f5fa20;
   color: #000;
   font-size: 15px;
   border-radius: 3px;
   padding: 2px;
 }
-.priority-img.Hight{
-  background: #F68B0D;
+.priority-img.Hight {
+  background: #f68b0d;
   color: #000;
   font-size: 16px;
   border-radius: 3px;
   padding: 2px;
 }
 
-.priority-img.Critical .anticon{
+.priority-img.Critical .anticon {
   transform: rotate(-90deg);
-  background: #FF0C0C;
+  background: #ff0c0c;
   color: #000;
   font-size: 16px;
   border-radius: 3px;

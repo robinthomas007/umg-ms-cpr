@@ -16,7 +16,7 @@ import {
   DoubleRightOutlined,
   UpOutlined,
   DownOutlined,
-  ProfileOutlined
+  ProfileOutlined,
 } from '@ant-design/icons'
 import ProjectSearchDataTable from './ProjectSearchDataTable'
 import ProjectSearchFilterModal from '../Modal/ProjectSearchFilterModal'
@@ -68,14 +68,14 @@ const platformImages = {
   Tiktok: Tiktok,
   Twitter: Twitter,
   Youtube: Youtube,
-};
+}
 
 const PriorityImg = {
   None: '',
   Low: <DownOutlined />,
   Medium: <ProfileOutlined />,
   Hight: <UpOutlined />,
-  Critical: <DoubleRightOutlined />
+  Critical: <DoubleRightOutlined />,
 }
 
 const SearchInput: React.FC = () => {
@@ -345,9 +345,7 @@ const SearchInput: React.FC = () => {
       title: 'Platform',
       dataIndex: 'platformName',
       key: 'platformName',
-      render: (_, record: any) => (
-        <img src={platformImages[record.platformName]} alt={record.platformName} />
-      ),
+      render: (_, record: any) => <img src={platformImages[record.platformName]} alt={record.platformName} />,
       // ...getColumnSearchProps('platformName'),
     },
     {
@@ -380,7 +378,8 @@ const SearchInput: React.FC = () => {
         <div className={`priority-img ${record.priorityName}`}>
           {PriorityImg[record.priorityName]}
           <span style={{ marginLeft: 6 }}>{record.priorityName}</span>
-        </div>),
+        </div>
+      ),
     },
     {
       title: 'Status',

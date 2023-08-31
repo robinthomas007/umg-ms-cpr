@@ -46,7 +46,7 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
 
   const onFinish = (values: any) => {
     const { artist, title, url, accountUrl, categoryId, statusId, notes, assignedTo } = values.project
-    console.log(props, "props.projectLinkData")
+    console.log(props, 'props.projectLinkData')
     const data = {
       projectLinkId: props.projectLinkData ? [props.projectLinkData?.projectLinkId] : [0],
       projectId: Number(props.projectId),
@@ -59,9 +59,13 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
       statusId: Number(statusId),
       reviewDate: reviewDateFormat,
       notes: notes,
-      teamId: props.teamId
+      teamId: props.teamId,
     }
-    postApi(data, '/ProjectLink', `Project Link ${props.projectLinkData?.projectLinkId ? 'Updated' : 'Created'} Successfully!`)
+    postApi(
+      data,
+      '/ProjectLink',
+      `Project Link ${props.projectLinkData?.projectLinkId ? 'Updated' : 'Created'} Successfully!`
+    )
       .then(() => {
         form.resetFields()
         props.handleClose()
@@ -155,7 +159,13 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
                 </Select>
               </Form.Item>
 
-              <Form.Item name={['project', 'reviewDate']} rules={[{ required: true, message: 'Please input Review Date' }]} label="Review Date" labelAlign="left" colon={false}>
+              <Form.Item
+                name={['project', 'reviewDate']}
+                rules={[{ required: true, message: 'Please input Review Date' }]}
+                label="Review Date"
+                labelAlign="left"
+                colon={false}
+              >
                 <DatePicker onChange={onReviewDateChange} format={dateFormat} placeholder="" />
               </Form.Item>
 

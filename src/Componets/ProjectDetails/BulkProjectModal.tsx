@@ -34,7 +34,7 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
       statusId: statusId ? Number(statusId) : undefined,
       reviewDate: reviewDateFormat,
       notes: notes,
-      teamId: Number(props.teamId)
+      teamId: Number(props.teamId),
     }
 
     postApi(removeEmptyAttributes(data), '/ProjectLink', 'Project Link updated Successfully!')
@@ -79,7 +79,6 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
               >
                 <Input />
               </Form.Item>
-
             </Col>
             <Col span={4}>
               <Form.Item
@@ -127,8 +126,14 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
                 name={['project', 'reviewDate']}
                 label="Review Date"
                 labelCol={{ span: 24 }}
-                colon={false}>
-                <DatePicker style={{ width: '100%' }} onChange={onReviewDateChange} format={dateFormat} placeholder="" />
+                colon={false}
+              >
+                <DatePicker
+                  style={{ width: '100%' }}
+                  onChange={onReviewDateChange}
+                  format={dateFormat}
+                  placeholder=""
+                />
               </Form.Item>
             </Col>
             <Col span={4}>
@@ -154,16 +159,8 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
           </Row>
           <Row justify="start">
             <Col span={12}>
-              <Form.Item
-                labelCol={{ span: 24 }}
-                wrapperCol={{ span: 24 }}
-                name="notes"
-                label="Note All"
-                colon={false}>
-                <Input.TextArea
-                  placeholder="Create A New Note"
-                  rows={3}
-                />
+              <Form.Item labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="notes" label="Note All" colon={false}>
+                <Input.TextArea placeholder="Create A New Note" rows={3} />
               </Form.Item>
             </Col>
           </Row>

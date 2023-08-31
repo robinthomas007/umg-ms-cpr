@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
       })
       .catch((err) => {
         return false
-      });
+      })
   }
   React.useEffect(() => {
     // getUserRole().then(res => {
