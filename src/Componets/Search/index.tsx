@@ -13,6 +13,10 @@ import {
   SettingOutlined,
   SearchOutlined,
   EditOutlined,
+  DoubleRightOutlined,
+  UpOutlined,
+  DownOutlined,
+  ProfileOutlined
 } from '@ant-design/icons'
 import ProjectSearchDataTable from './ProjectSearchDataTable'
 import ProjectSearchFilterModal from '../Modal/ProjectSearchFilterModal'
@@ -26,6 +30,7 @@ import NotesModal from '../Modal/NotesModal'
 // @ts-ignore
 import { CSVLink } from 'react-csv'
 import { SEARCH_TITLES } from '../Common/StaticDatas'
+import { Facebook, SoundCloud, DailyMotion, Image, Instagram, Tiktok, Twitter, Youtube } from './../../images'
 
 const { Search } = Input
 const { Text } = Typography
@@ -52,6 +57,25 @@ const searchInitialState = {
   sortOrder: '',
   searchWithin: ['ALL'],
   tableSearch: {},
+}
+
+const platformImages = {
+  FaceBook: Facebook,
+  SoundCloud: SoundCloud,
+  DailyMotion: DailyMotion,
+  Image: Image,
+  Instagram: Instagram,
+  Tiktok: Tiktok,
+  Twitter: Twitter,
+  Youtube: Youtube,
+};
+
+const PriorityImg = {
+  None: '',
+  Low: <DownOutlined />,
+  Medium: <ProfileOutlined />,
+  Hight: <UpOutlined />,
+  Critical: <DoubleRightOutlined />
 }
 
 const SearchInput: React.FC = () => {
@@ -321,6 +345,9 @@ const SearchInput: React.FC = () => {
       title: 'Platform',
       dataIndex: 'platformName',
       key: 'platformName',
+      render: (_, record: any) => (
+        <img src={platformImages[record.platformName]} alt={record.platformName} />
+      ),
       // ...getColumnSearchProps('platformName'),
     },
     {
@@ -337,12 +364,6 @@ const SearchInput: React.FC = () => {
       ),
     },
     {
-      title: 'Status',
-      dataIndex: 'statusTypeDescription',
-      key: 'statusTypeDescription',
-      // ...getColumnSearchProps('statusTypeDescription'),
-    },
-    {
       title: 'Start Date',
       dataIndex: 'startDate',
       key: 'startDate',
@@ -353,11 +374,26 @@ const SearchInput: React.FC = () => {
       key: 'endDate',
     },
     {
+      title: 'Priority',
+      key: 'priorityName',
+      render: (_, record) => (
+        <div className={`priority-img ${record.priorityName}`}>
+          {PriorityImg[record.priorityName]}
+          <span style={{ marginLeft: 6 }}>{record.priorityName}</span>
+        </div>),
+    },
+    {
+      title: 'Status',
+      dataIndex: 'statusTypeDescription',
+      key: 'statusTypeDescription',
+      // ...getColumnSearchProps('statusTypeDescription'),
+    },
+    {
       title: 'Actions',
       render: (_, record) => (
         <Space size="middle">
-          <Button onClick={() => editProject(record.projectId)} icon={<EditOutlined />} size={'middle'} />
-          <Button onClick={() => showNotesModal(record.projectId)} icon={<WechatOutlined />} size={'middle'} />
+          <Button onClick={(e) => editProject(e, record.projectId)} icon={<EditOutlined />} size={'middle'} />
+          <Button onClick={(e) => showNotesModal(e, record.projectId)} icon={<WechatOutlined />} size={'middle'} />
         </Space>
       ),
     },
@@ -366,7 +402,8 @@ const SearchInput: React.FC = () => {
   const showFilterModal = () => {
     setIsFilterModalOpen(true)
   }
-  const editProject = (projectId) => {
+  const editProject = (e, projectId) => {
+    e.stopPropagation()
     const selectedProject = projects.find((project) => project.projectId === projectId)
     setProject(selectedProject)
     setIsEditModalOpen(true)
@@ -377,7 +414,8 @@ const SearchInput: React.FC = () => {
   const closeFilterModal = () => {
     setIsFilterModalOpen(false)
   }
-  const showNotesModal = (projectId) => {
+  const showNotesModal = (e, projectId) => {
+    e.stopPropagation()
     const selectedProject = projects.find((project) => project.projectId === projectId)
     setProject(selectedProject)
     setNotesModal(true)

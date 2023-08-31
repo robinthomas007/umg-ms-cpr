@@ -23,9 +23,28 @@ const AuthContext = createContext<Authype | any>(null)
 export const AuthProvider = ({ children }: AuthContextProps) => {
   const token = getCookie('cpr_portal')
   let LoggedInUser: any = jwt_decode(token)
-  LoggedInUser.role = LoggedInUser.groups && LoggedInUser.groups.includes(ADMIN) ? 'admin' : 'user'
   const [user, setUser] = useState<any>(LoggedInUser || {})
   const [darkMode, setDarkMode] = useState<boolean>(true)
+
+  const getUserRole = () => {
+    return axios
+      .get(BASE_URL + 'User/role', {
+        headers: {
+          cp3_auth: token,
+        },
+      })
+      .then((res) => {
+        return res.data
+      })
+      .catch((err) => {
+        return false
+      });
+  }
+  React.useEffect(() => {
+    // getUserRole().then(res => {
+    //   setUser({ ...user, role: res })
+    // })
+  }, [])
   const login = (user: any) => {
     setUser(user)
   }
