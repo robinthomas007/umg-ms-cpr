@@ -14,7 +14,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../../Context/authContext'
 import React from 'react'
-import { getApi } from '../../../Api/Api'
+import { getApi, postApi } from '../../../Api/Api'
 import type { MenuProps } from 'antd'
 import moment from 'moment'
 const { Header } = Layout
@@ -33,7 +33,7 @@ const items: MenuProps['items'] = [
     label: 'Search',
   },
   {
-    key: 'myQueue',
+    key: 'myqueue',
     label: 'My Queue',
   },
   {
@@ -68,6 +68,18 @@ export default function Navbar() {
     setDarkMode(toggle)
   }, [toggle])
 
+  useEffect(() => {
+    getAllNotifications()
+    const interval = setInterval(() => {
+      getAllNotifications()
+    }, 60000)
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      clearInterval(interval)
+    }
+  }, [])
+
   const navigate = useNavigate()
   useEffect(() => {
     switch (pathname) {
@@ -77,8 +89,8 @@ export default function Navbar() {
       case '/search':
         setCurrent('search')
         break
-      case '/myQueue':
-        setCurrent('myQueue')
+      case '/myqueue':
+        setCurrent('myqueue')
         break
       case '/admin':
         setCurrent('administration')
@@ -102,6 +114,9 @@ export default function Navbar() {
         break
       case 'administration':
         navigate('/admin')
+        break
+      case 'myqueue':
+        navigate('/myqueue')
         break
 
       default:
@@ -138,18 +153,6 @@ export default function Navbar() {
         setLoading(false)
       })
   }
-
-  useEffect(() => {
-    getAllNotifications()
-    const interval = setInterval(() => {
-      getAllNotifications()
-    }, 60000)
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-      clearInterval(interval)
-    }
-  }, [])
 
   const handleClickOutside = (event: any) => {
     const elem = document.querySelector('.notification-wrapper-div')
@@ -189,10 +192,11 @@ export default function Navbar() {
     return 'UK'
   }
 
-  const naviagetNotificationPage = (source: string, notificationId: string) => {
+  const naviagetNotificationPage = (source: string, notificationId: string, isRead: boolean) => {
+    !isRead && markAsRead(Number(notificationId), source)
     switch (source) {
       case 'Projects':
-        navigate('/Search', {
+        navigate('/search', {
           state: { notificationId: notificationId },
           replace: true,
         })
@@ -219,33 +223,10 @@ export default function Navbar() {
   }
 
   const markAsRead = (id: number, source: string) => {
-    return false
-    // mark as read api on hold for client varification
-    // axios
-    //   .get(BASE_URL + "Notification/ReadNotification", {
-    //     params: { notificationId: id },
-    //     headers: {
-    //       cp3_auth: getCookie("cp3_auth"),
-    //     }
-    //   })
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       const updatedNotification: any = notifications.map((noti: any) => {
-    //         if (noti.notificationId === id) {
-    //           return { ...noti, isRead: true };
-    //         }
-    //         return noti
-    //       })
-    //       setNotifications(updatedNotification)
-    //       setLoading(false)
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     setLoading(false)
-    //   })
-    //   .finally(() => {
-    //     setLoading(false)
-    //   });
+    // mark as read api on hold for client verification
+    postApi({ notificationId: id }, '/notification/readnotification', 'marked as read nottification').then((res) => {
+      console.log('response', res)
+    })
   }
 
   const renderNotifications = () => {
@@ -264,14 +245,14 @@ export default function Navbar() {
           </div>
           <div
             className="noti-content"
-            onClick={() => naviagetNotificationPage(noti.source, noti.notificationId)}
-            onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
+            onClick={() => naviagetNotificationPage(noti.source, noti.notificationId, noti.isRead)}
+            // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
           >
             {noti.notificationType.toLowerCase() === 'created' && (
               <>
                 <strong>{noti.userName}</strong> {noti.notificationType.toLowerCase()} a new{' '}
                 {noti.source === 'Projects' ? 'project' : noti.source === 'CP3' ? 'CP3' : 'Greenlist'} of{' '}
-                <strong>"{noti.projectName}"</strong>
+                <strong>"{noti.projectName}"</strong> and assigned it to {noti.teamName}
                 <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
               </>
             )}
@@ -280,6 +261,39 @@ export default function Navbar() {
                 <strong>{noti.userName}</strong> {noti.notificationType.toLowerCase()} a{' '}
                 {noti.source === 'Projects' ? 'project' : noti.source === 'CP3' ? 'CP3' : 'Greenlist'} of{' '}
                 <strong>"{noti.projectName}"</strong>
+                <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
+              </>
+            )}
+            {noti.notificationType.toLowerCase() === 'assigned' && noti.source === 'Projects' && (
+              <>
+                <strong>{noti.userName}</strong> {noti.notificationType.toLowerCase()} to{' '}
+                {noti.source === 'Projects' ? 'project' : noti.source === 'CP3' ? 'CP3' : 'Greenlist'} of{' '}
+                <strong>"{noti.projectName}"</strong>
+                <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
+              </>
+            )}
+            {noti.notificationType.toLowerCase() === 'assigned' && noti.source === 'Links' && (
+              <>
+                <strong>{noti.userName}</strong> {noti.notificationType.toLowerCase()} to{' '}
+                {noti.source === 'Projects' ? 'project' : noti.source === 'CP3' ? 'CP3' : 'Greenlist'} of{' '}
+                <strong>"{noti.projectName}"</strong>
+                <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
+              </>
+            )}
+
+            {noti.notificationType.toLowerCase() === 'notes' && (
+              <>
+                <strong>{noti.userName}</strong> left a note for you, "{noti.notes}"
+                {/* {noti.source === 'Projects' ? 'project' : noti.source === 'Links' ? 'links' : 'Greenlist'} of{' '}
+                <strong>"{noti.projectName}"</strong> */}
+                <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
+              </>
+            )}
+            {noti.notificationType.toLowerCase() === 'links' && (
+              <>
+                <strong>{noti.userName}</strong> assigned {noti.linksCount} on the {''}
+                {noti.source === 'Projects' ? 'project' : noti.source === 'Links' ? 'links' : 'Greenlist'}{' '}
+                <strong>"{noti.projectName}"</strong> to you{' '}
                 <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
               </>
             )}
@@ -329,11 +343,13 @@ export default function Navbar() {
       />
       <div className="notification-wrapper-div">
         {showNoti && (
-          <div className="notification-wrapper arrow-top" style={{ background: '#000', color: '#fff' }}>
+          <div className="notification-wrapper arrow-top" style={{ background: '#000' }}>
             {renderNotifications()}
-            {/* <Button size="large" type="primary" style={{ float: 'right' }}>
-              Clear All
-            </Button> */}
+            <div className="clr-noti">
+              <Button size="large" type="primary">
+                Clear All
+              </Button>
+            </div>
 
             {/* <span onClick={clearNotification}>Clear</span> */}
           </div>

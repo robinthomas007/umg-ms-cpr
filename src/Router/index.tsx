@@ -9,6 +9,7 @@ import Administration from '../Componets/Administration'
 import Sidebar from '../Componets/Sidebar'
 import { PublicRoutes } from './PublicRoutes'
 import { FCUserRoutes } from './FCUserRoutes'
+import MyQueue from '../Componets/MyQueue'
 // import GreenList from '../Components/GreenList';
 // import FirstSeen from '../Components/FirstSeen';
 
@@ -22,8 +23,9 @@ function Routes() {
       element: <PublicRoutes />,
       children: [
         { path: '/', element: <Dashboard /> },
-        { path: '/Search', element: <Search /> },
+        { path: '/search', element: <Search /> },
         { path: '/admin', element: <Administration /> },
+        { path: '/myqueue', element: <MyQueue /> },
       ],
     },
     {

@@ -43,6 +43,17 @@ interface ModalProps {
   state:any
   selectedFilters?:any
 }
+interface MyQueueModalProps {
+  open: boolean
+  handleClose: () => void
+  loading:boolean
+  handleSelectedFilters?: any
+  projectData?: any
+  state:any
+  selectedFilters?:any
+  userFacets:ReportedUser[]
+  typeFacets:NotificationType[]
+}
 
 type searchState = {
   error: string
@@ -64,4 +75,96 @@ type searchState = {
   sortOrder: string,
   searchWithin: string[],
   tableSearch:object,
+}
+type notificationSearchState = {
+  error: string
+  notifications: Array<object>
+  updatedFrom: string,
+  updatedTo:string,
+  reportedBy:string,
+  type:string,
+  totalPages: number
+  totalItems: number
+  pageNumber: number
+  searchTerm: string,
+  itemsPerPage: string,
+  sortColumns: string,
+  sortOrder: string,
+  searchWithin: string[],
+  tableSearch:object,
+}
+type taskSearchState = {
+  error: string
+  tasks: Array<object>
+  totalPages: number
+  totalItems: number
+  pageNumber: number
+  searchTerm: string,
+  itemsPerPage: string,
+  sortColumns: string,
+  sortOrder: string,
+  searchWithin: string[],
+  tableSearch:object,
+}
+type notificationSearchState = {
+  error: string
+  notifications: Array<object>
+  totalPages: number
+  totalItems: number
+  pageNumber: number
+  searchTerm: string,
+  itemsPerPage: string,
+  sortColumns: string,
+  sortOrder: string,
+  searchWithin: string[],
+  tableSearch:object,
+}
+
+type Notification = {
+      key?: React.Key
+      id: number,
+      notificationId: number,
+      sourceId: string| number |null,
+      reportedBy: string,
+      updatedDateTime: string,
+      source: string,
+      sourceName: string,
+      notificationType: string |number,
+      notes: string|null,
+      description: string,
+      type: string,
+      linksCount: number,
+      isRead:boolean
+
+  
+  // // notificationId?: React.Key
+  // updatedDate:string,
+  // projectName: string
+  // description: string
+  // note: string
+  // reportedBy: string
+  // type: string
+}
+
+type ReportedUser={
+  id:string,
+  name:string
+}
+type NotificationType={
+  id:string,
+  name:string
+}
+
+interface Tasks {
+  key?: React.Key
+  taskId: React.Key
+  title: string
+  prirority: string
+  artistList: string
+  platform: string
+  batch: Number,
+  progress:Number,
+  startDate:string,
+  endDate:string,
+  status:string
 }
