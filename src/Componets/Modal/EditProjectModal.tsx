@@ -35,7 +35,16 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
   const [startDateFormat, setStartDateFormat] = useState('')
   const [endDateFormat, setEndDateFormat] = useState('')
   const [form] = Form.useForm()
-  const { projectData, getSearchPageData, open, platformFacets, teamFacets, statusFacets, handleClose } = props
+  const {
+    projectData,
+    getSearchPageData,
+    open,
+    platformFacets,
+    priorityFacets,
+    teamFacets,
+    statusFacets,
+    handleClose,
+  } = props
   const { user } = useAuth()
 
   useEffect(() => {
@@ -57,7 +66,7 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
   }, [projectData, form])
 
   const onFinish = (values: any) => {
-    const { artistList, title, platformId, teamId, statusTypeId, dragger, notes } = values
+    const { artistList, title, platformId, priorityId, teamId, statusTypeId, dragger, notes } = values
     const data = {
       projectId: projectData.projectId,
       artistList: artistList,
@@ -65,6 +74,7 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       platformId: platformId,
       teamId: teamId,
       statusTypeId: statusTypeId,
+      priorityId: priorityId,
       progress: 50,
       startDate: startDateFormat,
       endDate: endDateFormat,
@@ -142,6 +152,18 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
                       return (
                         <Option key={index} label={status.statusTypeDescription} value={status.statusTypeId}>
                           {status.statusTypeDescription}
+                        </Option>
+                      )
+                    })}
+                </Select>
+              </Form.Item>
+              <Form.Item labelAlign="left" name={'priorityId'} label="Priority" colon={false}>
+                <Select placeholder="Select Priority">
+                  {priorityFacets &&
+                    priorityFacets.map((priority, index) => {
+                      return (
+                        <Option key={index} label={priority.priorityName} value={priority.priorityId}>
+                          {priority.priorityName}
                         </Option>
                       )
                     })}

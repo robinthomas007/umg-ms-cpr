@@ -46,6 +46,7 @@ interface ModalProps {
   projectData?: any
   state: any
   selectedFilters?: any
+  priorityFacets:Priority[]
 }
 interface MyQueueModalProps {
   open: boolean
@@ -229,4 +230,9 @@ interface ProjectDetailsCreateModalProps {
   state: any
   selectedFilters?: any
   getProjectLinks?: any
+}
+
+type Priority={
+  priorityId:number,
+  priorityName:string
 }

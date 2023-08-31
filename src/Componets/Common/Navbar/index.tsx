@@ -173,7 +173,6 @@ export default function Navbar() {
     setLoading(true)
     getApi({}, '/notification/getunreadnotification')
       .then((res) => {
-        console.log('notifications data', res)
         setNotifications(res)
       })
       .catch((error) => {
@@ -187,7 +186,7 @@ export default function Navbar() {
   const getAlias = (name: any) => {
     if (name) {
       const nameArr = name.split(' ')
-      return nameArr[0].charAt().toUpperCase() + nameArr[0].charAt(1).toUpperCase()
+      return nameArr[0].charAt().toUpperCase() + nameArr[1].charAt().toUpperCase()
     }
     return 'UK'
   }

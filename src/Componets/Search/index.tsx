@@ -91,6 +91,7 @@ const SearchInput: React.FC = () => {
   const [platformFacets, setPlatformFacets] = useState<Platform[]>([])
   const [teamFacets, setTeamFacets] = useState<Teams[]>([])
   const [statusFacets, setStatusFacets] = useState<Status[]>([])
+  const [priorityFacets, setPriorityFacets] = useState<Priority[]>([])
 
   const [projects, setProjects] = useState<Project[]>([])
   const [project, setProject] = useState<any>({})
@@ -147,6 +148,7 @@ const SearchInput: React.FC = () => {
           setTotalItems(res.totalItems)
           setTotalPages(Number(res.totalPages))
           setPlatformFacets(res.platformFacets)
+          setPriorityFacets(res.priorityFacets)
           setTeamFacets(res.teamFacets)
           setStatusFacets(res.statusFacets)
         }
@@ -489,6 +491,7 @@ const SearchInput: React.FC = () => {
             platformFacets={platformFacets}
             teamFacets={teamFacets}
             statusFacets={statusFacets}
+            priorityFacets={priorityFacets}
             open={isFilterModalOpen}
             handleClose={closeFilterModal}
             state={searchFilters}
@@ -501,6 +504,7 @@ const SearchInput: React.FC = () => {
               platformFacets={platformFacets}
               teamFacets={teamFacets}
               statusFacets={statusFacets}
+              priorityFacets={priorityFacets}
               open={isCreateModalOpen}
               getSearchPageData={getUpdatedProjectList}
               handleClose={handleCreateProjectClose}
@@ -512,6 +516,7 @@ const SearchInput: React.FC = () => {
             <EditProjectModal
               platformFacets={platformFacets}
               teamFacets={teamFacets}
+              priorityFacets={priorityFacets}
               statusFacets={statusFacets}
               loading={loading}
               projectData={project}

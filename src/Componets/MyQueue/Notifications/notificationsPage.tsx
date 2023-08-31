@@ -76,7 +76,7 @@ function NotificationsPage() {
     setLoading(true)
     const params = {
       searchTerm,
-      sortColumns,
+      sortColumn: sortColumns,
       sortOrder,
       searchWithins: searchWithin ? searchWithin.toString() : 'ALL',
       reportedBy,
@@ -86,7 +86,6 @@ function NotificationsPage() {
       itemsPerPage,
       pageNumber,
     }
-    console.log('params of notoficatiuon search', params)
 
     getApi(params, '/notificationsearch')
       .then((res) => {
@@ -129,7 +128,6 @@ function NotificationsPage() {
   }
 
   const handleSelectedFilters = (filters) => {
-    console.log('Object.entries(filters)', Object.entries(filters))
     setSelectedFilters(Object.entries(filters))
 
     setSearchFilters((prevState) => ({ ...prevState, ...filters }))
@@ -143,7 +141,6 @@ function NotificationsPage() {
       title: 'Updated Date',
       dataIndex: 'updatedDateTime',
       key: 'notificationId',
-      sorter: (a, b) => a.title.length - b.title.length,
     },
     {
       title: 'Project',
