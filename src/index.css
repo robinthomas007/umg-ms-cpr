@@ -103,7 +103,7 @@ body {
 .ant-message-notice {
   padding: 0;
 }
-.custom-message-top .ant-message-notice-content{
+.custom-message-top .ant-message-notice-content {
   background-color: #74b605;
   border-radius: 0;
   box-shadow: unset;
@@ -112,11 +112,11 @@ body {
   padding: 17px;
 }
 
-.custom-message-top .ant-message-success>.anticon {
+.custom-message-top .ant-message-success > .anticon {
   color: #ffffff;
 }
-.custom-message-top-error .ant-message-notice-content{
-  background-color: #D32F2F;
+.custom-message-top-error .ant-message-notice-content {
+  background-color: #d32f2f;
   border-radius: 0;
   box-shadow: unset;
   width: 100%;
@@ -124,10 +124,9 @@ body {
   padding: 17px;
 }
 
-.custom-message-top-error .ant-message-error>.anticon {
+.custom-message-top-error .ant-message-error > .anticon {
   color: #ffffff;
 }
-
 
 .ant-select-selection-item {
   margin-inline-end:0px !important;
