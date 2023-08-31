@@ -195,7 +195,8 @@ type LinksearchState = {
   assignedTo?: any
   statusId?: any
   categoryId?: any
-  reviewDate?: any
+  reviewDateTo?: any,
+  reviewDateFrom?: any,
   searchWithin?: string
 }
 

@@ -12,7 +12,7 @@ const dateFormat = 'MM-DD-YYYY'
 
 const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
   const [searchWithin, setSearchWithin] = useState<any>(['ALL'])
-  const [reviewDateFormat, setReviewDateFormat] = useState('')
+  // const [reviewDateFormat, setReviewDateFormat] = useState('')
 
   const [form] = Form.useForm()
 
@@ -20,16 +20,18 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
     props.handleClose()
   }
 
-  const onReviewDateChange: DatePickerProps['onChange'] = (date, dateString) => {
-    setReviewDateFormat(dateString)
-  }
+  // const onReviewDateChange: DatePickerProps['onChange'] = (date, dateString) => {
+  //   setReviewDateFormat(dateString)
+  // }
 
   const onFinish = (values: any) => {
     const modifiedProject = { ...values }
-    if (modifiedProject.reviewDate) {
-      modifiedProject.reviewDate = dayjs(modifiedProject.reviewDate).format('MM-DD-YYYY')
+    if (modifiedProject.reviewDateTo) {
+      modifiedProject.reviewDateTo = dayjs(modifiedProject.reviewDateTo).format('MM-DD-YYYY')
     }
-
+    if (modifiedProject.reviewDateFrom) {
+      modifiedProject.reviewDateFrom = dayjs(modifiedProject.reviewDateFrom).format('MM-DD-YYYY')
+    }
     modifiedProject.searchWithin = searchWithin.join(',')
     props.handleSelectedFilters(modifiedProject)
   }
@@ -47,8 +49,11 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
     if (modifiedFilters.searchWithin === 'ALL' && !searchWithin.includes('ALL')) {
       setSearchWithin(['ALL'])
     }
-    if (modifiedFilters.reviewDate) {
-      modifiedFilters.reviewDate = dayjs(modifiedFilters.reviewDate, dateFormat)
+    if (modifiedFilters.reviewDateFrom) {
+      modifiedFilters.reviewDateFrom = dayjs(modifiedFilters.reviewDateFrom, dateFormat)
+    }
+    if (modifiedFilters.reviewDateTo) {
+      modifiedFilters.reviewDateTo = dayjs(modifiedFilters.reviewDateTo, dateFormat)
     }
 
     form.setFieldsValue(modifiedFilters)
@@ -93,7 +98,7 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
         okText="submit"
         footer={null}
       >
-        <Form name="filterModal-form" form={form} onFinish={onFinish} labelCol={{ span: 8 }} wrapperCol={{ span: 14 }}>
+        <Form name="filterModal-form" form={form} onFinish={onFinish} labelCol={{ span: 7 }} wrapperCol={{ span: 14 }}>
           <Row>
             <Col>
               <Form.Item name="searchWithin" label="Search Within " colon={false}>
@@ -143,11 +148,6 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
                 <Select
                   showSearch
                   placeholder="Select a option"
-                  optionFilterProp="children"
-                  optionLabelProp="label"
-                  // filterOption={(input: any, option: any) =>
-                  //   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                  // }
                 >
                   {props.categoryFacets &&
                     props.categoryFacets.map((category, index) => {
@@ -165,10 +165,6 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
                 <Select
                   showSearch
                   placeholder="Select a option"
-                  optionFilterProp="children"
-                  // filterOption={(input: any, option: any) =>
-                  //   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                  // }
                 >
                   {props.reviewerFacets &&
                     props.reviewerFacets.map((team, index) => {
@@ -188,10 +184,6 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
                 <Select
                   showSearch
                   placeholder="Select a option"
-                  optionFilterProp="children"
-                  // filterOption={(input: any, option: any) =>
-                  //   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                  // }
                 >
                   {props.statusFacets &&
                     props.statusFacets.map((status, index) => {
@@ -204,9 +196,16 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
                 </Select>
               </Form.Item>
             </Col>
+          </Row>
+          <Row>
             <Col md={12}>
-              <Form.Item label="Review Date" name="reviewDate" colon={false}>
-                <DatePicker onChange={onReviewDateChange} format={dateFormat} placeholder="" />
+              <Form.Item label="Review From" name="reviewDateFrom" colon={false}>
+                <DatePicker style={{ width: '100%' }} format={dateFormat} placeholder="" />
+              </Form.Item>
+            </Col>
+            <Col md={12}>
+              <Form.Item label="To" labelCol={{ span: 2 }} name="reviewDateTo" colon={false}>
+                <DatePicker style={{ width: '100%' }} format={dateFormat} placeholder="" />
               </Form.Item>
             </Col>
           </Row>

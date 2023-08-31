@@ -5,7 +5,8 @@ import { LoadingOutlined } from '@ant-design/icons'
 import { getApi, postApi } from '../../Api/Api'
 import moment from 'moment'
 import './notesModal.css'
-interface ModalProps {
+
+interface NotesModalProps {
   open: boolean
   handleClose: () => void
   soure: string
@@ -19,7 +20,7 @@ const layout = {
 const { getMentions } = Mentions
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 
-const NotesModal: React.FC<ModalProps> = (props) => {
+const NotesModal: React.FC<NotesModalProps> = (props) => {
   const [notes, setNotes] = useState<any>([])
   const [comments, setComments] = useState('')
   const [loading, setLoading] = useState<boolean>(false)

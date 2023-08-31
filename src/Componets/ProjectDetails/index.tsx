@@ -44,7 +44,8 @@ const searchInitialState = {
   sortColumns: '',
   statusId: '',
   categoryId: null,
-  reviewDate: '',
+  reviewDateTo: '',
+  reviewDateFrom: '',
   searchWithin: 'ALL',
 }
 
@@ -61,6 +62,8 @@ export default function ProjectDetails() {
   const [csvData, setcsvData] = React.useState([])
   const [exportLoading, setExportLoading] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+  const [openNotesModal, setNotesModal] = useState<boolean>(false)
+
   const { projectId, teamId } = useParams()
 
   const auth = useAuth()
@@ -70,18 +73,19 @@ export default function ProjectDetails() {
   const getProjectLinks = React.useCallback(() => {
     setLoading(true)
     const params = {
-      searchTerm: searchFilters.searchTerm,
-      projectId: projectId,
-      teamId: teamId,
-      itemsPerPage: searchFilters.itemsPerPage,
-      pageNumber: searchFilters.pageNumber,
-      sortColumns: searchFilters.sortColumns,
-      sortOrder: searchFilters.sortOrder,
-      searchWithins: searchFilters.searchWithin,
-      assignedTo: searchFilters.assignedTo,
-      // statusId: searchFilters.statusId,
-      categoryId: searchFilters.categoryId,
-      // reviewDate: searchFilters.reviewDate,
+      SearchTerm: searchFilters.searchTerm,
+      ProjectId: projectId,
+      TeamId: teamId,
+      ItemsPerPage: searchFilters.itemsPerPage,
+      PageNumber: searchFilters.pageNumber,
+      SortColumn: searchFilters.sortColumns,
+      SortOrder: searchFilters.sortOrder,
+      SearchWithins: searchFilters.searchWithin,
+      AssignedTo: searchFilters.assignedTo,
+      StatusId: searchFilters.statusId,
+      CategoryId: searchFilters.categoryId,
+      ReviewDateTo: searchFilters.reviewDateTo,
+      ReviewDateFrom: searchFilters.reviewDateFrom,
     }
     getApi(params, '/ProjectLinkSearch')
       .then((res) => {
@@ -111,7 +115,7 @@ export default function ProjectDetails() {
 
   useEffect(() => {
     getProjectLinks()
-    return () => {}
+    return () => { }
   }, [getProjectLinks])
 
   React.useEffect(() => {
@@ -173,12 +177,6 @@ export default function ProjectDetails() {
     setIsFilterModalOpen(true)
   }
 
-  const showNotesModal = (projectId) => {
-    // const selectedProject = projects.find((project) => project.projectId === projectId)
-    // setProject(selectedProject)
-    // setNotesModal(true)
-  }
-
   const handleSelectedFilters = (filters) => {
     setSelectedFilters(Object.entries(filters))
     setSearchFilters((prevState) => ({ ...prevState, ...filters }))
@@ -198,6 +196,12 @@ export default function ProjectDetails() {
       sortOrder: order,
       sortColumns: field,
     })
+  }
+
+  const showNotesModal = (record) => {
+    const selectedProject = projectLinks.find((link) => link.projectLinkId === record.projectLinkId)
+    setProjectLinkData(selectedProject)
+    setNotesModal(true)
   }
 
   const columnsProject: ColumnsType<ProjectDetails> = [
@@ -270,7 +274,8 @@ export default function ProjectDetails() {
       statusId: 'Status',
       categoryId: 'Category',
       assignedTo: 'Assigned To',
-      reviewDate: 'Review Date',
+      reviewDateTo: 'Review Date To',
+      reviewDateFrom: 'Review Date From',
       searchWithin: 'Search Within',
     }
     const tagElem = (
@@ -302,6 +307,10 @@ export default function ProjectDetails() {
       return dropDownFacets[type].find((item) => item.id === tag).name
     }
     return `${tag}`
+  }
+
+  const handleNotesModal = () => {
+    setNotesModal(false)
   }
 
   return (
@@ -346,7 +355,6 @@ export default function ProjectDetails() {
           <br />
           {selectedFilters &&
             selectedFilters.map((item, i) => {
-              console.log(item, 'Asdasdads')
               if (typeof item[1] !== 'undefined' && item[1] !== '' && item[1]) {
                 return <span key={i}>{tagElement(item[0], item[1])}</span>
               }
@@ -394,7 +402,13 @@ export default function ProjectDetails() {
               getProjectLinks={getProjectLinks}
             />
           )}
-          {/* <NotesModal projectData={project} open={openNotesModal} handleClose={handleNotesModal} /> */}
+          <NotesModal
+            soureName={projectLinks[0]?.projectName}
+            sourceId={projectLinkData?.projectLinkId}
+            soure={'ProjectsLinks'}
+            open={openNotesModal}
+            handleClose={handleNotesModal}
+          />
         </Col>
       </Row>
       <br />
