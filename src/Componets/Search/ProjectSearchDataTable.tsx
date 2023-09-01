@@ -34,7 +34,7 @@ const DataGrid: React.FC<ProjectsProps> = ({ columsProjects, projects, loading }
         return {
           onClick: (event) => {
             if (event.target) {
-              navigate(`/search/${record.projectId}/${record.teamId}`)
+              navigate(`/search/${record.projectId}/${record.teamId}?projectName=${record.title}`)
             }
           },
         }

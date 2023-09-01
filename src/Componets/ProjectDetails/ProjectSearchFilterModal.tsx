@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Space, Modal, Form, Checkbox, Button, Select, DatePicker, Row, Col } from 'antd'
-import type { DatePickerProps } from 'antd'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 
@@ -12,17 +11,12 @@ const dateFormat = 'MM-DD-YYYY'
 
 const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
   const [searchWithin, setSearchWithin] = useState<any>(['ALL'])
-  // const [reviewDateFormat, setReviewDateFormat] = useState('')
 
   const [form] = Form.useForm()
 
   const handleCancel = () => {
     props.handleClose()
   }
-
-  // const onReviewDateChange: DatePickerProps['onChange'] = (date, dateString) => {
-  //   setReviewDateFormat(dateString)
-  // }
 
   const onFinish = (values: any) => {
     const modifiedProject = { ...values }

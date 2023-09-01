@@ -81,21 +81,23 @@ export default function Navbar() {
   }, [])
 
   const navigate = useNavigate()
+
   useEffect(() => {
-    switch (pathname) {
-      case '/':
+    const pathSegments = pathname.split('/');
+    switch (pathSegments[1]) {
+      case '':
         setCurrent('dashboard')
         break
-      case '/search':
+      case 'search':
         setCurrent('search')
         break
-      case '/myqueue':
+      case 'myqueue':
         setCurrent('myqueue')
         break
-      case '/admin':
+      case 'admin':
         setCurrent('administration')
         break
-      case '/tasking':
+      case 'tasking':
         setCurrent('tasking')
         break
       default:
@@ -245,7 +247,7 @@ export default function Navbar() {
           <div
             className="noti-content"
             onClick={() => naviagetNotificationPage(noti.source, noti.notificationId, noti.isRead)}
-            // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
+          // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
           >
             {noti.notificationType.toLowerCase() === 'created' && (
               <>

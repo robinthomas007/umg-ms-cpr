@@ -69,7 +69,9 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
       .then(() => {
         form.resetFields()
         props.handleClose()
-        props.getProjectLinks()
+        setTimeout(() => {
+          props.getProjectLinks()
+        }, 100);
       })
       .catch((error) => {
         showErrorNotification(error.message)
@@ -80,6 +82,15 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
     setReviewDateFormat(dateString)
   }
 
+  const validateURL = (rule, value, callback) => {
+    const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})(\/[^\s]*)?$/;
+    if (value && !urlPattern.test(value)) {
+      callback('Please Enter a valid Url');
+    } else {
+      callback();
+    }
+  };
+
   return (
     <>
       <Modal open={props.open} title="Create Project" centered footer={null} width={450} onCancel={props.handleClose}>
@@ -88,7 +99,9 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
             <Col span={24}>
               <Form.Item
                 name={['project', 'url']}
-                rules={[{ required: true, message: 'Please input url' }]}
+                rules={[{ required: true, message: 'Please Enter URL' },
+                { validator: validateURL }
+                ]}
                 label="URL"
                 labelAlign="left"
                 colon={false}
@@ -97,8 +110,10 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
               </Form.Item>
               <Form.Item
                 name={['project', 'accountUrl']}
-                rules={[{ required: true, message: 'Please input Account URL' }]}
-                label="accountUrl"
+                rules={[{ required: true, message: 'Please Enter Account URL' },
+                { validator: validateURL }
+                ]}
+                label="Account URL"
                 labelAlign="left"
                 colon={false}
               >
@@ -107,16 +122,16 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
               <Form.Item
                 labelAlign="left"
                 name={['project', 'artist']}
-                rules={[{ required: true, message: 'Please input Artist' }]}
-                label="Artists"
+                rules={[{ required: true, message: 'Please Enter Artist' }]}
+                label="Artist"
                 colon={false}
               >
                 <Input />
               </Form.Item>
               <Form.Item
                 name={['project', 'title']}
-                rules={[{ required: true, message: 'Please input title' }]}
-                label="title"
+                rules={[{ required: true, message: 'Please Enter Title' }]}
+                label="Title"
                 labelAlign="left"
                 colon={false}
               >
@@ -124,7 +139,7 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
               </Form.Item>
               <Form.Item
                 labelAlign="left"
-                rules={[{ required: true, message: 'Please select category' }]}
+                rules={[{ required: true, message: 'Please Select Category' }]}
                 name={['project', 'categoryId']}
                 label="Category"
                 colon={false}
@@ -142,7 +157,7 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
               </Form.Item>
               <Form.Item
                 labelAlign="left"
-                rules={[{ required: true, message: 'Please select Reviewer' }]}
+                rules={[{ required: true, message: 'Please Select Reviewer' }]}
                 name={['project', 'assignedTo']}
                 label="Reviewer"
                 colon={false}
@@ -161,7 +176,7 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
 
               <Form.Item
                 name={['project', 'reviewDate']}
-                rules={[{ required: true, message: 'Please input Review Date' }]}
+                rules={[{ required: true, message: 'Please Enter Review Date' }]}
                 label="Review Date"
                 labelAlign="left"
                 colon={false}
@@ -171,7 +186,7 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
 
               <Form.Item
                 labelAlign="left"
-                rules={[{ required: true, message: 'Please select status' }]}
+                rules={[{ required: true, message: 'Please Select Status' }]}
                 name={['project', 'statusId']}
                 label="Status"
                 colon={false}

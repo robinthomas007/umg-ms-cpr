@@ -23,6 +23,7 @@ import { LINK_TITLES, countValues } from '../Common/StaticDatas'
 import ProjectSearchDetailsDataTable from './ProjectSearchDetailsDataTable'
 import { useParams } from 'react-router-dom'
 import { useAuth } from '../../Context/authContext'
+import { useLocation } from 'react-router-dom';
 
 const { Search } = Input
 const { Text, Title } = Typography
@@ -65,6 +66,9 @@ export default function ProjectDetails() {
   const [openNotesModal, setNotesModal] = useState<boolean>(false)
 
   const { projectId, teamId } = useParams()
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const projectName = queryParams.get('projectName');
 
   const auth = useAuth()
 
@@ -161,6 +165,7 @@ export default function ProjectDetails() {
   const handleCreateProjectClose = () => {
     setIsCreateModalOpen(false)
     setIsBulkModalOpen(false)
+    setProjectLinkData(null)
   }
 
   const editProject = (record) => {
@@ -317,12 +322,12 @@ export default function ProjectDetails() {
     <div className="search-wrapper">
       <Row justify={'space-between'}>
         <Col>
-          <Title level={3}>Project: {projectLinks ? projectLinks[0]?.projectName : ''}</Title>
+          <Title level={3}>Project: {projectName}</Title>
           <Link to="/search"> &larr; Back to Projects</Link>
         </Col>
         <Col md={4}>
           <label style={{ marginRight: 10 }}>Assigned To : </label>
-          <Select style={{ minWidth: 150 }} placeholder="Select Reviewer" onChange={handleChangeAssignee}>
+          <Select style={{ minWidth: 150 }} placeholder="ALL" onChange={handleChangeAssignee} allowClear>
             {facets.userFacets &&
               facets.userFacets.map((team, index) => {
                 return (
