@@ -410,7 +410,7 @@ export default function ProjectDetails() {
           <NotesModal
             soureName={projectLinks[0]?.projectName}
             sourceId={projectLinkData?.projectLinkId}
-            soure={'ProjectsLinks'}
+            soure={'Links'}
             open={openNotesModal}
             handleClose={handleNotesModal}
           />
