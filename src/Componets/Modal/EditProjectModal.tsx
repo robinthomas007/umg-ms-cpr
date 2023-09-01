@@ -115,13 +115,31 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
         <Form {...layout} name="nest-messages" form={form} onFinish={onFinish} validateMessages={validateMessages}>
           <Row>
             <Col span={14}>
-              <Form.Item name="title" label="Project Title" labelAlign="left" colon={false}>
+              <Form.Item
+                name="title"
+                label="Project Title"
+                rules={[{ required: true, message: 'Please input Title' }]}
+                labelAlign="left"
+                colon={false}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item labelAlign="left" name="artistList" label="Ttiles/Artists" colon={false}>
+              <Form.Item
+                labelAlign="left"
+                name="artistList"
+                rules={[{ required: true, message: 'Please input Artist' }]}
+                label="Ttiles/Artists"
+                colon={false}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item labelAlign="left" name="platformId" label="Platform(s)" colon={false}>
+              <Form.Item
+                labelAlign="left"
+                rules={[{ required: true, message: 'Please select Platform' }]}
+                name="platformId"
+                label="Platform(s)"
+                colon={false}
+              >
                 <Select>
                   {platformFacets &&
                     platformFacets.map((platform, index) => {
@@ -133,7 +151,13 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
                     })}
                 </Select>
               </Form.Item>
-              <Form.Item labelAlign="left" name="teamId" label="Team Assignment" colon={false}>
+              <Form.Item
+                labelAlign="left"
+                name="teamId"
+                rules={[{ required: true, message: 'Please select Team' }]}
+                label="Team Assignment"
+                colon={false}
+              >
                 <Select placeholder="Select Team">
                   {teamFacets &&
                     teamFacets.map((team, index) => {
@@ -145,7 +169,13 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
                     })}
                 </Select>
               </Form.Item>
-              <Form.Item labelAlign="left" name="statusTypeId" label="Status" colon={false}>
+              <Form.Item
+                labelAlign="left"
+                name="statusTypeId"
+                label="Status"
+                rules={[{ required: true, message: 'Please select status' }]}
+                colon={false}
+              >
                 <Select>
                   {statusFacets &&
                     statusFacets.map((status, index) => {

@@ -48,15 +48,16 @@ const MyQueueDataGrid: React.FC<NotificationProps> = ({
       }}
       onRow={(record: any, rowIndex) => {
         return {
-          onClick: (event) => {
-            postApi(
-              { notificationId: record.id },
-              '/notification/readnotification',
-              'marked as read nottification'
-            ).then((res) => {
-              console.log('response', res)
-              getUpdatedNotificationList()
-            })
+          onMouseEnter: (event) => {
+            if (!record.isRead) {
+              postApi(
+                { notificationId: record.id },
+                '/notification/readnotification',
+                'marked as read nottification'
+              ).then((res) => {
+                getUpdatedNotificationList()
+              })
+            }
           },
         }
       }}
