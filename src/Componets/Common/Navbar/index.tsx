@@ -83,7 +83,7 @@ export default function Navbar() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const pathSegments = pathname.split('/');
+    const pathSegments = pathname.split('/')
     switch (pathSegments[1]) {
       case '':
         setCurrent('dashboard')
@@ -136,24 +136,9 @@ export default function Navbar() {
   const clearNotification = () => {
     setNotifications([])
     setShowNoti(false)
-    // setLoading(true)
-    axios
-      .get(BASE_URL + 'Notification/ClearNotification', {
-        headers: {
-          cp3_auth: getCookie('cp3_auth'),
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          getAllNotifications()
-        }
-      })
-      .catch((err) => {
-        setLoading(false)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    postApi({ notificationId: 0 }, '/notification/readnotification', 'cleared All notification').then((res) => {
+      console.log('response', res)
+    })
   }
 
   const handleClickOutside = (event: any) => {
@@ -247,12 +232,12 @@ export default function Navbar() {
           <div
             className="noti-content"
             onClick={() => naviagetNotificationPage(noti.source, noti.notificationId, noti.isRead)}
-          // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
+            // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
           >
             {noti.notificationType.toLowerCase() === 'created' && (
               <>
                 <strong>{noti.userName}</strong> {noti.notificationType.toLowerCase()} a new{' '}
-                {noti.source === 'Projects' ? 'project' : noti.source === 'CP3' ? 'CP3' : 'Greenlist'} of{' '}
+                {noti.source === 'Projects' ? 'project' : noti.source === 'Links' ? 'Links' : 'project'} of{' '}
                 <strong>"{noti.projectName}"</strong> and assigned it to {noti.teamName}
                 <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
               </>
@@ -260,7 +245,7 @@ export default function Navbar() {
             {noti.notificationType.toLowerCase() === 'updated' && (
               <>
                 <strong>{noti.userName}</strong> {noti.notificationType.toLowerCase()} a{' '}
-                {noti.source === 'Projects' ? 'project' : noti.source === 'CP3' ? 'CP3' : 'Greenlist'} of{' '}
+                {noti.source === 'Projects' ? 'project' : noti.source === 'Links' ? 'Links' : 'project'} of{' '}
                 <strong>"{noti.projectName}"</strong>
                 <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
               </>
@@ -268,15 +253,15 @@ export default function Navbar() {
             {noti.notificationType.toLowerCase() === 'assigned' && noti.source === 'Projects' && (
               <>
                 <strong>{noti.userName}</strong> {noti.notificationType.toLowerCase()} to{' '}
-                {noti.source === 'Projects' ? 'project' : noti.source === 'CP3' ? 'CP3' : 'Greenlist'} of{' '}
+                {noti.source === 'Projects' ? 'project' : noti.source === 'Links' ? 'links' : 'project'} of{' '}
                 <strong>"{noti.projectName}"</strong>
                 <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
               </>
             )}
             {noti.notificationType.toLowerCase() === 'assigned' && noti.source === 'Links' && (
               <>
-                <strong>{noti.userName}</strong> {noti.notificationType.toLowerCase()} to{' '}
-                {noti.source === 'Projects' ? 'project' : noti.source === 'CP3' ? 'CP3' : 'Greenlist'} of{' '}
+                <strong>{noti.userName}</strong> {noti.notificationType.toLowerCase()} to {noti.linksCount}{' '}
+                {noti.source === 'Projects' ? 'project' : noti.source === 'Links' ? 'links' : 'project'} of{' '}
                 <strong>"{noti.projectName}"</strong>
                 <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
               </>
@@ -293,7 +278,7 @@ export default function Navbar() {
             {noti.notificationType.toLowerCase() === 'links' && (
               <>
                 <strong>{noti.userName}</strong> assigned {noti.linksCount} on the {''}
-                {noti.source === 'Projects' ? 'project' : noti.source === 'Links' ? 'links' : 'Greenlist'}{' '}
+                {noti.source === 'Projects' ? 'project' : noti.source === 'Links' ? 'links' : 'project'}{' '}
                 <strong>"{noti.projectName}"</strong> to you{' '}
                 <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
               </>
@@ -347,7 +332,7 @@ export default function Navbar() {
           <div className="notification-wrapper arrow-top" style={{ background: '#000' }}>
             {renderNotifications()}
             <div className="clr-noti">
-              <Button size="large" type="primary">
+              <Button size="large" type="primary" onClick={clearNotification}>
                 Clear All
               </Button>
             </div>
