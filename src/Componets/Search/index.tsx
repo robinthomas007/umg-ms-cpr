@@ -74,7 +74,7 @@ const PriorityImg = {
   None: '',
   Low: <DownOutlined />,
   Medium: <ProfileOutlined />,
-  Hight: <UpOutlined />,
+  High: <UpOutlined />,
   Critical: <DoubleRightOutlined />,
 }
 
@@ -360,7 +360,10 @@ const SearchInput: React.FC = () => {
       title: 'Links/Progress',
       key: 'progress',
       render: (_, record) => (
-        <Progress percent={record.progress} strokeColor={{ '0%': '#85D305', '50%': '#F68B0D', '100%': '#CA1919' }} />
+        <Progress
+          percent={record.linkPercentage}
+          strokeColor={{ '0%': '#85D305', '50%': '#F68B0D', '100%': '#CA1919' }}
+        />
       ),
     },
     {

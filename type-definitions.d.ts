@@ -17,6 +17,7 @@ interface Project {
   updatedOn: string
   priorityName: string
   teamId: any
+  linkPercentage:number
 }
 
 interface Platform {
