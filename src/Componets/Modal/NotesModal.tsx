@@ -26,7 +26,6 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [form] = Form.useForm()
   const [mentions, setMentions] = useState<any>([])
-  // const [teams, setTeams] = useState<any>([])
 
   const invokeGetNotesApi = React.useCallback(() => {
     setLoading(true)
@@ -51,7 +50,7 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
         for (let i = 0; i < teamList.length; i++) {
           newOptions.push(teamList[i].teamName)
         }
-        console.log('newOptions', newOptions)
+
         const transformedMentionsList = newOptions.map((label, index) => ({
           value: `${label}`,
           label: label.toLowerCase(),
@@ -66,10 +65,6 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
     invokeGetNotesApi()
   }, [invokeGetNotesApi, props.sourceId])
 
-  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setComments(e.target.value)
-    console.log(e.target.value)
-  }
   const handleSubmit = (values) => {
     postApi(
       {

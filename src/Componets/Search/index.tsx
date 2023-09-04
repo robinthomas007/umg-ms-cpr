@@ -213,7 +213,7 @@ const SearchInput: React.FC = () => {
       return `${statusFacets[tag - 1].statusTypeDescription}`
     }
     if (type === 'priority') {
-      return `${priorityFacets[tag - 1].priorityName}`
+      return `${priorityFacets.find((priority) => priority.priorityId === tag)?.priorityName}`
     }
     if (type === 'teams') {
       return `${teamFacets.find((teams) => teams.teamId === tag)?.teamName}`

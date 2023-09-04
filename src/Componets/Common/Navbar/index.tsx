@@ -210,9 +210,7 @@ export default function Navbar() {
 
   const markAsRead = (id: number, source: string) => {
     // mark as read api on hold for client verification
-    postApi({ notificationId: id }, '/notification/readnotification', 'marked as read nottification').then((res) => {
-      console.log('response', res)
-    })
+    postApi({ notificationId: id }, '/notification/readnotification', '').then((res) => {})
   }
 
   const renderNotifications = () => {

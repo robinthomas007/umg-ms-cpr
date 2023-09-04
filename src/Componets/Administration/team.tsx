@@ -219,7 +219,6 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
     }
     postApi(updatedMember, '/teamuser', 'successfully assigned role')
       .then((res: any) => {
-        console.log(res.result)
         setIsTeamDataUpdated(!isTeamDataUpdated)
       })
       .catch((error: any) => {
