@@ -29,6 +29,7 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
     modifiedProject.searchWithin = searchWithin.join(',')
     props.handleSelectedFilters(modifiedProject)
   }
+
   const defaultSelectedFilters = {
     endDate: '',
     platforms: undefined,
@@ -142,6 +143,7 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
                 <Select
                   showSearch
                   placeholder="Select a option"
+                  mode='multiple'
                 >
                   {props.categoryFacets &&
                     props.categoryFacets.map((category, index) => {
@@ -159,6 +161,7 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
                 <Select
                   showSearch
                   placeholder="Select a option"
+                  mode='multiple'
                 >
                   {props.reviewerFacets &&
                     props.reviewerFacets.map((team, index) => {
@@ -178,6 +181,7 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
                 <Select
                   showSearch
                   placeholder="Select a option"
+                  mode='multiple'
                 >
                   {props.statusFacets &&
                     props.statusFacets.map((status, index) => {

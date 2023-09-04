@@ -85,9 +85,9 @@ export default function ProjectDetails() {
       SortColumn: searchFilters.sortColumns,
       SortOrder: searchFilters.sortOrder,
       SearchWithins: searchFilters.searchWithin,
-      AssignedTo: searchFilters.assignedTo,
-      StatusId: searchFilters.statusId,
-      CategoryId: searchFilters.categoryId,
+      AssignedTo: searchFilters.assignedTo ? searchFilters.assignedTo.join(',') : searchFilters.assignedTo,
+      StatusId: searchFilters.statusId ? searchFilters.statusId.join(',') : searchFilters.statusId,
+      CategoryId: searchFilters.categoryId ? searchFilters.categoryId.join(',') : searchFilters.categoryId,
       ReviewDateTo: searchFilters.reviewDateTo,
       ReviewDateFrom: searchFilters.reviewDateFrom,
     }
@@ -97,7 +97,6 @@ export default function ProjectDetails() {
           setcsvData(res.projectLinks)
           setExportLoading(false)
         } else {
-          setLoading(false)
           setFacets({
             ...facets,
             statusFacets: res.statusFacets,
@@ -107,6 +106,7 @@ export default function ProjectDetails() {
           })
           setProjectLinks(res.projectLinks)
         }
+        setLoading(false)
       })
       .catch((err) => {
         setLoading(false)
@@ -268,10 +268,21 @@ export default function ProjectDetails() {
     },
   ]
 
-  const handleTagClose = (removedTag) => {
-    const modifiiedFilters = selectedFilters.filter((item) => item[0] !== removedTag)
+  const handleTagClose = (removedTag, el?) => {
+    let modifiiedFilters = []
+    if (el) {
+      modifiiedFilters = selectedFilters.map(([key, value]) => {
+        if (key === removedTag && Array.isArray(value)) {
+          return [key, value.filter(item => item !== el)];
+        }
+        return [key, value];
+      });
+      setSearchFilters((prev) => ({ ...prev, [removedTag]: searchFilters[removedTag].filter((id) => id !== el) }))
+    } else {
+      modifiiedFilters = selectedFilters.filter((item) => item[0] !== removedTag)
+      setSearchFilters((prev) => ({ ...prev, [removedTag]: null }))
+    }
     setSelectedFilters(modifiiedFilters)
-    setSearchFilters((prev) => ({ ...prev, [removedTag]: null }))
   }
 
   const tagElement = (type, tag) => {
@@ -283,23 +294,43 @@ export default function ProjectDetails() {
       reviewDateFrom: 'Review Date From',
       searchWithin: 'Search Within',
     }
-    const tagElem = (
-      <>
-        <span>{`${labels[type]}:`}</span>
-        <Tag
-          color={'#85D305'}
-          closable
-          onClose={(e) => {
-            e.preventDefault()
-            handleTagClose(type)
-          }}
-          style={{ margin: '5px' }}
-        >
-          {tag && renderFilterTags(type, tag)}
-        </Tag>
-      </>
-    )
-    return tagElem
+    if (Array.isArray(tag)) {
+      return (
+        <>
+          <span>{`${labels[type]}:`}</span>
+          {tag.map((el, i) => {
+            return <Tag key={i}
+              color={'#85D305'}
+              closable
+              onClose={(e) => {
+                e.preventDefault()
+                handleTagClose(type, el)
+              }}
+              style={{ margin: '5px' }}
+            >
+              {tag && renderFilterTags(type, el)}
+            </Tag>
+          })}
+        </>
+      )
+    } else {
+      return (
+        <>
+          <span>{`${labels[type]}:`}</span>
+          <Tag
+            color={'#85D305'}
+            closable
+            onClose={(e) => {
+              e.preventDefault()
+              handleTagClose(type)
+            }}
+            style={{ margin: '5px' }}
+          >
+            {tag}
+          </Tag>
+        </>
+      )
+    }
   }
 
   const renderFilterTags = (type: string, tag) => {
@@ -311,7 +342,6 @@ export default function ProjectDetails() {
     if (dropDownFacets[type]) {
       return dropDownFacets[type].find((item) => item.id === tag).name
     }
-    return `${tag}`
   }
 
   const handleNotesModal = () => {
@@ -390,6 +420,7 @@ export default function ProjectDetails() {
               projectLinkData={projectLinkData}
               teamId={teamId}
               getProjectLinks={getProjectLinks}
+              setLoading={setLoading}
             />
           )}
           {isBulkModalOpen && (
@@ -405,6 +436,7 @@ export default function ProjectDetails() {
               teamId={teamId}
               projectId={projectId}
               getProjectLinks={getProjectLinks}
+              setLoading={setLoading}
             />
           )}
           <NotesModal
