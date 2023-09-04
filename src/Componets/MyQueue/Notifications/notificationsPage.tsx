@@ -7,6 +7,7 @@ import { Col, Row, Menu, Space, Button, Input, Tag, Select, Divider, Progress, T
 import type { PaginationProps } from 'antd'
 import { countValues } from '../../Common/Utils'
 import NotificationsSearchFilterModal from './NotificationsSearchFilterModal'
+import NotesModal from '../../Modal/NotesModal'
 import {
   DownloadOutlined,
   PlusCircleFilled,
@@ -56,6 +57,7 @@ function NotificationsPage() {
   const [searchedColumn, setSearchedColumn] = useState('')
   const searchInput = useRef(null)
   const [itemsPerPage, setItemsPerPage] = useState(10)
+  const [selectedNoti, setSelectedNoti] = useState<any>({})
 
   const typeData = ['Notification', 'Task']
 
@@ -169,13 +171,22 @@ function NotificationsPage() {
     },
     {
       title: 'Actions',
-      render: (_, record) => (
+      render: (_, record: any) => (
         <Space size="middle">
-          <Button onClick={() => console.log('onclcick')} icon={<WechatOutlined />} size={'middle'} />
+          <Button onClick={(e) => showNotesModal(e, record.notificationId)} icon={<WechatOutlined />} size={'middle'} />
         </Space>
       ),
     },
   ]
+
+  const showNotesModal = (e, notificationId) => {
+    e.stopPropagation()
+    const selectedNotification = notifications.find(
+      (notification: any) => notification.notificationId === notificationId
+    )
+    setSelectedNoti(selectedNotification)
+    setNotesModal(true)
+  }
 
   const handleTagClose = (removedTag) => {
     const modifiiedFilters = selectedFilters.filter((item) => item[0] !== removedTag)
@@ -184,11 +195,12 @@ function NotificationsPage() {
   }
 
   const renderFilterTags = (type: string, tag) => {
-    if (type === 'reportedBy') {
-      return `${userFacets[Number(tag) - 1].name}`
+    const dropDownFacets = {
+      reportedBy: userFacets,
+      type: typeFacets,
     }
-    if (type === 'type') {
-      return `${typeFacets[Number(tag) - 1].name}`
+    if (dropDownFacets[type]) {
+      return dropDownFacets[type].find((item) => item.id === tag).name
     }
     return `${tag}`
   }
@@ -213,6 +225,9 @@ function NotificationsPage() {
       </>
     )
     return tagElem
+  }
+  const handleNotesModal = () => {
+    setNotesModal(false)
   }
 
   return (
@@ -253,6 +268,13 @@ function NotificationsPage() {
             loading={loading}
             selectedFilters={selectedFilters}
           />
+          <NotesModal
+            soureName={selectedNoti.sourceName}
+            sourceId={selectedNoti.notificationId}
+            soure={'Notifications'}
+            open={openNotesModal}
+            handleClose={handleNotesModal}
+          />
 
           {/* <NotesModal projectData={project} open={openNotesModal} handleClose={handleNotesModal} /> */}
         </Col>
@@ -272,7 +294,7 @@ function NotificationsPage() {
           &nbsp;&nbsp;
           <Text>of {totalItems} Results</Text>
         </Col>
-        <Col span={8} push={3}>
+        <Col span={8} push={2}>
           <Pagination
             defaultCurrent={1}
             current={pageNumber}

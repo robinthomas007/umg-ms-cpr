@@ -58,7 +58,6 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
       isDeleted: false,
       userEmail: user.upn,
     }
-    console.log('created Params', data)
     setEndDateFormat('')
     setStartDateFormat('')
     postApi(data, '/projects', 'Project Created Successfully!')
@@ -85,6 +84,10 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
   const onEndDateChange: DatePickerProps['onChange'] = (date, dateString) => {
     setEndDateFormat(dateString)
   }
+  // const transformedTeamList = test.map(({ platformId, platformName }) => ({
+  //   value: platformId,
+  //   label: platformName,
+  // }))
 
   return (
     <>
@@ -105,7 +108,7 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
                 labelAlign="left"
                 name={['project', 'artist']}
                 rules={[{ required: true, message: 'Please input Artist' }]}
-                label="Ttiles/Artists"
+                label="Titles/Artists"
                 colon={false}
               >
                 <Input />
@@ -117,7 +120,17 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
                 label="Platform(s)"
                 colon={false}
               >
-                <Select placeholder="Select Platform">
+                {/* <Select placeholder="Select Platform">
+                  {props.platformFacets &&
+                    props.platformFacets.map((platform, index) => {
+                      return (
+                        <Option key={index} label={platform.platformName} value={platform.platformId}>
+                          {platform.platformName}
+                        </Option>
+                      )
+                    })}
+                </Select> */}
+                <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
                   {props.platformFacets &&
                     props.platformFacets.map((platform, index) => {
                       return (

@@ -73,13 +73,15 @@ const showNotification = (status, customMessage) => {
     maxCount: 1,
   })
   if (status === 200) {
-    showSuccessNotification(customMessage || 'Successfully Saved')
-    message.open({
-      type: 'success',
-      content: customMessage || 'Successfully Saved',
-      className: 'custom-message-top',
-      duration: 2.5,
-    })
+    if (customMessage) {
+      showSuccessNotification(customMessage || 'Successfully Saved')
+      message.open({
+        type: 'success',
+        content: customMessage || 'Successfully Saved',
+        className: 'custom-message-top',
+        duration: 2.5,
+      })
+    }
   }
 
   if (status !== 200) {

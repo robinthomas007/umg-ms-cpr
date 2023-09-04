@@ -42,9 +42,11 @@ const searchInitialState = {
   platforms: null,
   teams: null,
   status: null,
+  priority: null,
   platformFacets: [],
   teamFacets: [],
   statusFacets: [],
+  priorityFacets: [],
 
   startDate: '',
   endDate: '',
@@ -74,7 +76,7 @@ const PriorityImg = {
   None: '',
   Low: <DownOutlined />,
   Medium: <ProfileOutlined />,
-  Hight: <UpOutlined />,
+  High: <UpOutlined />,
   Critical: <DoubleRightOutlined />,
 }
 
@@ -119,6 +121,7 @@ const SearchInput: React.FC = () => {
       teams,
       platforms,
       status,
+      priority,
       startDate,
       endDate,
     } = searchFilters
@@ -133,6 +136,7 @@ const SearchInput: React.FC = () => {
       platforms: platforms,
       teams: teams,
       status: status,
+      priority: priority,
       startDate: startDate,
       endDate: endDate,
     }
@@ -207,6 +211,9 @@ const SearchInput: React.FC = () => {
     }
     if (type === 'status') {
       return `${statusFacets[tag - 1].statusTypeDescription}`
+    }
+    if (type === 'priority') {
+      return `${priorityFacets.find((priority) => priority.priorityId === tag)?.priorityName}`
     }
     if (type === 'teams') {
       return `${teamFacets.find((teams) => teams.teamId === tag)?.teamName}`
@@ -360,7 +367,10 @@ const SearchInput: React.FC = () => {
       title: 'Links/Progress',
       key: 'progress',
       render: (_, record) => (
-        <Progress percent={record.progress} strokeColor={{ '0%': '#85D305', '50%': '#F68B0D', '100%': '#CA1919' }} />
+        <Progress
+          percent={record.linkPercentage}
+          strokeColor={{ '0%': '#85D305', '50%': '#F68B0D', '100%': '#CA1919' }}
+        />
       ),
     },
     {
@@ -551,7 +561,7 @@ const SearchInput: React.FC = () => {
           &nbsp;&nbsp;
           <Text>of {totalItems} Results</Text>
         </Col>
-        <Col span={8} push={3}>
+        <Col span={8} push={2}>
           <Pagination
             defaultCurrent={1}
             current={pageNumber}
@@ -564,7 +574,7 @@ const SearchInput: React.FC = () => {
           />
         </Col>
 
-        <Col span={4} offset={4}>
+        <Col span={8}>
           <Row justify="end">
             <Space wrap>
               <Button onClick={showCreateProjectModal} icon={<PlusCircleFilled />} size={'middle'}>

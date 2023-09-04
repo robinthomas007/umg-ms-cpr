@@ -25,6 +25,7 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
   const [comments, setComments] = useState('')
   const [loading, setLoading] = useState<boolean>(false)
   const [form] = Form.useForm()
+  const [mentions, setMentions] = useState<any>([])
 
   const invokeGetNotesApi = React.useCallback(() => {
     setLoading(true)
@@ -38,19 +39,37 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
   }, [props.sourceId, props.soure])
   useEffect(() => {
     invokeGetNotesApi()
+    getApi({ SearchTerm: null }, '/usersearch')
+      .then((res) => {
+        const newOptions: any = []
+        const userList = res.userList.users
+        const teamList = res.userList.teams
+        for (let i = 0; i < userList.length; i++) {
+          newOptions.push(userList[i].userName.replace(' ', ''))
+        }
+        for (let i = 0; i < teamList.length; i++) {
+          newOptions.push(teamList[i].teamName)
+        }
+
+        const transformedMentionsList = newOptions.map((label, index) => ({
+          value: `${label}`,
+          label: label.toLowerCase(),
+        }))
+        setMentions(transformedMentionsList)
+      })
+      .catch((error) => {
+        console.log('error feching data', error)
+      })
   }, [])
   useEffect(() => {
     invokeGetNotesApi()
   }, [invokeGetNotesApi, props.sourceId])
 
-  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setComments(e.target.value)
-  }
-  const handleSubmit = () => {
+  const handleSubmit = (values) => {
     postApi(
       {
         sourceId: props.sourceId,
-        comments: comments,
+        comments: values.notes,
         source: props.soure,
         sourceName: props.soureName,
       },
@@ -65,6 +84,7 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
   const validateMessages = {
     required: 'comments is required!',
   }
+
   return (
     <>
       <Modal title={`Notes`} open={props.open} footer={null} onCancel={props.handleClose} width={700}>
@@ -86,7 +106,7 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
           })}
         </div>
         <Form {...layout} name="nest-messages" onFinish={handleSubmit} validateMessages={validateMessages} form={form}>
-          <Form.Item name="notes" rules={[{ required: true }]} wrapperCol={{ span: 24 }}>
+          {/* <Form.Item name="notes" rules={[{ required: true }]} wrapperCol={{ span: 24 }}>
             <Input.TextArea
               className="notes"
               allowClear
@@ -94,27 +114,10 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
               placeholder="Create A New Note"
               style={{ marginTop: '150px', height: '100px' }}
             />
-          </Form.Item>
-          {/* <Form.Item name="bio" labelCol={{ span: 6 }} wrapperCol={{ span: 32 }} rules={[{ required: true }]}>
-            <Mentions
-              rows={4}
-              placeholder="Create A New Note"
-              options={[
-                {
-                  value: 'afc163',
-                  label: 'afc163',
-                },
-                {
-                  value: 'zombieJ',
-                  label: 'zombieJ',
-                },
-                {
-                  value: 'yesmeck',
-                  label: 'yesmeck',
-                },
-              ]}
-            />
           </Form.Item> */}
+          <Form.Item name="notes" labelCol={{ span: 6 }} wrapperCol={{ span: 32 }} rules={[{ required: true }]}>
+            <Mentions rows={4} placeholder="Create A New Note" options={mentions} />
+          </Form.Item>
           <Row justify="end">
             <Space>
               <Col>
