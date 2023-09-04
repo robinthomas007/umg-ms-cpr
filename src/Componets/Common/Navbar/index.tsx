@@ -182,19 +182,19 @@ export default function Navbar() {
     !isRead && markAsRead(Number(notificationId), source)
     switch (source) {
       case 'Projects':
-        navigate('/search', {
+        navigate('/myqueue', {
           state: { notificationId: notificationId },
           replace: true,
         })
         break
-      case 'GL':
-        navigate('/green_list', {
+      case 'Links':
+        navigate('/myqueue', {
           state: { notificationId: notificationId },
           replace: true,
         })
         break
-      case 'CP3':
-        navigate('/', {
+      case 'Notifications':
+        navigate('/myqueue', {
           state: { notificationId: notificationId },
           replace: true,
         })
@@ -336,8 +336,6 @@ export default function Navbar() {
                 Clear All
               </Button>
             </div>
-
-            {/* <span onClick={clearNotification}>Clear</span> */}
           </div>
         )}
       </div>

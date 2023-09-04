@@ -67,9 +67,11 @@ type searchState = {
   platforms: number | null
   teams: number | null
   status: number | null
+  priority: number | null
   platformFacets: Platform[]
   teamFacets: Teams[]
   statusFacets: Status[]
+  priorityFacets:Priority[]
   startDate: string
   endDate: string
   totalPages: number

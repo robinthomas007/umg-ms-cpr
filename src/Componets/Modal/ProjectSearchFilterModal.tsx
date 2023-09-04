@@ -54,6 +54,7 @@ const FilterModal: React.FC<ModalProps> = (props) => {
     startDate: '',
     status: undefined,
     teams: undefined,
+    priority: undefined,
   }
   useEffect(() => {
     const modifiedFilters: any = { ...defaultSelectedFilters, ...Object.fromEntries(props.selectedFilters) }
@@ -198,28 +199,54 @@ const FilterModal: React.FC<ModalProps> = (props) => {
               </Select>
             </Form.Item>
           </Form.Item>
-          <Form.Item label="Status" colon={false}>
-            <Space.Compact>
-              <Form.Item name="status" noStyle>
-                <Select
-                  showSearch
-                  placeholder="Select a option"
-                  optionFilterProp="children"
-                  filterOption={(input: any, option: any) =>
-                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                  }
-                >
-                  {props.statusFacets &&
-                    props.statusFacets.map((status, index) => {
-                      return (
-                        <Option key={index} label={status.statusTypeDescription} value={status.statusTypeId}>
-                          {status.statusTypeDescription}
-                        </Option>
-                      )
-                    })}
-                </Select>
-              </Form.Item>
-            </Space.Compact>
+
+          <Form.Item label="Status" style={{ marginBottom: 0 }} colon={false}>
+            <Form.Item name="status" style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}>
+              <Select
+                style={{ width: '125px' }}
+                showSearch
+                placeholder="Select a option"
+                optionFilterProp="children"
+                optionLabelProp="label"
+                filterOption={(input: any, option: any) =>
+                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                }
+              >
+                {props.statusFacets &&
+                  props.statusFacets.map((status, index) => {
+                    return (
+                      <Option key={index} label={status.statusTypeDescription} value={status.statusTypeId}>
+                        {status.statusTypeDescription}
+                      </Option>
+                    )
+                  })}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              label="Priority"
+              name="priority"
+              style={{ display: 'inline-block', width: 'calc(50% - 8px)', margin: '0 8px' }}
+              colon={false}
+            >
+              <Select
+                style={{ width: '130px' }}
+                showSearch
+                placeholder="Select a option"
+                optionFilterProp="children"
+                filterOption={(input: any, option: any) =>
+                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                }
+              >
+                {props.priorityFacets &&
+                  props.priorityFacets.map((priority, index) => {
+                    return (
+                      <Option key={index} label={priority.priorityName} value={priority.priorityId}>
+                        {priority.priorityName}
+                      </Option>
+                    )
+                  })}
+              </Select>
+            </Form.Item>
           </Form.Item>
 
           <Form.Item label="Start Date" style={{ marginBottom: 0 }} colon={false}>

@@ -42,9 +42,11 @@ const searchInitialState = {
   platforms: null,
   teams: null,
   status: null,
+  priority: null,
   platformFacets: [],
   teamFacets: [],
   statusFacets: [],
+  priorityFacets: [],
 
   startDate: '',
   endDate: '',
@@ -119,6 +121,7 @@ const SearchInput: React.FC = () => {
       teams,
       platforms,
       status,
+      priority,
       startDate,
       endDate,
     } = searchFilters
@@ -133,6 +136,7 @@ const SearchInput: React.FC = () => {
       platforms: platforms,
       teams: teams,
       status: status,
+      priority: priority,
       startDate: startDate,
       endDate: endDate,
     }
@@ -207,6 +211,9 @@ const SearchInput: React.FC = () => {
     }
     if (type === 'status') {
       return `${statusFacets[tag - 1].statusTypeDescription}`
+    }
+    if (type === 'priority') {
+      return `${priorityFacets[tag - 1].priorityName}`
     }
     if (type === 'teams') {
       return `${teamFacets.find((teams) => teams.teamId === tag)?.teamName}`
@@ -554,7 +561,7 @@ const SearchInput: React.FC = () => {
           &nbsp;&nbsp;
           <Text>of {totalItems} Results</Text>
         </Col>
-        <Col span={8} push={3}>
+        <Col span={8} push={2}>
           <Pagination
             defaultCurrent={1}
             current={pageNumber}
@@ -567,7 +574,7 @@ const SearchInput: React.FC = () => {
           />
         </Col>
 
-        <Col span={4} offset={4}>
+        <Col span={8}>
           <Row justify="end">
             <Space wrap>
               <Button onClick={showCreateProjectModal} icon={<PlusCircleFilled />} size={'middle'}>

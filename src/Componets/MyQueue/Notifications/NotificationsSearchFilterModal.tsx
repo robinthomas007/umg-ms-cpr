@@ -80,10 +80,10 @@ const FilterModal: React.FC<MyQueueModalProps> = (props) => {
       setSearchWithin(['ALL'])
     }
     if (modifiedFilters.updatedFrom) {
-      modifiedFilters.updatedFrom = dayjs(modifiedFilters.updatedFrom).format('MM-DD-YYYY')
+      modifiedFilters.updatedFrom = dayjs(modifiedFilters.updatedFrom, dateFormat)
     }
     if (modifiedFilters.updatedTo) {
-      modifiedFilters.updatedTo = dayjs(modifiedFilters.updatedTo).format('MM-DD-YYYY')
+      modifiedFilters.updatedTo = dayjs(modifiedFilters.updatedTo, dateFormat)
     }
     form.setFieldsValue(modifiedFilters)
   }, [props.selectedFilters, form])
