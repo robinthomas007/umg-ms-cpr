@@ -71,7 +71,7 @@ type searchState = {
   platformFacets: Platform[]
   teamFacets: Teams[]
   statusFacets: Status[]
-  priorityFacets:Priority[]
+  priorityFacets: Priority[]
   startDate: string
   endDate: string
   totalPages: number
@@ -233,9 +233,10 @@ interface ProjectDetailsCreateModalProps {
   state: any
   selectedFilters?: any
   getProjectLinks?: any
+  setLoading?: any
 }
 
-type Priority={
-  priorityId:number,
-  priorityName:string
+type Priority = {
+  priorityId: number,
+  priorityName: string
 }
