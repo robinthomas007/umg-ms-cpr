@@ -85,9 +85,9 @@ export default function ProjectDetails() {
       SortColumn: searchFilters.sortColumns,
       SortOrder: searchFilters.sortOrder,
       SearchWithins: searchFilters.searchWithin,
-      AssignedTo: searchFilters.assignedTo ? searchFilters.assignedTo.join(',') : searchFilters.assignedTo,
-      StatusId: searchFilters.statusId ? searchFilters.statusId.join(',') : searchFilters.statusId,
-      CategoryId: searchFilters.categoryId ? searchFilters.categoryId.join(',') : searchFilters.categoryId,
+      AssignedTo: arrayToString(searchFilters.assignedTo),
+      StatusId: arrayToString(searchFilters.statusId),
+      CategoryId: arrayToString(searchFilters.categoryId),
       ReviewDateTo: searchFilters.reviewDateTo,
       ReviewDateFrom: searchFilters.reviewDateFrom,
     }
@@ -117,9 +117,18 @@ export default function ProjectDetails() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, teamId, searchFilters])
 
+
+  const arrayToString = (val) => {
+    if (Array.isArray(val)) {
+      return val.join(',')
+    } else {
+      return val
+    }
+  }
+
   useEffect(() => {
     getProjectLinks()
-    return () => {}
+    return () => { }
   }, [getProjectLinks])
 
   React.useEffect(() => {
@@ -518,6 +527,6 @@ export default function ProjectDetails() {
           />
         </Col>
       </Row>
-    </div>
+    </div >
   )
 }
