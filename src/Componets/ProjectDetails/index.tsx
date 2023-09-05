@@ -449,13 +449,13 @@ export default function ProjectDetails() {
               setLoading={setLoading}
             />
           )}
-          <NotesModal
+          {openNotesModal && <NotesModal
             soureName={projectLinks[0]?.projectName}
             sourceId={projectLinkData?.projectLinkId}
             soure={'Links'}
             open={openNotesModal}
             handleClose={handleNotesModal}
-          />
+          />}
         </Col>
       </Row>
       <br />

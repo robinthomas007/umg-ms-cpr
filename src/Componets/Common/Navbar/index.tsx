@@ -16,12 +16,12 @@ import { useAuth } from '../../../Context/authContext'
 import React from 'react'
 import { getApi, postApi } from '../../../Api/Api'
 import type { MenuProps } from 'antd'
+import { hexArray } from './../../Common/StaticDatas'
 import moment from 'moment'
 const { Header } = Layout
 const { Text } = Typography
 
 // type Items={ key?: string | null; label?: string; icon?: React.JSX.Element |undefined; path?: string; }
-const hexArray = ['#FDD981', '#F88E86', '#F57F17', '#FBC02D']
 const items: MenuProps['items'] = [
   {
     key: 'dashboard',
@@ -210,7 +210,7 @@ export default function Navbar() {
 
   const markAsRead = (id: number, source: string) => {
     // mark as read api on hold for client verification
-    postApi({ notificationId: id }, '/notification/readnotification', '').then((res) => {})
+    postApi({ notificationId: id }, '/notification/readnotification', '').then((res) => { })
   }
 
   const renderNotifications = () => {
@@ -230,7 +230,7 @@ export default function Navbar() {
           <div
             className="noti-content"
             onClick={() => naviagetNotificationPage(noti.source, noti.notificationId, noti.isRead)}
-            // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
+          // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
           >
             {noti.notificationType.toLowerCase() === 'created' && (
               <>

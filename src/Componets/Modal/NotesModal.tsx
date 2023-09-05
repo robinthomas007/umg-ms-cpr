@@ -5,6 +5,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 import { getApi, postApi } from '../../Api/Api'
 import moment from 'moment'
 import './notesModal.css'
+import { hexArray } from './../Common/StaticDatas'
 
 interface NotesModalProps {
   open: boolean
@@ -17,7 +18,8 @@ const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
 }
-const { getMentions } = Mentions
+const { Option } = Mentions;
+
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 
 const NotesModal: React.FC<NotesModalProps> = (props) => {
@@ -44,8 +46,9 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
         const newOptions: any = []
         const userList = res.userList.users
         const teamList = res.userList.teams
+
         for (let i = 0; i < userList.length; i++) {
-          newOptions.push(userList[i].userName.replace(' ', ''))
+          newOptions.push(userList[i].userName)
         }
         for (let i = 0; i < teamList.length; i++) {
           newOptions.push(teamList[i].teamName)
@@ -85,6 +88,16 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
     required: 'comments is required!',
   }
 
+  const getUserAliance = (name) => {
+    let fName = name.split(' ')[0].charAt(0)
+    let lName = name.split(' ')[1] ? name.split(' ')[1].charAt(0) : null
+    if (!lName) {
+      lName = name.charAt(1)
+    }
+    return fName.toUpperCase() + lName.toUpperCase()
+  }
+
+
   return (
     <>
       <Modal title={`Notes`} open={props.open} footer={null} onCancel={props.handleClose} width={700}>
@@ -106,17 +119,19 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
           })}
         </div>
         <Form {...layout} name="nest-messages" onFinish={handleSubmit} validateMessages={validateMessages} form={form}>
-          {/* <Form.Item name="notes" rules={[{ required: true }]} wrapperCol={{ span: 24 }}>
-            <Input.TextArea
-              className="notes"
-              allowClear
-              onChange={onChange}
-              placeholder="Create A New Note"
-              style={{ marginTop: '150px', height: '100px' }}
-            />
-          </Form.Item> */}
           <Form.Item name="notes" labelCol={{ span: 6 }} wrapperCol={{ span: 32 }} rules={[{ required: true }]}>
-            <Mentions rows={4} placeholder="Create A New Note" options={mentions} />
+            <Mentions rows={4} placeholder="Create A New Note"
+              options={mentions.map(({ value, label }) => ({
+                key: value,
+                value: value,
+                className: 'antd-demo-dynamic-option',
+                label: (
+                  <div style={{ width: 250, display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+                    <span style={{ background: hexArray[Math.floor(Math.random() * hexArray.length)], borderRadius: '50%', padding: '5px 7px', marginRight: 10 }}>{getUserAliance(value)}</span>
+                    <span>{label}</span>
+                  </div>
+                ),
+              }))} />
           </Form.Item>
           <Row justify="end">
             <Space>
