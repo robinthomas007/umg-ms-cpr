@@ -150,3 +150,6 @@ body {
   border-radius: 20px;
   /* roundness of the scroll thumb */
 }
+.paginationAlignment{
+  text-align: center !important;
+}
