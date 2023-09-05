@@ -212,8 +212,8 @@ const SearchInput: React.FC = () => {
 
   const renderFilterTags = (type: string, tag) => {
     if (type === 'platforms') {
-      return tag.map((tagProp) => {
-        return `${platformFacets.find((platform) => platform.platformId === tagProp)?.platformName},`
+      return tag.split(',').map((tagProp) => {
+        return `${platformFacets.find((platform) => platform.platformId === Number(tagProp))?.platformName},`
       })
     }
     if (type === 'status') {

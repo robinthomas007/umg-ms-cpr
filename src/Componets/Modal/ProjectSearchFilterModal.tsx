@@ -40,6 +40,7 @@ const FilterModal: React.FC<ModalProps> = (props) => {
       modifiedProject.endDate = dayjs(modifiedProject.endDate).format('MM-DD-YYYY')
     }
     modifiedProject.searchWithin = searchWithin.join(',')
+    modifiedProject.platforms = modifiedProject.platforms.join(',')
     props.handleSelectedFilters(modifiedProject)
     // setStartDateFormat('')
     // setEndDateFormat('')
