@@ -38,3 +38,9 @@ export const countValues = [
     label: '100',
   },
 ]
+
+export const ADMIN = 'Admin'
+export const TEAM_ADMIN = 'Team Admin'
+export const TEAM_MEMBER = 'Team Member'
+export const READONLY = 'Read Only'
+

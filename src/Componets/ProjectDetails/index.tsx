@@ -19,7 +19,7 @@ import BulkProjectModal from './BulkProjectModal'
 import NotesModal from '../Modal/NotesModal'
 // @ts-ignore
 import { CSVLink } from 'react-csv'
-import { LINK_TITLES, countValues } from '../Common/StaticDatas'
+import { LINK_TITLES, countValues, ADMIN } from '../Common/StaticDatas'
 import ProjectSearchDetailsDataTable from './ProjectSearchDetailsDataTable'
 import { useParams } from 'react-router-dom'
 import { useAuth } from '../../Context/authContext'
@@ -71,6 +71,7 @@ export default function ProjectDetails() {
   const projectName = queryParams.get('projectName')
 
   const auth = useAuth()
+  const enableBulkEdit = projectLinkIds.length >= 1 && auth.user.role === ADMIN ? false : true
 
   const csvLink = React.createRef<any>()
 
@@ -168,7 +169,7 @@ export default function ProjectDetails() {
   }
 
   const showBulkProjectModal = () => {
-    setIsBulkModalOpen(true)
+    !enableBulkEdit && setIsBulkModalOpen(true)
   }
 
   const handleCreateProjectClose = () => {
@@ -491,7 +492,7 @@ export default function ProjectDetails() {
             <Space wrap>
               <Button
                 onClick={showBulkProjectModal}
-                disabled={projectLinkIds.length === 0}
+                disabled={enableBulkEdit}
                 icon={<EditOutlined />}
                 size={'middle'}
               >

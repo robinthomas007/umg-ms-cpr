@@ -28,9 +28,9 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
 
   const getUserRole = () => {
     return axios
-      .get(BASE_URL + 'User/role', {
+      .get(BASE_URL + 'User/GetUser', {
         headers: {
-          cp3_auth: token,
+          cpr_portal: token,
         },
       })
       .then((res) => {
@@ -41,9 +41,11 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
       })
   }
   React.useEffect(() => {
-    // getUserRole().then(res => {
-    //   setUser({ ...user, role: res })
-    // })
+    getUserRole().then(res => {
+      if (res && res.length > 0) {
+        setUser({ ...user, role: res[0].masterRole })
+      }
+    })
   }, [])
   const login = (user: any) => {
     setUser(user)
