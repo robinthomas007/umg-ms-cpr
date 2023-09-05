@@ -64,7 +64,7 @@ interface MyQueueModalProps {
 type searchState = {
   error: string
   projects: Array<object>
-  platforms: number | null
+  platforms:any
   teams: number | null
   status: number | null
   priority: number | null

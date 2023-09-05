@@ -152,16 +152,7 @@ const FilterModal: React.FC<ModalProps> = (props) => {
 
           <Form.Item label="Platform" style={{ marginBottom: 0 }} colon={false}>
             <Form.Item name="platforms" style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}>
-              <Select
-                style={{ width: '125px' }}
-                showSearch
-                placeholder="Select a option"
-                optionFilterProp="children"
-                optionLabelProp="label"
-                filterOption={(input: any, option: any) =>
-                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                }
-              >
+              <Select mode="multiple" allowClear style={{ width: '125px' }} placeholder="Select Options">
                 {props.platformFacets &&
                   props.platformFacets.map((platform, index) => {
                     return (

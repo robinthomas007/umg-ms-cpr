@@ -140,9 +140,9 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
                 label="Platform(s)"
                 colon={false}
               >
-                <Select>
-                  {platformFacets &&
-                    platformFacets.map((platform, index) => {
+                <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
+                  {props.platformFacets &&
+                    props.platformFacets.map((platform, index) => {
                       return (
                         <Option key={index} label={platform.platformName} value={platform.platformId}>
                           {platform.platformName}
@@ -180,7 +180,12 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
                   {statusFacets &&
                     statusFacets.map((status, index) => {
                       return (
-                        <Option key={index} label={status.statusTypeDescription} value={status.statusTypeId}>
+                        <Option
+                          key={index}
+                          disabled={projectData.linkPercentage !== 100 && status.statusTypeId === 3}
+                          label={status.statusTypeDescription}
+                          value={status.statusTypeId}
+                        >
                           {status.statusTypeDescription}
                         </Option>
                       )
