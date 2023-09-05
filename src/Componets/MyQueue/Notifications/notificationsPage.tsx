@@ -294,7 +294,7 @@ function NotificationsPage() {
           &nbsp;&nbsp;
           <Text>of {totalItems} Results</Text>
         </Col>
-        <Col span={8} push={2}>
+        <Col span={8} className="paginationAlignment">
           <Pagination
             defaultCurrent={1}
             current={pageNumber}
