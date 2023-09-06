@@ -287,18 +287,13 @@ export default function ProjectDetails() {
         }
         return [key, value];
       });
-      const updatedVal = searchFilters[removedTag].filter((id) => id !== el)
-      setSearchFilters((prev) => ({ ...prev, [removedTag]: updatedVal }))
-      if (updatedVal.length === 0) {
-        setSelectedFilters(selectedFilters.filter((item) => item[0] !== removedTag))
-      } else {
-        setSelectedFilters(modifiiedFilters)
-      }
+      setSearchFilters((prev) => ({ ...prev, [removedTag]: searchFilters[removedTag].filter((id) => id !== el) }))
     } else {
       modifiiedFilters = selectedFilters.filter((item) => item[0] !== removedTag)
       setSearchFilters((prev) => ({ ...prev, [removedTag]: null }))
-      setSelectedFilters(modifiiedFilters)
     }
+    setSelectedFilters(modifiiedFilters)
+
   }
 
   const tagElement = (type, tag) => {
@@ -313,7 +308,7 @@ export default function ProjectDetails() {
     if (Array.isArray(tag)) {
       return (
         <>
-          <span>{`${labels[type]}:`}</span>
+          {tag.length > 0 && <span>{`${labels[type]}:`}</span>}
           {tag.map((el, i) => {
             return <Tag key={i}
               color={'#85D305'}
