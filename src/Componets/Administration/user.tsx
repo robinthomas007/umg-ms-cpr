@@ -220,7 +220,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
       </Row>
       <Row style={{ marginTop: 30 }} justify={'end'}>
         <Col span={24}>
-          <ReactDragListView.DragColumn nodeSelector={'tr'} onDragEnd={(fromIndex, toIndex) => { }}>
+          <ReactDragListView.DragColumn nodeSelector={'tr'} onDragEnd={(fromIndex, toIndex) => {}}>
             <Table
               columns={userColumns}
               dataSource={userData}

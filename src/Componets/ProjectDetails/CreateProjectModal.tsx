@@ -72,7 +72,7 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
         setTimeout(() => {
           props.setLoading(false)
           props.getProjectLinks()
-        }, 100);
+        }, 100)
       })
       .catch((error) => {
         showErrorNotification(error.message)
@@ -85,13 +85,13 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
   }
 
   const validateURL = (rule, value, callback) => {
-    const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})(\/[^\s]*)?$/;
+    const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})(\/[^\s]*)?$/
     if (value && !urlPattern.test(value)) {
-      callback('Please Enter a valid Url');
+      callback('Please Enter a valid Url')
     } else {
-      callback();
+      callback()
     }
-  };
+  }
 
   return (
     <>
@@ -101,9 +101,7 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
             <Col span={24}>
               <Form.Item
                 name={['project', 'url']}
-                rules={[{ required: true, message: 'Please Enter URL' },
-                { validator: validateURL }
-                ]}
+                rules={[{ required: true, message: 'Please Enter URL' }, { validator: validateURL }]}
                 label="URL"
                 labelAlign="left"
                 colon={false}
@@ -112,9 +110,7 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
               </Form.Item>
               <Form.Item
                 name={['project', 'accountUrl']}
-                rules={[{ required: true, message: 'Please Enter Account URL' },
-                { validator: validateURL }
-                ]}
+                rules={[{ required: true, message: 'Please Enter Account URL' }, { validator: validateURL }]}
                 label="Account URL"
                 labelAlign="left"
                 colon={false}

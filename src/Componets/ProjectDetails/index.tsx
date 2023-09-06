@@ -19,11 +19,12 @@ import BulkProjectModal from './BulkProjectModal'
 import NotesModal from '../Modal/NotesModal'
 // @ts-ignore
 import { CSVLink } from 'react-csv'
-import { LINK_TITLES, countValues, ADMIN } from '../Common/StaticDatas'
+import { LINK_TITLES, countValues, ADMIN, TEAM_ADMIN } from '../Common/StaticDatas'
 import ProjectSearchDetailsDataTable from './ProjectSearchDetailsDataTable'
 import { useParams } from 'react-router-dom'
 import { useAuth } from '../../Context/authContext'
 import { useLocation } from 'react-router-dom'
+import { restrictUser } from '../Common/Utils'
 
 const { Search } = Input
 const { Text, Title } = Typography
@@ -70,9 +71,9 @@ export default function ProjectDetails() {
   const queryParams = new URLSearchParams(location.search)
   const projectName = queryParams.get('projectName')
 
-  const auth = useAuth()
-  const enableBulkEdit = projectLinkIds.length >= 1 && auth.user.role === ADMIN ? false : true
-
+  const { user } = useAuth()
+  const enableBulkEdit = projectLinkIds.length >= 1 && (user.role === ADMIN || user.role === TEAM_ADMIN) ? false : true
+  const enableToAddAndEdit = restrictUser(user.role)
   const csvLink = React.createRef<any>()
 
   const getProjectLinks = React.useCallback(() => {
@@ -118,7 +119,6 @@ export default function ProjectDetails() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, teamId, searchFilters])
 
-
   const arrayToString = (val) => {
     if (Array.isArray(val)) {
       return val.join(',')
@@ -129,7 +129,7 @@ export default function ProjectDetails() {
 
   useEffect(() => {
     getProjectLinks()
-    return () => { }
+    return () => {}
   }, [getProjectLinks])
 
   React.useEffect(() => {
@@ -271,7 +271,12 @@ export default function ProjectDetails() {
       title: 'Actions',
       render: (_, record) => (
         <Space size="middle">
-          <Button onClick={() => editProject(record)} icon={<EditOutlined />} size={'middle'} />
+          <Button
+            disabled={enableToAddAndEdit}
+            onClick={() => editProject(record)}
+            icon={<EditOutlined />}
+            size={'middle'}
+          />
           <Button onClick={() => showNotesModal(record)} icon={<WechatOutlined />} size={'middle'} />
         </Space>
       ),
@@ -283,10 +288,10 @@ export default function ProjectDetails() {
     if (el) {
       modifiiedFilters = selectedFilters.map(([key, value]) => {
         if (key === removedTag && Array.isArray(value)) {
-          return [key, value.filter(item => item !== el)];
+          return [key, value.filter((item) => item !== el)]
         }
-        return [key, value];
-      });
+        return [key, value]
+      })
       const updatedVal = searchFilters[removedTag].filter((id) => id !== el)
       setSearchFilters((prev) => ({ ...prev, [removedTag]: updatedVal }))
       if (updatedVal.length === 0) {
@@ -315,17 +320,20 @@ export default function ProjectDetails() {
         <>
           <span>{`${labels[type]}:`}</span>
           {tag.map((el, i) => {
-            return <Tag key={i}
-              color={'#85D305'}
-              closable
-              onClose={(e) => {
-                e.preventDefault()
-                handleTagClose(type, el)
-              }}
-              style={{ margin: '5px' }}
-            >
-              {tag && renderFilterTags(type, el)}
-            </Tag>
+            return (
+              <Tag
+                key={i}
+                color={'#85D305'}
+                closable
+                onClose={(e) => {
+                  e.preventDefault()
+                  handleTagClose(type, el)
+                }}
+                style={{ margin: '5px' }}
+              >
+                {tag && renderFilterTags(type, el)}
+              </Tag>
+            )
           })}
         </>
       )
@@ -455,13 +463,15 @@ export default function ProjectDetails() {
               setLoading={setLoading}
             />
           )}
-          {openNotesModal && <NotesModal
-            soureName={projectLinks[0]?.projectName}
-            sourceId={projectLinkData?.projectLinkId}
-            soure={'Links'}
-            open={openNotesModal}
-            handleClose={handleNotesModal}
-          />}
+          {openNotesModal && (
+            <NotesModal
+              soureName={projectLinks[0]?.projectName}
+              sourceId={projectLinkData?.projectLinkId}
+              soure={'Links'}
+              open={openNotesModal}
+              handleClose={handleNotesModal}
+            />
+          )}
         </Col>
       </Row>
       <br />
@@ -496,15 +506,15 @@ export default function ProjectDetails() {
         <Col span={5} offset={3}>
           <Row justify="end">
             <Space wrap>
-              <Button
-                onClick={showBulkProjectModal}
-                disabled={enableBulkEdit}
-                icon={<EditOutlined />}
-                size={'middle'}
-              >
+              <Button onClick={showBulkProjectModal} disabled={enableBulkEdit} icon={<EditOutlined />} size={'middle'}>
                 Bulk Edit
               </Button>
-              <Button onClick={showCreateProjectModal} icon={<PlusCircleFilled />} size={'middle'}>
+              <Button
+                disabled={enableToAddAndEdit}
+                onClick={showCreateProjectModal}
+                icon={<PlusCircleFilled />}
+                size={'middle'}
+              >
                 Create
               </Button>
               <Button onClick={exportData} icon={<DownloadOutlined />} size={'middle'}>
@@ -534,6 +544,6 @@ export default function ProjectDetails() {
           />
         </Col>
       </Row>
-    </div >
+    </div>
   )
 }

@@ -40,7 +40,11 @@ const FilterModal: React.FC<ModalProps> = (props) => {
       modifiedProject.endDate = dayjs(modifiedProject.endDate).format('MM-DD-YYYY')
     }
     modifiedProject.searchWithin = searchWithin.join(',')
-    modifiedProject.platforms = modifiedProject.platforms.join(',')
+    if (modifiedProject.platforms) {
+      let modifiedPlatforms = modifiedProject.platforms.map((platform) => platform.toString())
+      modifiedProject.platforms = modifiedPlatforms
+    }
+
     props.handleSelectedFilters(modifiedProject)
     // setStartDateFormat('')
     // setEndDateFormat('')
@@ -69,10 +73,10 @@ const FilterModal: React.FC<ModalProps> = (props) => {
       modifiedFilters.endDate = dayjs(modifiedFilters.endDate, dateFormat)
     }
     if (modifiedFilters.platforms) {
-      const modifiedPlatforms = modifiedFilters.platforms.split(',')
-      const arrayOfNumbers = modifiedPlatforms.map((str) => parseInt(str, 10))
-      modifiedFilters.platforms = arrayOfNumbers
+      let modifiedPlatforms = modifiedFilters.platforms.map((platform) => Number(platform))
+      modifiedFilters.platforms = modifiedPlatforms
     }
+
     form.setFieldsValue(modifiedFilters)
   }, [props.selectedFilters, form])
 
@@ -158,7 +162,7 @@ const FilterModal: React.FC<ModalProps> = (props) => {
 
           <Form.Item label="Platform" style={{ marginBottom: 0 }} colon={false}>
             <Form.Item name="platforms" style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}>
-              <Select mode="multiple" allowClear style={{ width: '125px' }} placeholder="Select Options">
+              <Select mode="multiple" showArrow allowClear style={{ width: '125px' }} placeholder="Select Options">
                 {props.platformFacets &&
                   props.platformFacets.map((platform, index) => {
                     return (

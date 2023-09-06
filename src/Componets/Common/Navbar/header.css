@@ -17,7 +17,6 @@
 
 /* Notification CSS */
 .notification-wrapper {
-  
   z-index: 1;
   right: 10px;
   width: 366px;
@@ -55,7 +54,6 @@
   margin-top: 10px;
   background: #000;
   cursor: pointer;
-  
 }
 
 .noti-item.read {
@@ -103,8 +101,7 @@ span.noti-count {
   justify-content: flex-end;
   padding-right: 18px;
   padding-top: 26px;
-  padding-bottom: 17px ;
-
+  padding-bottom: 17px;
 }
 
 .clr-noti button {

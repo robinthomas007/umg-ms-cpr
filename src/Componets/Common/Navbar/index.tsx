@@ -136,7 +136,7 @@ export default function Navbar() {
   const clearNotification = () => {
     setNotifications([])
     setShowNoti(false)
-    postApi({ notificationId: 0 }, '/notification/readnotification', 'cleared All notification').then((res) => {
+    postApi({ notificationId: 0 }, '/notification/readnotification', '').then((res) => {
       console.log('response', res)
     })
   }
@@ -210,7 +210,7 @@ export default function Navbar() {
 
   const markAsRead = (id: number, source: string) => {
     // mark as read api on hold for client verification
-    postApi({ notificationId: id }, '/notification/readnotification', '').then((res) => { })
+    return false
   }
 
   const renderNotifications = () => {
@@ -230,7 +230,7 @@ export default function Navbar() {
           <div
             className="noti-content"
             onClick={() => naviagetNotificationPage(noti.source, noti.notificationId, noti.isRead)}
-          // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
+            // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
           >
             {noti.notificationType.toLowerCase() === 'created' && (
               <>
@@ -308,7 +308,13 @@ export default function Navbar() {
           <Col className="header-typography">
             <Space size={'large'}>
               <Badge size="small" count={notifications.length}>
-                <Button onClick={openNotification} type="primary" shape="circle" icon={<BellFilled />} />
+                <Button
+                  id="notify-wrapper"
+                  onClick={openNotification}
+                  type="primary"
+                  shape="circle"
+                  icon={<BellFilled />}
+                />
               </Badge>
 
               <Text>Welcome, {user ? user.name : ''}</Text>

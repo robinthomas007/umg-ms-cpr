@@ -129,12 +129,10 @@ body {
 }
 
 .ant-select-selection-item {
-  margin-inline-end:0px !important;
-  padding-inline-start:2px !important;
-  padding-inline-end:0px !important;
+  margin-inline-end: 0px !important;
+  padding-inline-start: 2px !important;
+  padding-inline-end: 0px !important;
 }
-
-
 
 .notification-wrapper::-webkit-scrollbar {
   width: 8px;
@@ -150,6 +148,6 @@ body {
   border-radius: 20px;
   /* roundness of the scroll thumb */
 }
-.paginationAlignment{
+.paginationAlignment {
   text-align: center !important;
 }

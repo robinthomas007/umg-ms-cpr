@@ -53,11 +53,11 @@ const MyQueueDataGrid: React.FC<NotificationProps> = ({
         return {
           onMouseEnter: (event) => {
             if (!record.isRead) {
-              axios
-                .post(BASE_URL + 'notification/readnotification', { notificationId: record.id }, config)
-                .then((res) => {
+              postApi({ notificationId: Number(record.notificationId) }, '/notification/readnotification', '').then(
+                (res) => {
                   getUpdatedNotificationList()
-                })
+                }
+              )
             }
           },
         }

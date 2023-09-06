@@ -6,7 +6,7 @@ import Search from '../Componets/Search'
 import Administration from '../Componets/Administration'
 import { PublicRoutes } from './PublicRoutes'
 import MyQueue from '../Componets/MyQueue'
-import ProjectDetails from '../Componets/ProjectDetails';
+import ProjectDetails from '../Componets/ProjectDetails'
 
 function Routes() {
   let element = useRoutes([

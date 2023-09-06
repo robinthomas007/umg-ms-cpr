@@ -140,13 +140,7 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
           <Row>
             <Col md={12}>
               <Form.Item label="Category" name="categoryId" colon={false}>
-                <Select
-                  showSearch
-                  placeholder="Select a option"
-                  mode='multiple'
-                  showArrow
-                  allowClear
-                >
+                <Select showSearch placeholder="Select a option" mode="multiple" showArrow allowClear>
                   {props.categoryFacets &&
                     props.categoryFacets.map((category, index) => {
                       return (
@@ -160,13 +154,7 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
             </Col>
             <Col md={12}>
               <Form.Item label="Assigned To" name="assignedTo" colon={false}>
-                <Select
-                  showSearch
-                  placeholder="Select a option"
-                  mode='multiple'
-                  showArrow
-                  allowClear
-                >
+                <Select showSearch placeholder="Select a option" mode="multiple" showArrow allowClear>
                   {props.reviewerFacets &&
                     props.reviewerFacets.map((team, index) => {
                       return (
@@ -182,13 +170,7 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
           <Row>
             <Col md={12}>
               <Form.Item name="statusId" colon={false} label="Status">
-                <Select
-                  showSearch
-                  placeholder="Select a option"
-                  mode='multiple'
-                  showArrow
-                  allowClear
-                >
+                <Select showSearch placeholder="Select a option" mode="multiple" showArrow allowClear>
                   {props.statusFacets &&
                     props.statusFacets.map((status, index) => {
                       return (

@@ -6,7 +6,7 @@ import Highlighter from 'react-highlight-words'
 import { showErrorNotification } from '../../utils/notifications'
 import { getApi } from '../../Api/Api'
 import Api from '../../lib/api'
-import { ADMIN, TEAM_ADMIN } from '../Common/StaticDatas'
+import { ADMIN, TEAM_ADMIN, TEAM_MEMBER } from '../Common/StaticDatas'
 import {
   DownloadOutlined,
   PlusCircleFilled,
@@ -31,8 +31,9 @@ import NotesModal from '../Modal/NotesModal'
 // @ts-ignore
 import { CSVLink } from 'react-csv'
 import { SEARCH_TITLES } from '../Common/StaticDatas'
-import { Facebook, SoundCloud, DailyMotion, Image, Instagram, Tiktok, Twitter, Youtube } from './../../images'
+import { Facebook, SoundCloud, DailyMotion, Image, Vimeo, Instagram, Tiktok, Twitter, Youtube } from './../../images'
 import { useAuth } from '../../Context/authContext'
+import { restrictUser } from '../Common/Utils'
 
 const { Search } = Input
 const { Text } = Typography
@@ -65,13 +66,15 @@ const searchInitialState = {
 
 const platformImages = {
   FaceBook: Facebook,
-  SoundCloud: SoundCloud,
+  Soundcloud: SoundCloud,
   DailyMotion: DailyMotion,
+  Vimeo: Vimeo,
+  AudioMack: SoundCloud,
   Image: Image,
   Instagram: Instagram,
-  Tiktok: Tiktok,
+  TikTok: Tiktok,
   Twitter: Twitter,
-  Youtube: Youtube,
+  YouTube: Youtube,
 }
 
 const PriorityImg = {
@@ -112,7 +115,7 @@ const SearchInput: React.FC = () => {
   const [exportLoading, setExportLoading] = useState<boolean>(false)
 
   const auth = useAuth()
-  const enableCreateProject = auth.user.role === ADMIN || auth.user.role === TEAM_ADMIN ? false : true
+  const enableToAddAndEdit = restrictUser(auth.user.role)
 
   useEffect(() => {
     const {
@@ -138,7 +141,7 @@ const SearchInput: React.FC = () => {
       sortColumns: sortColumns,
       sortOrder: sortOrder,
       searchWithin: searchWithin ? searchWithin.toString() : 'ALL',
-      platforms: platforms,
+      platforms: platforms != null ? platforms.join(',') : platforms,
       teams: teams,
       status: status,
       priority: priority,
@@ -204,20 +207,36 @@ const SearchInput: React.FC = () => {
     closeFilterModal()
   }
 
-  const handleTagClose = (removedTag) => {
-    const modifiiedFilters = selectedFilters.filter((item) => item[0] !== removedTag)
-    setSelectedFilters(modifiiedFilters)
-    setSearchFilters((prev) => ({ ...prev, [removedTag]: null }))
+  const handleTagClose = (removedTag, el?) => {
+    let modifiiedFilters = []
+    if (el) {
+      modifiiedFilters = selectedFilters.map(([key, value]) => {
+        if (key === removedTag && Array.isArray(value)) {
+          return [key, value.filter((item) => item !== el)]
+        }
+        return [key, value]
+      })
+      const updatedVal = searchFilters[removedTag].filter((id) => id !== el)
+      setSearchFilters((prev) => ({ ...prev, [removedTag]: updatedVal }))
+      if (updatedVal.length === 0) {
+        setSelectedFilters(selectedFilters.filter((item) => item[0] !== removedTag))
+      } else {
+        setSelectedFilters(modifiiedFilters)
+      }
+    } else {
+      modifiiedFilters = selectedFilters.filter((item) => item[0] !== removedTag)
+      setSearchFilters((prev) => ({ ...prev, [removedTag]: null }))
+      setSelectedFilters(modifiiedFilters)
+    }
   }
 
   const renderFilterTags = (type: string, tag) => {
     if (type === 'platforms') {
       return tag.split(',').map((tagProp) => {
-        return `${platformFacets.find((platform) => platform.platformId === Number(tagProp))?.platformName},`
+        return `${platformFacets.find((platform) => platform.platformId === Number(tagProp))?.platformName}`
       })
     }
     if (type === 'status') {
-      // return `${statusFacets[tag - 1].statusTypeDescription}`
       return `${statusFacets.find((status) => status.statusTypeId === tag)?.statusTypeDescription}`
     }
     if (type === 'priority') {
@@ -230,23 +249,55 @@ const SearchInput: React.FC = () => {
   }
 
   const tagElement = (type, tag) => {
-    const tagElem = (
-      <>
-        <span>{`${type}:`}</span>
-        <Tag
-          color={'#85D305'}
-          closable
-          onClose={(e) => {
-            e.preventDefault()
-            handleTagClose(type)
-          }}
-          style={{ margin: '5px' }}
-        >
-          {tag && renderFilterTags(type, tag)}
-        </Tag>
-      </>
-    )
-    return tagElem
+    const labels = {
+      status: 'Status',
+      platforms: 'Platform(s)',
+      teams: 'Teams',
+      priority: 'Priority',
+      startDate: 'Start Date',
+      endDate: 'End Date',
+      searchWithin: 'Search Within',
+    }
+    if (Array.isArray(tag)) {
+      return (
+        <>
+          <span>{`${labels[type]}:`}</span>
+          {tag.map((el, i) => {
+            return (
+              <Tag
+                key={i}
+                color={'#85D305'}
+                closable
+                onClose={(e) => {
+                  e.preventDefault()
+                  handleTagClose(type, el)
+                }}
+                style={{ margin: '5px' }}
+              >
+                {tag && renderFilterTags(type, el)}
+              </Tag>
+            )
+          })}
+        </>
+      )
+    } else {
+      return (
+        <>
+          <span>{`${labels[type]}:`}</span>
+          <Tag
+            color={'#85D305'}
+            closable
+            onClose={(e) => {
+              e.preventDefault()
+              handleTagClose(type)
+            }}
+            style={{ margin: '5px' }}
+          >
+            {tag && renderFilterTags(type, tag)}
+          </Tag>
+        </>
+      )
+    }
   }
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm()
@@ -418,7 +469,12 @@ const SearchInput: React.FC = () => {
       title: 'Actions',
       render: (_, record) => (
         <Space size="middle">
-          <Button onClick={(e) => editProject(e, record.projectId)} icon={<EditOutlined />} size={'middle'} />
+          <Button
+            disabled={enableToAddAndEdit}
+            onClick={(e) => editProject(e, record.projectId)}
+            icon={<EditOutlined />}
+            size={'middle'}
+          />
           <Button onClick={(e) => showNotesModal(e, record.projectId)} icon={<WechatOutlined />} size={'middle'} />
         </Space>
       ),
@@ -596,7 +652,7 @@ const SearchInput: React.FC = () => {
             <Space wrap>
               <Button
                 onClick={showCreateProjectModal}
-                disabled={enableCreateProject}
+                disabled={enableToAddAndEdit}
                 icon={<PlusCircleFilled />}
                 size={'middle'}
               >
