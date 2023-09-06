@@ -68,6 +68,11 @@ const FilterModal: React.FC<ModalProps> = (props) => {
     if (modifiedFilters.endDate) {
       modifiedFilters.endDate = dayjs(modifiedFilters.endDate, dateFormat)
     }
+    if (modifiedFilters.platforms) {
+      const modifiedPlatforms = modifiedFilters.platforms.split(',')
+      const arrayOfNumbers = modifiedPlatforms.map((str) => parseInt(str, 10))
+      modifiedFilters.platforms = arrayOfNumbers
+    }
     form.setFieldsValue(modifiedFilters)
   }, [props.selectedFilters, form])
 
