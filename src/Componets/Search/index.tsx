@@ -6,6 +6,7 @@ import Highlighter from 'react-highlight-words'
 import { showErrorNotification } from '../../utils/notifications'
 import { getApi } from '../../Api/Api'
 import Api from '../../lib/api'
+import { ADMIN, TEAM_ADMIN } from '../Common/StaticDatas'
 import {
   DownloadOutlined,
   PlusCircleFilled,
@@ -31,6 +32,7 @@ import NotesModal from '../Modal/NotesModal'
 import { CSVLink } from 'react-csv'
 import { SEARCH_TITLES } from '../Common/StaticDatas'
 import { Facebook, SoundCloud, DailyMotion, Image, Instagram, Tiktok, Twitter, Youtube } from './../../images'
+import { useAuth } from '../../Context/authContext'
 
 const { Search } = Input
 const { Text } = Typography
@@ -108,6 +110,9 @@ const SearchInput: React.FC = () => {
   const [csvData, setcsvData] = React.useState([])
   const csvLink = React.createRef<any>()
   const [exportLoading, setExportLoading] = useState<boolean>(false)
+
+  const auth = useAuth()
+  const enableCreateProject = auth.user.role === ADMIN || auth.user.role === TEAM_ADMIN ? false : true
 
   useEffect(() => {
     const {
@@ -207,10 +212,13 @@ const SearchInput: React.FC = () => {
 
   const renderFilterTags = (type: string, tag) => {
     if (type === 'platforms') {
-      return `${platformFacets[tag - 1].platformName}`
+      return tag.split(',').map((tagProp) => {
+        return `${platformFacets.find((platform) => platform.platformId === Number(tagProp))?.platformName},`
+      })
     }
     if (type === 'status') {
-      return `${statusFacets[tag - 1].statusTypeDescription}`
+      // return `${statusFacets[tag - 1].statusTypeDescription}`
+      return `${statusFacets.find((status) => status.statusTypeId === tag)?.statusTypeDescription}`
     }
     if (type === 'priority') {
       return `${priorityFacets.find((priority) => priority.priorityId === tag)?.priorityName}`
@@ -354,7 +362,14 @@ const SearchInput: React.FC = () => {
       title: 'Platform',
       dataIndex: 'platformName',
       key: 'platformName',
-      render: (_, record: any) => <img src={platformImages[record.platformName]} alt={record.platformName} />,
+      render: (_, record: any) => {
+        return (
+          record.platformName &&
+          record.platformName.split(',').map((platform) => {
+            return <img style={{ padding: '5px' }} src={platformImages[platform]} alt={platform} />
+          })
+        )
+      },
       // ...getColumnSearchProps('platformName'),
     },
     {
@@ -536,13 +551,15 @@ const SearchInput: React.FC = () => {
               handleClose={closeEditModal}
             />
           )}
-          <NotesModal
-            soureName={project.title}
-            sourceId={project.projectId}
-            soure={'Projects'}
-            open={openNotesModal}
-            handleClose={handleNotesModal}
-          />
+          {openNotesModal && (
+            <NotesModal
+              soureName={project.title}
+              sourceId={project.projectId}
+              soure={'Projects'}
+              open={openNotesModal}
+              handleClose={handleNotesModal}
+            />
+          )}
         </Col>
       </Row>
       <br />
@@ -577,7 +594,12 @@ const SearchInput: React.FC = () => {
         <Col span={8}>
           <Row justify="end">
             <Space wrap>
-              <Button onClick={showCreateProjectModal} icon={<PlusCircleFilled />} size={'middle'}>
+              <Button
+                onClick={showCreateProjectModal}
+                disabled={enableCreateProject}
+                icon={<PlusCircleFilled />}
+                size={'middle'}
+              >
                 Create
               </Button>
               <Button onClick={exportData} icon={<DownloadOutlined />} size={'middle'}>

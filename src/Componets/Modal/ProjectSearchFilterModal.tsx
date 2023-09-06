@@ -40,6 +40,7 @@ const FilterModal: React.FC<ModalProps> = (props) => {
       modifiedProject.endDate = dayjs(modifiedProject.endDate).format('MM-DD-YYYY')
     }
     modifiedProject.searchWithin = searchWithin.join(',')
+    modifiedProject.platforms = modifiedProject.platforms.join(',')
     props.handleSelectedFilters(modifiedProject)
     // setStartDateFormat('')
     // setEndDateFormat('')
@@ -66,6 +67,11 @@ const FilterModal: React.FC<ModalProps> = (props) => {
     }
     if (modifiedFilters.endDate) {
       modifiedFilters.endDate = dayjs(modifiedFilters.endDate, dateFormat)
+    }
+    if (modifiedFilters.platforms) {
+      const modifiedPlatforms = modifiedFilters.platforms.split(',')
+      const arrayOfNumbers = modifiedPlatforms.map((str) => parseInt(str, 10))
+      modifiedFilters.platforms = arrayOfNumbers
     }
     form.setFieldsValue(modifiedFilters)
   }, [props.selectedFilters, form])
@@ -152,16 +158,7 @@ const FilterModal: React.FC<ModalProps> = (props) => {
 
           <Form.Item label="Platform" style={{ marginBottom: 0 }} colon={false}>
             <Form.Item name="platforms" style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}>
-              <Select
-                style={{ width: '125px' }}
-                showSearch
-                placeholder="Select a option"
-                optionFilterProp="children"
-                optionLabelProp="label"
-                filterOption={(input: any, option: any) =>
-                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                }
-              >
+              <Select mode="multiple" allowClear style={{ width: '125px' }} placeholder="Select Options">
                 {props.platformFacets &&
                   props.platformFacets.map((platform, index) => {
                     return (
