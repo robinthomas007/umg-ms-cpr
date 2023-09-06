@@ -78,7 +78,7 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       progress: 50,
       startDate: startDateFormat,
       endDate: endDateFormat,
-      notes: notes,
+      notes: '',
       userId: 1,
       isDeleted: false,
       userEmail: user.upn,
