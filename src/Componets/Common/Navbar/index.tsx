@@ -17,42 +17,12 @@ import React from 'react'
 import { getApi, postApi } from '../../../Api/Api'
 import type { MenuProps } from 'antd'
 import { hexArray } from './../../Common/StaticDatas'
+import { ADMIN } from './../../Common/StaticDatas'
 import moment from 'moment'
 const { Header } = Layout
 const { Text } = Typography
 
 // type Items={ key?: string | null; label?: string; icon?: React.JSX.Element |undefined; path?: string; }
-const items: MenuProps['items'] = [
-  {
-    key: 'dashboard',
-    label: 'Dashboard',
-  },
-
-  {
-    key: 'search',
-    label: 'Search',
-  },
-  {
-    key: 'myqueue',
-    label: 'My Queue',
-  },
-  {
-    key: 'messageBoard',
-    label: 'Message Board',
-  },
-  {
-    key: 'tasking',
-    label: 'Tasking',
-  },
-  {
-    key: 'administration',
-    label: 'Administration',
-  },
-  {
-    key: 'knowledgeBase',
-    label: 'Knowledge Base',
-  },
-]
 
 export default function Navbar() {
   const user = getAuthUser()
@@ -63,6 +33,41 @@ export default function Navbar() {
   const [notifications, setNotifications] = useState<any>([])
   const [showNoti, setShowNoti] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  const auth = useAuth()
+
+  const items: MenuProps['items'] = [
+    {
+      key: 'dashboard',
+      label: 'Dashboard',
+    },
+
+    {
+      key: 'search',
+      label: 'Search',
+    },
+    {
+      key: 'myqueue',
+      label: 'My Queue',
+    },
+    {
+      key: 'messageBoard',
+      label: 'Message Board',
+    },
+    {
+      key: 'tasking',
+      label: 'Tasking',
+    },
+    {
+      key: 'administration',
+      label: 'Administration',
+      style: { visibility: auth.user.role !== ADMIN ? 'hidden' : 'visible' },
+    },
+    {
+      key: 'knowledgeBase',
+      label: 'Knowledge Base',
+    },
+  ]
 
   useEffect(() => {
     setDarkMode(toggle)
