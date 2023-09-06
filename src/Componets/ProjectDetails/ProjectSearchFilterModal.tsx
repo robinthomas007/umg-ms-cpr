@@ -144,6 +144,8 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
                   showSearch
                   placeholder="Select a option"
                   mode='multiple'
+                  showArrow
+                  allowClear
                 >
                   {props.categoryFacets &&
                     props.categoryFacets.map((category, index) => {
@@ -162,6 +164,8 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
                   showSearch
                   placeholder="Select a option"
                   mode='multiple'
+                  showArrow
+                  allowClear
                 >
                   {props.reviewerFacets &&
                     props.reviewerFacets.map((team, index) => {
@@ -182,6 +186,8 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
                   showSearch
                   placeholder="Select a option"
                   mode='multiple'
+                  showArrow
+                  allowClear
                 >
                   {props.statusFacets &&
                     props.statusFacets.map((status, index) => {

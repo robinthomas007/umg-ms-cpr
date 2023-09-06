@@ -7,6 +7,7 @@ import { EditOutlined, DeleteOutlined, HolderOutlined } from '@ant-design/icons'
 import { deleteApi, postApi, getApi, deleteApiWithReqBody } from '../../Api/Api'
 import type { ColumnsType } from 'antd/es/table'
 import { tagRender } from './../Common/common'
+import { useAuth } from '../../Context/authContext'
 
 const { Title } = Typography
 const { Search } = Input
@@ -28,6 +29,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
   const [teamList, setTeamList] = useState([])
   const [isUserDataUpdated, setIsUserDataUpdated] = useState<boolean>(false)
   const [searchTeam, setSearchTeam] = useState('')
+  const auth = useAuth()
 
   useEffect(() => {
     setUserColumns(userColumn)
@@ -63,6 +65,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
       .then((res: any) => {
         reloadTeamData()
         setIsUserDataUpdated(!isUserDataUpdated)
+        auth.setUpdatedRole(!auth.updatedRole)
       })
       .catch((error: any) => {
         console.log('error feching data', error)
@@ -86,6 +89,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
       deleteApi(userId, '/user', 'User has been deleted ')
         .then((res: any) => {
           handleReloadUserData()
+          auth.setUpdatedRole(!auth.updatedRole)
         })
         .catch((error: any) => {
           console.log('error feching data', error)
@@ -216,7 +220,7 @@ export default function User({ handleDragStart, reloadTeamData, reloadUserDataFr
       </Row>
       <Row style={{ marginTop: 30 }} justify={'end'}>
         <Col span={24}>
-          <ReactDragListView.DragColumn nodeSelector={'tr'} onDragEnd={(fromIndex, toIndex) => {}}>
+          <ReactDragListView.DragColumn nodeSelector={'tr'} onDragEnd={(fromIndex, toIndex) => { }}>
             <Table
               columns={userColumns}
               dataSource={userData}

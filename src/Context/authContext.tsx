@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
   let LoggedInUser: any = jwt_decode(token)
   const [user, setUser] = useState<any>(LoggedInUser || {})
   const [darkMode, setDarkMode] = useState<boolean>(true)
+  const [updatedRole, setUpdatedRole] = useState<boolean>(false)
 
   const getUserRole = () => {
     return axios
@@ -46,11 +47,11 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
         setUser({ ...user, role: res[0].masterRole })
       }
     })
-  }, [])
+  }, [updatedRole])
   const login = (user: any) => {
     setUser(user)
   }
-  return <AuthContext.Provider value={{ user, login, darkMode, setDarkMode }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, login, darkMode, setDarkMode, updatedRole, setUpdatedRole }}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => {

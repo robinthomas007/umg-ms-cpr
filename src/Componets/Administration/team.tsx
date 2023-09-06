@@ -6,6 +6,7 @@ import type { ColumnsType } from 'antd/es/table'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { deleteApi, postApi, getApi, deleteApiWithReqBody } from '../../Api/Api'
 import { deepClone } from '../Common/Utils'
+import { useAuth } from '../../Context/authContext'
 
 const { Title } = Typography
 const { Search } = Input
@@ -37,6 +38,8 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
   const [dropZoneActive, setDropZoneActive] = useState(false)
   const [editRecord, setEditRecord] = useState({})
   const [searchTeam, setSearchTeam] = useState('')
+
+  const auth = useAuth()
 
   useEffect(() => {
     setloadingTeamData(true)
@@ -221,6 +224,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
     postApi(updatedMember, '/teamuser', 'successfully assigned role')
       .then((res: any) => {
         setIsTeamDataUpdated(!isTeamDataUpdated)
+        auth.setUpdatedRole(!auth.updatedRole)
       })
       .catch((error: any) => {
         console.log('error feching data', error)
