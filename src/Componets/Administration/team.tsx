@@ -21,8 +21,8 @@ interface teamDataType {
 
 const permissions = [
   { value: 4, label: 'Admin' },
-  { value: 2, label: 'Team Admin' },
-  { value: 1, label: 'Team Member' },
+  { value: 1, label: 'Team Admin' },
+  { value: 2, label: 'Team Member' },
   { value: 3, label: 'Read-Only' },
 ]
 
@@ -103,6 +103,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
 
           //to update the role as  Admin by default when drag and drop the user
           if (dropTeamIndex.teamName === 'Admin') {
+            console.log('isnit calling')
             getApi({ SearchTerm: searchTeam }, '/teamsearch').then((res) => {
               const teamList = res.teamList
               const updatedTeamData: any = teamList.find((member: any) => member.teamId === dropTeamIndex.teamId)
@@ -279,6 +280,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
               />
             )
           } else {
+            console.log('data', data)
             return (
               <Select
                 showArrow
