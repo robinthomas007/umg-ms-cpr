@@ -62,6 +62,7 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       setEndDateFormat(dayjs(copyProject.endDate).format('MM-DD-YYYY'))
       modifiedProject.endDate = dayjs(copyProject.endDate, dateFormat)
     }
+    modifiedProject.notes = ''
     form.setFieldsValue(modifiedProject)
   }, [projectData, form])
 
@@ -78,7 +79,7 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       progress: 50,
       startDate: startDateFormat,
       endDate: endDateFormat,
-      notes: '',
+      notes: notes,
       userId: 1,
       isDeleted: false,
       userEmail: user.upn,

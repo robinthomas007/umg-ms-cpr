@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
   const [user, setUser] = useState<any>(LoggedInUser || {})
   const [darkMode, setDarkMode] = useState<boolean>(true)
   const [updatedRole, setUpdatedRole] = useState<boolean>(false)
+  const [notifyCount, setNotifyCount] = useState<number>(0)
 
   const getUserRole = () => {
     return axios
@@ -52,7 +53,9 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
     setUser(user)
   }
   return (
-    <AuthContext.Provider value={{ user, login, darkMode, setDarkMode, updatedRole, setUpdatedRole }}>
+    <AuthContext.Provider
+      value={{ user, login, darkMode, setDarkMode, updatedRole, setUpdatedRole, notifyCount, setNotifyCount }}
+    >
       {children}
     </AuthContext.Provider>
   )

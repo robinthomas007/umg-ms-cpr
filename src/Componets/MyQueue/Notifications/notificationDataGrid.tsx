@@ -4,7 +4,8 @@ import type { ColumnsType, TableProps } from 'antd/es/table'
 import { TableRowSelection } from 'antd/es/table/interface'
 import { clearConfigCache } from 'prettier'
 import './notifications.css'
-import { postApi } from '../../../Api/Api'
+import { postApi, getApi } from '../../../Api/Api'
+import { useAuth } from '../../../Context/authContext'
 import axios from 'axios'
 import { config } from '../../Common/Utils'
 import { BASE_URL } from '../../../App'
@@ -26,6 +27,7 @@ const MyQueueDataGrid: React.FC<NotificationProps> = ({
   getUpdatedNotificationList,
 }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const { notifyCount, setNotifyCount } = useAuth()
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys)
@@ -34,6 +36,16 @@ const MyQueueDataGrid: React.FC<NotificationProps> = ({
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+  }
+
+  const getAllNotifications = () => {
+    getApi({}, '/notification/getunreadnotification')
+      .then((res) => {
+        setNotifyCount(res.length)
+      })
+      .catch((error) => {
+        console.log('error feching data', error)
+      })
   }
 
   return (
@@ -55,6 +67,7 @@ const MyQueueDataGrid: React.FC<NotificationProps> = ({
             if (!record.isRead) {
               postApi({ notificationId: Number(record.notificationId) }, '/notification/readnotification', '').then(
                 (res) => {
+                  getAllNotifications()
                   getUpdatedNotificationList()
                 }
               )

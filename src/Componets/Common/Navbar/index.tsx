@@ -26,7 +26,7 @@ const { Text } = Typography
 
 export default function Navbar() {
   const user = getAuthUser()
-  const { setDarkMode, darkMode } = useAuth()
+  const { setDarkMode, darkMode, notifyCount, setNotifyCount } = useAuth()
   const [current, setCurrent] = useState('')
   const { pathname } = useLocation()
   const [toggle, setToggle] = useState(false)
@@ -75,6 +75,7 @@ export default function Navbar() {
 
   useEffect(() => {
     getAllNotifications()
+    localStorage.setItem('notifyCount', String(0))
     const interval = setInterval(() => {
       getAllNotifications()
     }, 60000)
@@ -143,6 +144,7 @@ export default function Navbar() {
     setShowNoti(false)
     postApi({ notificationId: 0 }, '/notification/readnotification', '').then((res) => {
       console.log('response', res)
+      setNotifyCount(0)
     })
   }
 
@@ -166,6 +168,7 @@ export default function Navbar() {
     getApi({}, '/notification/getunreadnotification')
       .then((res) => {
         setNotifications(res)
+        setNotifyCount(res.length)
       })
       .catch((error) => {
         console.log('error feching data', error)
@@ -312,7 +315,7 @@ export default function Navbar() {
           </Col>
           <Col className="header-typography">
             <Space size={'large'}>
-              <Badge size="small" count={notifications.length}>
+              <Badge size="small" count={notifyCount}>
                 <Button
                   id="notify-wrapper"
                   onClick={openNotification}

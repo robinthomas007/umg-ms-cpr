@@ -20,6 +20,7 @@ interface teamDataType {
 }
 
 const permissions = [
+  { value: 4, label: 'Admin' },
   { value: 2, label: 'Team Admin' },
   { value: 1, label: 'Team Member' },
   { value: 3, label: 'Read-Only' },
