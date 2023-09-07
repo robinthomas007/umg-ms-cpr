@@ -10,14 +10,14 @@
 .priority-img {
 }
 
-.priority-img.None .anticon  {
+.priority-img.None .anticon {
   background: #f5fa20;
   color: #000;
   font-size: 15px;
   border-radius: 3px;
   padding: 2px;
 }
-.priority-img.Low .anticon{
+.priority-img.Low .anticon {
   background: #85d305;
   color: #000;
   font-size: 16px;
@@ -31,9 +31,9 @@
   border-radius: 3px;
   padding: 2px;
 }
-.priority-img.High .anticon{
+.priority-img.High .anticon {
   background: #f68b0d;
-  
+
   color: #000;
   font-size: 16px;
   border-radius: 3px;
@@ -48,6 +48,6 @@
   border-radius: 3px;
   padding: 2px;
 }
-.tableRowSelection{
+.tableRowSelection {
   cursor: pointer;
 }

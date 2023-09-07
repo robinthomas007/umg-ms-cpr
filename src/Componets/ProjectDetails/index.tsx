@@ -118,7 +118,6 @@ export default function ProjectDetails() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, teamId, searchFilters])
 
-
   const arrayToString = (val) => {
     if (Array.isArray(val)) {
       return val.join(',')
@@ -129,7 +128,7 @@ export default function ProjectDetails() {
 
   useEffect(() => {
     getProjectLinks()
-    return () => { }
+    return () => {}
   }, [getProjectLinks])
 
   React.useEffect(() => {
@@ -283,8 +282,11 @@ export default function ProjectDetails() {
     if (el) {
       modifiiedFilters = selectedFilters.map(([key, value]) => {
         if (key === removedTag && Array.isArray(value)) {
-          return [key, value.filter(item => item !== el)];
+          return [key, value.filter((item) => item !== el)]
         }
+
+        return [key, value]
+      })
         return [key, value];
       });
       setSearchFilters((prev) => ({ ...prev, [removedTag]: searchFilters[removedTag].filter((id) => id !== el) }))
@@ -293,7 +295,6 @@ export default function ProjectDetails() {
       setSearchFilters((prev) => ({ ...prev, [removedTag]: null }))
     }
     setSelectedFilters(modifiiedFilters)
-
   }
 
   const tagElement = (type, tag) => {
@@ -310,17 +311,20 @@ export default function ProjectDetails() {
         <>
           {tag.length > 0 && <span>{`${labels[type]}:`}</span>}
           {tag.map((el, i) => {
-            return <Tag key={i}
-              color={'#85D305'}
-              closable
-              onClose={(e) => {
-                e.preventDefault()
-                handleTagClose(type, el)
-              }}
-              style={{ margin: '5px' }}
-            >
-              {tag && renderFilterTags(type, el)}
-            </Tag>
+            return (
+              <Tag
+                key={i}
+                color={'#85D305'}
+                closable
+                onClose={(e) => {
+                  e.preventDefault()
+                  handleTagClose(type, el)
+                }}
+                style={{ margin: '5px' }}
+              >
+                {tag && renderFilterTags(type, el)}
+              </Tag>
+            )
           })}
         </>
       )
@@ -450,13 +454,15 @@ export default function ProjectDetails() {
               setLoading={setLoading}
             />
           )}
-          {openNotesModal && <NotesModal
-            soureName={projectLinks[0]?.projectName}
-            sourceId={projectLinkData?.projectLinkId}
-            soure={'Links'}
-            open={openNotesModal}
-            handleClose={handleNotesModal}
-          />}
+          {openNotesModal && (
+            <NotesModal
+              soureName={projectLinks[0]?.projectName}
+              sourceId={projectLinkData?.projectLinkId}
+              soure={'Links'}
+              open={openNotesModal}
+              handleClose={handleNotesModal}
+            />
+          )}
         </Col>
       </Row>
       <br />
@@ -491,12 +497,7 @@ export default function ProjectDetails() {
         <Col span={5} offset={3}>
           <Row justify="end">
             <Space wrap>
-              <Button
-                onClick={showBulkProjectModal}
-                disabled={enableBulkEdit}
-                icon={<EditOutlined />}
-                size={'middle'}
-              >
+              <Button onClick={showBulkProjectModal} disabled={enableBulkEdit} icon={<EditOutlined />} size={'middle'}>
                 Bulk Edit
               </Button>
               <Button onClick={showCreateProjectModal} icon={<PlusCircleFilled />} size={'middle'}>
@@ -529,6 +530,6 @@ export default function ProjectDetails() {
           />
         </Col>
       </Row>
-    </div >
+    </div>
   )
 }

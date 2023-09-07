@@ -17,42 +17,12 @@ import React from 'react'
 import { getApi, postApi } from '../../../Api/Api'
 import type { MenuProps } from 'antd'
 import { hexArray } from './../../Common/StaticDatas'
+import { ADMIN } from './../../Common/StaticDatas'
 import moment from 'moment'
 const { Header } = Layout
 const { Text } = Typography
 
 // type Items={ key?: string | null; label?: string; icon?: React.JSX.Element |undefined; path?: string; }
-const items: MenuProps['items'] = [
-  {
-    key: 'dashboard',
-    label: 'Dashboard',
-  },
-
-  {
-    key: 'search',
-    label: 'Search',
-  },
-  {
-    key: 'myqueue',
-    label: 'My Queue',
-  },
-  {
-    key: 'messageBoard',
-    label: 'Message Board',
-  },
-  {
-    key: 'tasking',
-    label: 'Tasking',
-  },
-  {
-    key: 'administration',
-    label: 'Administration',
-  },
-  {
-    key: 'knowledgeBase',
-    label: 'Knowledge Base',
-  },
-]
 
 export default function Navbar() {
   const user = getAuthUser()
@@ -63,6 +33,41 @@ export default function Navbar() {
   const [notifications, setNotifications] = useState<any>([])
   const [showNoti, setShowNoti] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+
+  const auth = useAuth()
+
+  const items: MenuProps['items'] = [
+    {
+      key: 'dashboard',
+      label: 'Dashboard',
+    },
+
+    {
+      key: 'search',
+      label: 'Search',
+    },
+    {
+      key: 'myqueue',
+      label: 'My Queue',
+    },
+    {
+      key: 'messageBoard',
+      label: 'Message Board',
+    },
+    {
+      key: 'tasking',
+      label: 'Tasking',
+    },
+    {
+      key: 'administration',
+      label: 'Administration',
+      style: { visibility: auth.user.role !== ADMIN ? 'hidden' : 'visible' },
+    },
+    {
+      key: 'knowledgeBase',
+      label: 'Knowledge Base',
+    },
+  ]
 
   useEffect(() => {
     setDarkMode(toggle)
@@ -136,7 +141,7 @@ export default function Navbar() {
   const clearNotification = () => {
     setNotifications([])
     setShowNoti(false)
-    postApi({ notificationId: 0 }, '/notification/readnotification', 'cleared All notification').then((res) => {
+    postApi({ notificationId: 0 }, '/notification/readnotification', '').then((res) => {
       console.log('response', res)
     })
   }
@@ -210,7 +215,7 @@ export default function Navbar() {
 
   const markAsRead = (id: number, source: string) => {
     // mark as read api on hold for client verification
-    postApi({ notificationId: id }, '/notification/readnotification', '').then((res) => { })
+    return false
   }
 
   const renderNotifications = () => {
@@ -230,7 +235,7 @@ export default function Navbar() {
           <div
             className="noti-content"
             onClick={() => naviagetNotificationPage(noti.source, noti.notificationId, noti.isRead)}
-          // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
+            // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
           >
             {noti.notificationType.toLowerCase() === 'created' && (
               <>
@@ -308,7 +313,13 @@ export default function Navbar() {
           <Col className="header-typography">
             <Space size={'large'}>
               <Badge size="small" count={notifications.length}>
-                <Button onClick={openNotification} type="primary" shape="circle" icon={<BellFilled />} />
+                <Button
+                  id="notify-wrapper"
+                  onClick={openNotification}
+                  type="primary"
+                  shape="circle"
+                  icon={<BellFilled />}
+                />
               </Badge>
 
               <Text>Welcome, {user ? user.name : ''}</Text>

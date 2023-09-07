@@ -144,14 +144,14 @@ h3.ant-typography,
   border-radius: 20px;
   border: 1px !important;
 }
-.ant-modal-content .ant-modal-body .notesContents{
+.ant-modal-content .ant-modal-body .notesContents {
   max-height: 260px !important;
   overflow: scroll;
 }
 
 .ant-modal-content .ant-modal-body .notesContents::-webkit-scrollbar {
   width: 8px;
-  height: 0px; 
+  height: 0px;
 }
 
 .ant-modal-content .ant-modal-body .notesContents::-webkit-scrollbar-thumb {
@@ -159,16 +159,16 @@ h3.ant-typography,
   border-radius: 20px;
 }
 
-.notification-wrapper::-webkit-scrollbar-thumb{
+.notification-wrapper::-webkit-scrollbar-thumb {
   background-color: #74b607 !important;
   border-radius: 20px;
 }
 /* Modal close icon  */
 
-.ant-modal-wrap .ant-modal-close{
-      background: #fff;
-      color: #212121;
-      border-radius: 50%;
-      height: 20px;
-      width: 20px;
+.ant-modal-wrap .ant-modal-close {
+  background: #fff;
+  color: #212121;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
 }

@@ -161,7 +161,13 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
           </Row>
           <Row justify="start">
             <Col span={12}>
-              <Form.Item labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name={['project', 'notes']} label="Notes" colon={false}>
+              <Form.Item
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+                name={['project', 'notes']}
+                label="Notes"
+                colon={false}
+              >
                 <Input.TextArea placeholder="Create A New Note" rows={3} />
               </Form.Item>
             </Col>

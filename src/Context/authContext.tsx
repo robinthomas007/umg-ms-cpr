@@ -2,7 +2,7 @@ import React from 'react'
 import { createContext, useState, useContext } from 'react'
 import jwt_decode from 'jwt-decode'
 import getCookie from '../Componets/Common/cookie'
-import { ADMIN, isSessionExpired } from '../Componets/Common/Utils'
+import { isSessionExpired } from '../Componets/Common/Utils'
 import { BASE_URL } from './../App'
 import axios from 'axios'
 
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
       })
   }
   React.useEffect(() => {
-    getUserRole().then(res => {
+    getUserRole().then((res) => {
       if (res && res.length > 0) {
         setUser({ ...user, role: res[0].masterRole })
       }
@@ -51,7 +51,11 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
   const login = (user: any) => {
     setUser(user)
   }
-  return <AuthContext.Provider value={{ user, login, darkMode, setDarkMode, updatedRole, setUpdatedRole }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ user, login, darkMode, setDarkMode, updatedRole, setUpdatedRole }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export const useAuth = () => {

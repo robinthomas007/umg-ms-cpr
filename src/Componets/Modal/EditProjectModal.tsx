@@ -78,7 +78,7 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
       progress: 50,
       startDate: startDateFormat,
       endDate: endDateFormat,
-      notes: notes,
+      notes: '',
       userId: 1,
       isDeleted: false,
       userEmail: user.upn,
@@ -140,7 +140,7 @@ const EditProjectModal: React.FC<ModalProps> = (props) => {
                 label="Platform(s)"
                 colon={false}
               >
-                <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
+                <Select mode="multiple" showArrow allowClear style={{ width: '100%' }} placeholder="Please select">
                   {props.platformFacets &&
                     props.platformFacets.map((platform, index) => {
                       return (

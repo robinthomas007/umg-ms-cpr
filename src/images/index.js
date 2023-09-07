@@ -6,5 +6,6 @@ import Instagram from './instagram.png'
 import Tiktok from './tiktok.png'
 import Twitter from './twitter.png'
 import Youtube from './youtube.png'
+import Vimeo from './vimeo.png'
 
-export { Facebook, SoundCloud, DailyMotion, Image, Instagram, Tiktok, Twitter, Youtube }
+export { Facebook, SoundCloud, DailyMotion, Image, Instagram, Tiktok, Twitter, Vimeo, Youtube }

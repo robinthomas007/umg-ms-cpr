@@ -17,7 +17,7 @@ interface Project {
   updatedOn: string
   priorityName: string
   teamId: any
-  linkPercentage:number
+  linkPercentage: number
 }
 
 interface Platform {
@@ -64,7 +64,7 @@ interface MyQueueModalProps {
 type searchState = {
   error: string
   projects: Array<object>
-  platforms:any
+  platforms: any
   teams: number | null
   status: number | null
   priority: number | null
@@ -87,19 +87,19 @@ type searchState = {
 type notificationSearchState = {
   error: string
   notifications: Array<object>
-  updatedFrom: string,
-  updatedTo: string,
-  reportedBy: string,
-  type: string,
+  updatedFrom: string
+  updatedTo: string
+  reportedBy: string
+  type: string
   totalPages: number
   totalItems: number
   pageNumber: number
-  searchTerm: string,
-  itemsPerPage: string,
-  sortColumns: string,
-  sortOrder: string,
-  searchWithin: string[],
-  tableSearch: object,
+  searchTerm: string
+  itemsPerPage: string
+  sortColumns: string
+  sortOrder: string
+  searchWithin: string[]
+  tableSearch: object
 }
 
 type taskSearchState = {
@@ -108,12 +108,12 @@ type taskSearchState = {
   totalPages: number
   totalItems: number
   pageNumber: number
-  searchTerm: string,
-  itemsPerPage: string,
-  sortColumns: string,
-  sortOrder: string,
-  searchWithin: string[],
-  tableSearch: object,
+  searchTerm: string
+  itemsPerPage: string
+  sortColumns: string
+  sortOrder: string
+  searchWithin: string[]
+  tableSearch: object
 }
 
 type notificationSearchState = {
@@ -122,30 +122,29 @@ type notificationSearchState = {
   totalPages: number
   totalItems: number
   pageNumber: number
-  searchTerm: string,
-  itemsPerPage: string,
-  sortColumns: string,
-  sortOrder: string,
-  searchWithin: string[],
-  tableSearch: object,
+  searchTerm: string
+  itemsPerPage: string
+  sortColumns: string
+  sortOrder: string
+  searchWithin: string[]
+  tableSearch: object
 }
 
 type Notification = {
   key?: React.Key
-  id: number,
-  notificationId: number,
-  sourceId: string | number | null,
-  reportedBy: string,
-  updatedDateTime: string,
-  source: string,
-  sourceName: string,
-  notificationType: string | number,
-  notes: string | null,
-  description: string,
-  type: string,
-  linksCount: number,
+  id: number
+  notificationId: number
+  sourceId: string | number | null
+  reportedBy: string
+  updatedDateTime: string
+  source: string
+  sourceName: string
+  notificationType: string | number
+  notes: string | null
+  description: string
+  type: string
+  linksCount: number
   isRead: boolean
-
 
   // // notificationId?: React.Key
   // updatedDate:string,
@@ -157,11 +156,11 @@ type Notification = {
 }
 
 type ReportedUser = {
-  id: string,
+  id: string
   name: string
 }
 type NotificationType = {
-  id: string,
+  id: string
   name: string
 }
 
@@ -172,10 +171,10 @@ interface Tasks {
   prirority: string
   artistList: string
   platform: string
-  batch: Number,
-  progress: Number,
-  startDate: string,
-  endDate: string,
+  batch: Number
+  progress: Number
+  startDate: string
+  endDate: string
   status: string
 }
 
@@ -199,8 +198,8 @@ type LinksearchState = {
   assignedTo?: any
   statusId?: any
   categoryId?: any
-  reviewDateTo?: any,
-  reviewDateFrom?: any,
+  reviewDateTo?: any
+  reviewDateFrom?: any
   searchWithin?: string
 }
 
@@ -237,6 +236,6 @@ interface ProjectDetailsCreateModalProps {
 }
 
 type Priority = {
-  priorityId: number,
+  priorityId: number
   priorityName: string
 }

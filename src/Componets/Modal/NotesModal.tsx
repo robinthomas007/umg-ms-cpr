@@ -18,7 +18,7 @@ const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
 }
-const { Option } = Mentions;
+const { Option } = Mentions
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 
@@ -55,7 +55,7 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
         }
 
         const transformedMentionsList = newOptions.map((label, index) => ({
-          value: `${label}`,
+          value: `${label.replace(' ', '')}`,
           label: label.toLowerCase(),
         }))
         setMentions(transformedMentionsList)
@@ -97,7 +97,6 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
     return fName.toUpperCase() + lName.toUpperCase()
   }
 
-
   return (
     <>
       <Modal title={`Notes`} open={props.open} footer={null} onCancel={props.handleClose} width={700}>
@@ -120,18 +119,30 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
         </div>
         <Form {...layout} name="nest-messages" onFinish={handleSubmit} validateMessages={validateMessages} form={form}>
           <Form.Item name="notes" labelCol={{ span: 6 }} wrapperCol={{ span: 32 }} rules={[{ required: true }]}>
-            <Mentions rows={4} placeholder="Create A New Note"
+            <Mentions
+              rows={4}
+              placeholder="Create A New Note"
               options={mentions.map(({ value, label }) => ({
                 key: value,
                 value: value,
                 className: 'antd-demo-dynamic-option',
                 label: (
                   <div style={{ width: 250, display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-                    <span style={{ background: hexArray[Math.floor(Math.random() * hexArray.length)], borderRadius: '50%', padding: '5px 7px', marginRight: 10 }}>{getUserAliance(value)}</span>
+                    <span
+                      style={{
+                        background: hexArray[Math.floor(Math.random() * hexArray.length)],
+                        borderRadius: '50%',
+                        padding: '5px 7px',
+                        marginRight: 10,
+                      }}
+                    >
+                      {getUserAliance(value)}
+                    </span>
                     <span>{label}</span>
                   </div>
                 ),
-              }))} />
+              }))}
+            />
           </Form.Item>
           <Row justify="end">
             <Space>
