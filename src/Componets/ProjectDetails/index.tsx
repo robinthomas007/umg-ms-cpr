@@ -19,12 +19,11 @@ import BulkProjectModal from './BulkProjectModal'
 import NotesModal from '../Modal/NotesModal'
 // @ts-ignore
 import { CSVLink } from 'react-csv'
-import { LINK_TITLES, countValues, ADMIN, TEAM_ADMIN } from '../Common/StaticDatas'
+import { LINK_TITLES, countValues, ADMIN } from '../Common/StaticDatas'
 import ProjectSearchDetailsDataTable from './ProjectSearchDetailsDataTable'
 import { useParams } from 'react-router-dom'
 import { useAuth } from '../../Context/authContext'
 import { useLocation } from 'react-router-dom'
-import { restrictUser } from '../Common/Utils'
 
 const { Search } = Input
 const { Text, Title } = Typography
@@ -71,9 +70,9 @@ export default function ProjectDetails() {
   const queryParams = new URLSearchParams(location.search)
   const projectName = queryParams.get('projectName')
 
-  const { user } = useAuth()
-  const enableBulkEdit = projectLinkIds.length >= 1 && (user.role === ADMIN || user.role === TEAM_ADMIN) ? false : true
-  const enableToAddAndEdit = restrictUser(user.role)
+  const auth = useAuth()
+  const enableBulkEdit = projectLinkIds.length >= 1 && auth.user.role === ADMIN ? false : true
+
   const csvLink = React.createRef<any>()
 
   const getProjectLinks = React.useCallback(() => {
@@ -271,12 +270,7 @@ export default function ProjectDetails() {
       title: 'Actions',
       render: (_, record) => (
         <Space size="middle">
-          <Button
-            disabled={enableToAddAndEdit}
-            onClick={() => editProject(record)}
-            icon={<EditOutlined />}
-            size={'middle'}
-          />
+          <Button onClick={() => editProject(record)} icon={<EditOutlined />} size={'middle'} />
           <Button onClick={() => showNotesModal(record)} icon={<WechatOutlined />} size={'middle'} />
         </Space>
       ),
@@ -292,18 +286,12 @@ export default function ProjectDetails() {
         }
         return [key, value]
       })
-      const updatedVal = searchFilters[removedTag].filter((id) => id !== el)
-      setSearchFilters((prev) => ({ ...prev, [removedTag]: updatedVal }))
-      if (updatedVal.length === 0) {
-        setSelectedFilters(selectedFilters.filter((item) => item[0] !== removedTag))
-      } else {
-        setSelectedFilters(modifiiedFilters)
-      }
+      setSearchFilters((prev) => ({ ...prev, [removedTag]: searchFilters[removedTag].filter((id) => id !== el) }))
     } else {
       modifiiedFilters = selectedFilters.filter((item) => item[0] !== removedTag)
       setSearchFilters((prev) => ({ ...prev, [removedTag]: null }))
-      setSelectedFilters(modifiiedFilters)
     }
+    setSelectedFilters(modifiiedFilters)
   }
 
   const tagElement = (type, tag) => {
@@ -318,7 +306,7 @@ export default function ProjectDetails() {
     if (Array.isArray(tag)) {
       return (
         <>
-          <span>{`${labels[type]}:`}</span>
+          {tag.length > 0 && <span>{`${labels[type]}:`}</span>}
           {tag.map((el, i) => {
             return (
               <Tag
@@ -509,12 +497,7 @@ export default function ProjectDetails() {
               <Button onClick={showBulkProjectModal} disabled={enableBulkEdit} icon={<EditOutlined />} size={'middle'}>
                 Bulk Edit
               </Button>
-              <Button
-                disabled={enableToAddAndEdit}
-                onClick={showCreateProjectModal}
-                icon={<PlusCircleFilled />}
-                size={'middle'}
-              >
+              <Button onClick={showCreateProjectModal} icon={<PlusCircleFilled />} size={'middle'}>
                 Create
               </Button>
               <Button onClick={exportData} icon={<DownloadOutlined />} size={'middle'}>
