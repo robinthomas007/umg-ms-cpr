@@ -40,12 +40,10 @@ const FilterModal: React.FC<ProjectDetailsCreateModalProps> = (props) => {
   }
 
   useEffect(() => {
-    console.log(props.selectedFilters, 'props.selectedFilters')
     const modifiedFilters: any = { ...defaultSelectedFilters, ...Object.fromEntries(props.selectedFilters) }
     if (modifiedFilters.searchWithin === 'ALL' && !searchWithin.includes('ALL')) {
       setSearchWithin(['ALL'])
     }
-    console.log(modifiedFilters, modifiedFilters.reviewDateFrom, 'Asd')
     if (modifiedFilters.reviewDateFrom) {
       modifiedFilters.reviewDateFrom = dayjs(modifiedFilters.reviewDateFrom, dateFormat)
     }

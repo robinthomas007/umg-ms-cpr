@@ -284,8 +284,11 @@ export default function ProjectDetails() {
         if (key === removedTag && Array.isArray(value)) {
           return [key, value.filter((item) => item !== el)]
         }
+
         return [key, value]
       })
+        return [key, value];
+      });
       setSearchFilters((prev) => ({ ...prev, [removedTag]: searchFilters[removedTag].filter((id) => id !== el) }))
     } else {
       modifiiedFilters = selectedFilters.filter((item) => item[0] !== removedTag)
