@@ -130,7 +130,7 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
                       )
                     })}
                 </Select> */}
-                <Select mode="multiple" allowClear style={{ width: '100%' }} placeholder="Please select">
+                <Select mode="multiple" allowClear showArrow style={{ width: '100%' }} placeholder="Please select">
                   {props.platformFacets &&
                     props.platformFacets.map((platform, index) => {
                       return (
