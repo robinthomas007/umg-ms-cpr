@@ -84,7 +84,6 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
       }
       return val.teamId === key
     })[0]
-
     const updatedMember = {
       teamId: [dropTeamIndex.teamId],
       userId: [draggedItem.userId],
@@ -92,7 +91,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
     postApi(updatedMember, '/teamuser', 'successfully assigned role')
       .then((res: any) => {
         if (res.result) {
-          draggedItem.roleId = 3 // default user Role
+          draggedItem.roleId = dropTeamIndex.teamName === 'Admin' ? 4 : 3 // default user Role
           const updatedMembers = dropTeamIndex.members ? [...dropTeamIndex['members'], draggedItem] : [draggedItem]
           dropTeamIndex['members'] = updatedMembers
           if (index >= 0) {
@@ -101,6 +100,32 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
           }
           setIsTeamDataUpdated(!isTeamDataUpdated)
           reloadUserData()
+
+          //to update the role as  Admin by default when drag and drop the user
+          if (dropTeamIndex.teamName === 'Admin') {
+            getApi({ SearchTerm: searchTeam }, '/teamsearch').then((res) => {
+              const teamList = res.teamList
+              const updatedTeamData: any = teamList.find((member: any) => member.teamId === dropTeamIndex.teamId)
+              const modifiedDropMemeber = updatedTeamData.members.find(
+                (member: any) => member.userId === draggedItem.userId
+              )
+              const updatedMember = {
+                teamId: [modifiedDropMemeber.teamId],
+                roleId: 4,
+                userRoleId: modifiedDropMemeber.userRoleId,
+              }
+              postApi(updatedMember, '/teamuser', '')
+                .then((res: any) => {
+                  setIsTeamDataUpdated(!isTeamDataUpdated)
+                  auth.setUpdatedRole(!auth.updatedRole)
+                })
+                .catch((error: any) => {
+                  console.log('error feching data', error)
+                })
+            })
+          }
+
+          //end update role as admin
         }
       })
       .catch((error: any) => {
@@ -231,7 +256,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
       })
   }
 
-  const getMembersTable = (members, key) => {
+  const getMembersTable = (members, key, teamName) => {
     const memberColumn = [
       {
         title: 'User Name',
@@ -242,16 +267,29 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
         dataIndex: '',
         width: 300,
         render: (data) => {
-          return (
-            <Select
-              showArrow
-              defaultValue={data.roleId}
-              onChange={(val) => onPermissionRoleChange(data, val)}
-              style={{ width: '80%' }}
-              options={permissions}
-              placeholder="Select Teams"
-            />
-          )
+          if (teamName === 'Admin') {
+            return (
+              <Select
+                defaultValue={4}
+                // onChange={(val) => onPermissionRoleChange(data, val)}
+                disabled={true}
+                style={{ width: '80%' }}
+                options={permissions}
+                placeholder="Select Teams"
+              />
+            )
+          } else {
+            return (
+              <Select
+                showArrow
+                defaultValue={data.roleId}
+                onChange={(val) => onPermissionRoleChange(data, val)}
+                style={{ width: '80%' }}
+                options={permissions.filter((item: any) => item.value !== 4)}
+                placeholder="Select Teams"
+              />
+            )
+          }
         },
       },
       {
@@ -343,7 +381,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
               expandedRowRender: (record, index) => {
                 return (
                   <div key={index} className={`drop-zone ${dropZoneActive ? 'active' : ''}`}>
-                    {getMembersTable(record.members, record.teamId)}
+                    {getMembersTable(record.members, record.teamId, record.teamName)}
                   </div>
                 )
               },

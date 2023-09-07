@@ -171,7 +171,12 @@ const CreateProjectModal: React.FC<ModalProps> = (props) => {
                   {props.statusFacets &&
                     props.statusFacets.map((status, index) => {
                       return (
-                        <Option key={index} label={status.statusTypeDescription} value={status.statusTypeId}>
+                        <Option
+                          disabled={status.statusTypeDescription === 'Completed'}
+                          key={index}
+                          label={status.statusTypeDescription}
+                          value={status.statusTypeId}
+                        >
                           {status.statusTypeDescription}
                         </Option>
                       )

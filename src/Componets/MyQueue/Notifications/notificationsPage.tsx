@@ -153,6 +153,15 @@ function NotificationsPage() {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
+      // render: (text, record: any) => {
+      //   // Check if the cell should be highlighted
+      //   const isHighlighted = record.description === 'Vishveshwar Duraiswamy just added a new note for the Project'
+
+      //   // Define the cell's style based on the highlighting condition
+      //   const cellStyle = isHighlighted ? { color: 'red' } : {}
+
+      //   return <div style={cellStyle}>{text}</div>
+      // },
     },
     {
       title: 'Note',

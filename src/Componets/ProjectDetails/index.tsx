@@ -19,7 +19,7 @@ import BulkProjectModal from './BulkProjectModal'
 import NotesModal from '../Modal/NotesModal'
 // @ts-ignore
 import { CSVLink } from 'react-csv'
-import { LINK_TITLES, countValues, ADMIN } from '../Common/StaticDatas'
+import { LINK_TITLES, countValues, ADMIN, TEAM_ADMIN } from '../Common/StaticDatas'
 import ProjectSearchDetailsDataTable from './ProjectSearchDetailsDataTable'
 import { useParams } from 'react-router-dom'
 import { useAuth } from '../../Context/authContext'
@@ -71,7 +71,8 @@ export default function ProjectDetails() {
   const projectName = queryParams.get('projectName')
 
   const auth = useAuth()
-  const enableBulkEdit = projectLinkIds.length >= 1 && auth.user.role === ADMIN ? false : true
+  const enableBulkEdit =
+    (projectLinkIds.length >= 1 && auth.user.role === ADMIN) || auth.user.role === TEAM_ADMIN ? false : true
 
   const csvLink = React.createRef<any>()
 
