@@ -106,6 +106,14 @@ type taskSearchState = {
   error: string
   tasks: Array<object>
   totalPages: number
+  status:string,
+  batch:number,
+  teams:string,
+  platforms:any,
+  priority:number|null,
+  assignedTo:string,
+  startDate:string,
+  endDate:string,
   totalItems: number
   pageNumber: number
   searchTerm: string
@@ -166,7 +174,8 @@ type NotificationType = {
 
 interface Tasks {
   key?: React.Key
-  taskId: React.Key
+  projectId: React.Key
+  linkPercentage:number,
   title: string
   prirority: string
   artistList: string

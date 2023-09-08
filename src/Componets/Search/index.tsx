@@ -5,8 +5,7 @@ import type { PaginationProps } from 'antd'
 import Highlighter from 'react-highlight-words'
 import { showErrorNotification } from '../../utils/notifications'
 import { getApi } from '../../Api/Api'
-import Api from '../../lib/api'
-import { ADMIN, TEAM_ADMIN, TEAM_MEMBER } from '../Common/StaticDatas'
+import { countValues } from '../../Componets/Common/Utils'
 import {
   DownloadOutlined,
   PlusCircleFilled,
@@ -23,9 +22,7 @@ import ProjectSearchDataTable from './ProjectSearchDataTable'
 import ProjectSearchFilterModal from '../Modal/ProjectSearchFilterModal'
 import CreateProjectModal from '../Modal/CreateProjectModal'
 import type { ColumnsType, ColumnType } from 'antd/es/table'
-// import { searchReducer } from './searchReducer'
-import axios from 'axios'
-import { BASE_URL } from '../../../src/App'
+
 import EditProjectModal from '../Modal/EditProjectModal'
 import NotesModal from '../Modal/NotesModal'
 // @ts-ignore
@@ -88,7 +85,6 @@ const PriorityImg = {
 const SearchInput: React.FC = () => {
   const [searchFilters, setSearchFilters] = useState<searchState>(searchInitialState)
   const [loading, setLoading] = useState<boolean>(false)
-  // const [state, dispatch] = React.useReducer(searchReducer, searchInitialState)
   const [search, setSearch] = React.useState('')
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false)
@@ -391,9 +387,6 @@ const SearchInput: React.FC = () => {
         text
       ),
   })
-  // const handleSortTable=(selectedColumn)= {
-  //   return null
-  // }
 
   const columnsProject: ColumnsType<Project> = [
     {
@@ -401,33 +394,30 @@ const SearchInput: React.FC = () => {
       dataIndex: 'title',
       key: 'projectId',
       sorter: (a, b) => a.title.length - b.title.length,
-      // ...getColumnSearchProps('title'),
     },
     {
       title: 'Title/ Artist List',
       dataIndex: 'artistList',
       key: 'artistList',
-      // ...getColumnSearchProps('artistList'),
     },
     {
-      title: 'Platform',
-      dataIndex: 'platformName',
-      key: 'platformName',
+      title: 'Platform(s)',
+      dataIndex: 'platformId',
+      key: 'platformId',
       render: (_, record: any) => {
         return (
-          record.platformName &&
-          record.platformName.split(',').map((platform) => {
-            return <img style={{ padding: '5px' }} src={platformImages[platform]} alt={platform} />
+          record.platformId &&
+          record.platformId.map((platform) => {
+            const extractPlatform: any = platformFacets.find((item) => item.platformId === platform)
+            return <img style={{ padding: '5px' }} src={platformImages[extractPlatform?.platformName]} alt={platform} />
           })
         )
       },
-      // ...getColumnSearchProps('platformName'),
     },
     {
       title: 'Teams',
       dataIndex: 'teamName',
       key: 'teams',
-      // ...getColumnSearchProps('teamName'),
     },
     {
       title: 'Links/Progress',
@@ -463,7 +453,6 @@ const SearchInput: React.FC = () => {
       title: 'Status',
       dataIndex: 'statusTypeDescription',
       key: 'statusTypeDescription',
-      // ...getColumnSearchProps('statusTypeDescription'),
     },
     {
       title: 'Actions',
@@ -517,24 +506,6 @@ const SearchInput: React.FC = () => {
     setSearch('')
   }
 
-  const countValues = [
-    {
-      value: '10',
-      label: '10',
-    },
-    {
-      value: '25',
-      label: '25',
-    },
-    {
-      value: '50',
-      label: '50',
-    },
-    {
-      value: '100',
-      label: '100',
-    },
-  ]
   const getUpdatedProjectList = () => {
     setSearchFilters({ ...searchFilters, pageNumber: 1 })
   }

@@ -100,10 +100,9 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
           }
           setIsTeamDataUpdated(!isTeamDataUpdated)
           reloadUserData()
-
+          //TO_DO
           //to update the role as  Admin by default when drag and drop the user
           if (dropTeamIndex.teamName === 'Admin') {
-            console.log('isnit calling')
             getApi({ SearchTerm: searchTeam }, '/teamsearch').then((res) => {
               const teamList = res.teamList
               const updatedTeamData: any = teamList.find((member: any) => member.teamId === dropTeamIndex.teamId)
