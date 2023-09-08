@@ -238,7 +238,7 @@ export default function Navbar() {
           <div
             className="noti-content"
             onClick={() => naviagetNotificationPage(noti.source, noti.notificationId, noti.isRead)}
-            // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
+          // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
           >
             {noti.notificationType.toLowerCase() === 'created' && (
               <>
@@ -296,7 +296,7 @@ export default function Navbar() {
   }
 
   return (
-    <>
+    <div className='header-wrapper'>
       <Header>
         <Row justify="space-between">
           <img src={logo} alt="logo" />
@@ -351,6 +351,6 @@ export default function Navbar() {
           </div>
         )}
       </div>
-    </>
+    </div>
   )
 }

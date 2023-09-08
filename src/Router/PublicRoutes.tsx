@@ -6,7 +6,9 @@ export const PublicRoutes = () => {
   return (
     <div>
       <Navbar />
-      <Outlet />
+      <div className='cpr-layout-inside'>
+        <Outlet />
+      </div>
     </div>
   )
 }
