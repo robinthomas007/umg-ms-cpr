@@ -4,7 +4,7 @@ import type { MenuProps } from 'antd'
 import { Col, Row, Menu, Space, Button, Input, Tag, Select, Divider, Progress, Typography, Pagination } from 'antd'
 import type { PaginationProps } from 'antd'
 import { countValues } from '../../Common/Utils'
-import { getApi } from '../../../Api/Api'
+import { getApi, deleteApi } from '../../../Api/Api'
 import {
   DownloadOutlined,
   PlusCircleFilled,
@@ -238,6 +238,16 @@ function TasksPage() {
     })
   }
 
+  const removeMyTask = (projectId: number) => {
+    deleteApi(projectId, '/TaskSearch')
+      .then((res: any) => {
+        getUpdatedProjectList()
+      })
+      .catch((error: any) => {
+        console.log('error feching data', error)
+      })
+  }
+
   const tagElement = (type, tag) => {
     const labels = {
       status: 'Status',
@@ -373,7 +383,7 @@ function TasksPage() {
             style={{ border: 'none', borderColor: '' }}
           />
           <Button
-            onClick={() => console.log('onclcick')}
+            onClick={() => removeMyTask(Number(record.projectId))}
             icon={<CloseSquareOutlined />}
             size={'large'}
             style={{ border: 'none', borderColor: '' }}
