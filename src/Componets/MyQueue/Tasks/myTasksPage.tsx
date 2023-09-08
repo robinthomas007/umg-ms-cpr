@@ -238,7 +238,8 @@ function TasksPage() {
     })
   }
 
-  const removeMyTask = (projectId: number) => {
+  const removeMyTask = (e, projectId: number) => {
+    e.stopPropagation()
     deleteApi(projectId, '/TaskSearch')
       .then((res: any) => {
         getUpdatedProjectList()
@@ -383,7 +384,7 @@ function TasksPage() {
             style={{ border: 'none', borderColor: '' }}
           />
           <Button
-            onClick={() => removeMyTask(Number(record.projectId))}
+            onClick={(e) => removeMyTask(e, Number(record.projectId))}
             icon={<CloseSquareOutlined />}
             size={'large'}
             style={{ border: 'none', borderColor: '' }}
