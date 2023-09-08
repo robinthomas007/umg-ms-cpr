@@ -143,7 +143,6 @@ export default function Navbar() {
     setNotifications([])
     setShowNoti(false)
     postApi({ notificationId: 0 }, '/notification/readnotification', '').then((res) => {
-      console.log('response', res)
       setNotifyCount(0)
     })
   }

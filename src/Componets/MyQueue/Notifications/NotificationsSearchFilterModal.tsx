@@ -50,7 +50,6 @@ const FilterModal: React.FC<MyQueueModalProps> = (props) => {
   }
   const onFinish = (values: any) => {
     const modifiedSelectedFilters = { ...values }
-    console.log('values', values)
     if (modifiedSelectedFilters.updatedFrom) {
       modifiedSelectedFilters.updatedFrom = dayjs(modifiedSelectedFilters.updatedFrom).format('MM-DD-YYYY')
     }
@@ -59,7 +58,6 @@ const FilterModal: React.FC<MyQueueModalProps> = (props) => {
     }
 
     modifiedSelectedFilters.searchWithin = searchWithin.join(',')
-    console.log('after modified data', modifiedSelectedFilters)
     props.handleSelectedFilters(modifiedSelectedFilters)
     // setStartDateFormat('')
     // setEndDateFormat('')

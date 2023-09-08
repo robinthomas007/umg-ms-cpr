@@ -24,6 +24,7 @@ import ProjectSearchDetailsDataTable from './ProjectSearchDetailsDataTable'
 import { useParams } from 'react-router-dom'
 import { useAuth } from '../../Context/authContext'
 import { useLocation } from 'react-router-dom'
+import { restrictUser } from '../Common/Utils'
 
 const { Search } = Input
 const { Text, Title } = Typography
@@ -73,6 +74,7 @@ export default function ProjectDetails() {
   const auth = useAuth()
   const enableBulkEdit =
     (projectLinkIds.length >= 1 && auth.user.role === ADMIN) || auth.user.role === TEAM_ADMIN ? false : true
+  const enableToAddAndEdit = restrictUser(auth.user.role)
 
   const csvLink = React.createRef<any>()
 
@@ -271,7 +273,12 @@ export default function ProjectDetails() {
       title: 'Actions',
       render: (_, record) => (
         <Space size="middle">
-          <Button onClick={() => editProject(record)} icon={<EditOutlined />} size={'middle'} />
+          <Button
+            disabled={enableToAddAndEdit}
+            onClick={() => editProject(record)}
+            icon={<EditOutlined />}
+            size={'middle'}
+          />
           <Button onClick={() => showNotesModal(record)} icon={<WechatOutlined />} size={'middle'} />
         </Space>
       ),
@@ -498,7 +505,12 @@ export default function ProjectDetails() {
               <Button onClick={showBulkProjectModal} disabled={enableBulkEdit} icon={<EditOutlined />} size={'middle'}>
                 Bulk Edit
               </Button>
-              <Button onClick={showCreateProjectModal} icon={<PlusCircleFilled />} size={'middle'}>
+              <Button
+                onClick={showCreateProjectModal}
+                disabled={enableToAddAndEdit}
+                icon={<PlusCircleFilled />}
+                size={'middle'}
+              >
                 Create
               </Button>
               <Button onClick={exportData} icon={<DownloadOutlined />} size={'middle'}>

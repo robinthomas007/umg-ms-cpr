@@ -10,9 +10,10 @@ interface TaskProps {
   columnsTasks: ColumnsType<Tasks>
   tasks: Tasks[]
   loading: boolean
+  setSort: any
 }
 
-const TaskDataGrid: React.FC<TaskProps> = ({ columnsTasks, tasks, loading }) => {
+const TaskDataGrid: React.FC<TaskProps> = ({ columnsTasks, tasks, loading, setSort }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -23,6 +24,11 @@ const TaskDataGrid: React.FC<TaskProps> = ({ columnsTasks, tasks, loading }) => 
     selectedRowKeys,
     onChange: onSelectChange,
   }
+  const handleChange = (pagination, filters: any, sorter: any) => {
+    if (sorter.order && sorter.columnKey) {
+      setSort(sorter.order === 'descend' ? 'desc' : 'asc', sorter.columnKey)
+    }
+  }
 
   return (
     <Table
@@ -30,7 +36,7 @@ const TaskDataGrid: React.FC<TaskProps> = ({ columnsTasks, tasks, loading }) => 
       scroll={{ y: 450 }}
       rowSelection={rowSelection}
       dataSource={tasks}
-      onChange={onChange}
+      onChange={handleChange}
       pagination={false}
       rowKey={'taskId'}
       loading={loading}
