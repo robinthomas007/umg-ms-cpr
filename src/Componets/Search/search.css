@@ -7,7 +7,9 @@
   border-color: gray;
 }
 
-.priority-img {
+
+.ant-table-cell .progressContent {
+  font-size: 10px;
 }
 
 .priority-img.None .anticon {

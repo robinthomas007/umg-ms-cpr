@@ -333,11 +333,14 @@ function TasksPage() {
     },
     {
       title: 'My Progress',
-      render: (_, record: Tasks) => (
-        <Progress
-          percent={record.linkPercentage}
-          strokeColor={{ '0%': '#85D305', '50%': '#F68B0D', '100%': '#CA1919' }}
-        />
+      render: (_, record: any) => (
+        <>
+          <Progress
+            percent={record.linkPercentage}
+            strokeColor={{ '0%': '#85D305', '50%': '#F68B0D', '100%': '#CA1919' }}
+          />
+          <span className="progressContent">{`${record.linkCompletedCount} / ${record.totalLink}`}</span>
+        </>
       ),
       key: 'linkPercentage',
     },
@@ -365,11 +368,17 @@ function TasksPage() {
         <Space size="middle">
           <Button
             onClick={(e) => showNotesModal(e, record.projectId)}
-            icon={<img src={Vimeo} alt="Custom Icon" />}
+            icon={<WechatOutlined />}
             size={'large'}
             style={{ border: 'none', borderColor: '' }}
           />
-          <CloseSquareOutlined onClick={() => console.log('onclcick')} style={{ fontSize: '25px' }} />
+          <Button
+            onClick={() => console.log('onclcick')}
+            icon={<CloseSquareOutlined />}
+            size={'large'}
+            style={{ border: 'none', borderColor: '' }}
+          />
+          {/* <CloseSquareOutlined onClick={() => console.log('onclcick')} style={{ fontSize: '25px' }} /> */}
         </Space>
       ),
     },
@@ -377,8 +386,6 @@ function TasksPage() {
 
   return (
     <>
-      {/* <Title>MyQueue</Title>
-      <Menu className="admin-menu" onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} /> */}
       <Row style={{ padding: '50px' }}>
         <Col span={8} offset={8}>
           <Row>
@@ -427,8 +434,6 @@ function TasksPage() {
               handleClose={handleNotesModal}
             />
           )}
-
-          {/* <NotesModal projectData={project} open={openNotesModal} handleClose={handleNotesModal} /> */}
         </Col>
       </Row>
       <br />

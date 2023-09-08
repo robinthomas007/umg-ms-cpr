@@ -422,11 +422,14 @@ const SearchInput: React.FC = () => {
     {
       title: 'Links/Progress',
       key: 'progress',
-      render: (_, record) => (
-        <Progress
-          percent={record.linkPercentage}
-          strokeColor={{ '0%': '#85D305', '50%': '#F68B0D', '100%': '#CA1919' }}
-        />
+      render: (_, record: any) => (
+        <>
+          <Progress
+            percent={record.linkPercentage}
+            strokeColor={{ '0%': '#85D305', '50%': '#F68B0D', '100%': '#CA1919' }}
+          />
+          <span className="progressContent">{`${record.linkCompletedCount} / ${record.totalLink}`}</span>
+        </>
       ),
     },
     {
