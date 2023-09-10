@@ -70,6 +70,7 @@ export default function ProjectDetails() {
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
   const projectName = queryParams.get('projectName')
+  const assignedTo = Number(queryParams.get('assignedTo'))
 
   const auth = useAuth()
   const enableBulkEdit =
@@ -89,7 +90,7 @@ export default function ProjectDetails() {
       SortColumn: searchFilters.sortColumns,
       SortOrder: searchFilters.sortOrder,
       SearchWithins: searchFilters.searchWithin,
-      AssignedTo: arrayToString(searchFilters.assignedTo),
+      AssignedTo: assignedTo ? assignedTo : arrayToString(searchFilters.assignedTo),
       StatusId: arrayToString(searchFilters.statusId),
       CategoryId: arrayToString(searchFilters.categoryId),
       ReviewDateTo: searchFilters.reviewDateTo,
@@ -377,7 +378,13 @@ export default function ProjectDetails() {
         </Col>
         <Col md={4}>
           <label style={{ marginRight: 10 }}>Assigned To : </label>
-          <Select style={{ minWidth: 150 }} placeholder="ALL" onChange={handleChangeAssignee} allowClear>
+          <Select
+            style={{ minWidth: 150 }}
+            defaultValue={assignedTo ? assignedTo : 'ALL'}
+            placeholder="ALL"
+            onChange={handleChangeAssignee}
+            allowClear
+          >
             {facets.userFacets &&
               facets.userFacets.map((team, index) => {
                 return (

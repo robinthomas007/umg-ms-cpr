@@ -3,6 +3,7 @@ import { Table, Tag, Select } from 'antd'
 import type { ColumnsType, TableProps } from 'antd/es/table'
 import { TableRowSelection } from 'antd/es/table/interface'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../../Context/authContext'
 
 const onChange: TableProps<Tasks>['onChange'] = (pagination, filters, sorter, extra) => {
   console.log('params', pagination, filters, sorter, extra)
@@ -20,6 +21,7 @@ const TaskDataGrid: React.FC<TaskProps> = ({ columnsTasks, tasks, loading, setSo
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys)
   }
+  const { user } = useAuth()
 
   const rowSelection = {
     selectedRowKeys,
@@ -39,7 +41,7 @@ const TaskDataGrid: React.FC<TaskProps> = ({ columnsTasks, tasks, loading, setSo
         return {
           onClick: (event) => {
             if (event.target) {
-              navigate(`/search/${record.projectId}/${record.teamId}?projectName=${record.title}`)
+              navigate(`/search/${record.projectId}/${record.teamId}?projectName=${record.title}&assignedTo=${user.id}`)
             }
           },
         }
