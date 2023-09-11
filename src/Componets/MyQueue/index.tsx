@@ -1,14 +1,21 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import type { MenuProps } from 'antd'
 import { Typography, Menu } from 'antd'
 import NotificationsPage from './Notifications/notificationsPage'
 import TasksPage from './Tasks/myTasksPage'
 
+import { useLocation } from 'react-router-dom'
+
 const { Title } = Typography
 
 function MyQueue() {
   const [current, setCurrent] = useState('notifications')
+  const location = useLocation()
+
+  useEffect(() => {
+    setCurrent('notifications')
+  }, [location])
   const items: MenuProps['items'] = [
     {
       label: 'Notifications',

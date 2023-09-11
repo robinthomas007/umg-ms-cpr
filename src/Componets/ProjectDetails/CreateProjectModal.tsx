@@ -41,6 +41,8 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
       setReviewDateFormat(dayjs(copyProject.reviewDate).format('MM-DD-YYYY'))
       modifiedProject.reviewDate = dayjs(copyProject.reviewDate)
     }
+    const getAssignedUserId = props.reviewerFacets.some((user) => Number(user.id) === modifiedProject.assignedTo)
+    modifiedProject.assignedTo = getAssignedUserId ? modifiedProject.assignedTo : null
     form.setFieldsValue({ project: modifiedProject })
   }, [projectLinkData, form])
 
