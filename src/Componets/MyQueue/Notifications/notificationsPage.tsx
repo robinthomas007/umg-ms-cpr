@@ -138,6 +138,10 @@ function NotificationsPage() {
   const closeFilterModal = () => {
     setIsFilterModalOpen(false)
   }
+
+  // keep all the items in lowercase
+  const heighlightWords = ['critical', 'high priority', 'updated'];
+
   const columnsNotification: ColumnsType<Notification> = [
     {
       title: 'Updated Date',
@@ -153,15 +157,18 @@ function NotificationsPage() {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
-      // render: (text, record: any) => {
-      //   // Check if the cell should be highlighted
-      //   const isHighlighted = record.description === 'Vishveshwar Duraiswamy just added a new note for the Project'
-
-      //   // Define the cell's style based on the highlighting condition
-      //   const cellStyle = isHighlighted ? { color: 'red' } : {}
-
-      //   return <div style={cellStyle}>{text}</div>
-      // },
+      render: (text, record: any) => {
+        const words = text.split(' ');
+        return <div>
+          {words.map((word, index) => (
+            heighlightWords.includes(word.toLowerCase()) ? (
+              <span key={index} className="highlight-red">{word} </span>
+            ) : (
+              <span key={index}>{word} </span>
+            )
+          ))}
+        </div>
+      },
     },
     {
       title: 'Note',
