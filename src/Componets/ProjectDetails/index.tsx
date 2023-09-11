@@ -375,7 +375,7 @@ export default function ProjectDetails() {
       <Row justify={'space-between'}>
         <Col>
           <Title level={3}>Project: {projectName}</Title>
-          <Link to="/search"> &larr; Back to Projects</Link>
+          <Link to={assignedTo ? '/myqueue?type=tasks' : '/search'}> &larr; Back to Projects</Link>
         </Col>
         <Col md={4}>
           <label style={{ marginRight: 10 }}>Assigned To : </label>

@@ -187,7 +187,7 @@ export default function Navbar() {
 
   const naviagetNotificationPage = (source: string, notificationId: string, isRead: boolean) => {
     !isRead && markAsRead(Number(notificationId), source)
-    navigate('/myqueue', {
+    navigate('/myqueue?type=notifications', {
       state: { notificationId: notificationId },
       replace: true,
     })

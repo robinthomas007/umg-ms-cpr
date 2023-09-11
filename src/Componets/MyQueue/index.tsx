@@ -12,10 +12,13 @@ const { Title } = Typography
 function MyQueue() {
   const [current, setCurrent] = useState('notifications')
   const location = useLocation()
+  const queryParams = new URLSearchParams(location.search)
+  const type = queryParams.get('type')
 
   useEffect(() => {
-    setCurrent('notifications')
-  }, [location])
+    let activePage = type === 'notifications' ? 'notifications' : 'tasks'
+    setCurrent(activePage)
+  }, [type])
   const items: MenuProps['items'] = [
     {
       label: 'Notifications',
