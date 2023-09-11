@@ -187,31 +187,10 @@ export default function Navbar() {
 
   const naviagetNotificationPage = (source: string, notificationId: string, isRead: boolean) => {
     !isRead && markAsRead(Number(notificationId), source)
-    switch (source) {
-      case 'Projects':
-        navigate('/myqueue', {
-          state: { notificationId: notificationId },
-          replace: true,
-        })
-        break
-      case 'Links':
-        navigate('/myqueue', {
-          state: { notificationId: notificationId },
-          replace: true,
-        })
-        break
-      case 'Notifications':
-        navigate('/myqueue', {
-          state: { notificationId: notificationId },
-          replace: true,
-        })
-        break
-      default:
-        navigate('/', {
-          state: { notificationId: notificationId },
-          replace: true,
-        })
-    }
+    navigate('/myqueue', {
+      state: { notificationId: notificationId },
+      replace: true,
+    })
     setShowNoti(false)
   }
 
@@ -237,7 +216,7 @@ export default function Navbar() {
           <div
             className="noti-content"
             onClick={() => naviagetNotificationPage(noti.source, noti.notificationId, noti.isRead)}
-          // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
+            // onMouseEnter={() => !noti.isRead && markAsRead(noti.notificationId, noti.source)}
           >
             {noti.notificationType.toLowerCase() === 'created' && (
               <>
@@ -295,7 +274,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className='header-wrapper'>
+    <div className="header-wrapper">
       <Header>
         <Row justify="space-between">
           <img src={logo} alt="logo" />

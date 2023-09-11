@@ -116,7 +116,7 @@ function TasksPage() {
       searchTerm: searchTerm,
       itemsPerPage: itemsPerPage,
       pageNumber: pageNumber,
-      sortColumns: sortColumns,
+      sortColumn: sortColumns,
       sortOrder: sortOrder,
       searchWithin: searchWithin ? searchWithin.toString() : 'ALL',
       platforms: platforms != null ? platforms.join(',') : platforms,
