@@ -148,7 +148,7 @@ export default function Team({ draggedItem, updateTeamDataFromUser, reloadUserDa
       title: 'Team Admin(s)',
       dataIndex: '',
       render: (data, row) => {
-        const members = data.members && data.members.filter((member) => member.roleId && member.roleId === 2)
+        const members = data.members && data.members.filter((member) => member.roleId && member.roleId === 1)
         let teamAdmins: string[] = []
         members && members.forEach((member: any) => teamAdmins.push(member.userName.split(' ')[0]))
         return <p>{teamAdmins.join(', ')}</p>

@@ -10,6 +10,7 @@
 
 .ant-table-cell .progressContent {
   font-size: 10px;
+  margin-top: -9px;
 }
 
 .priority-img.None .anticon {

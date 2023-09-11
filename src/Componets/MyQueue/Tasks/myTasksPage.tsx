@@ -116,7 +116,7 @@ function TasksPage() {
       searchTerm: searchTerm,
       itemsPerPage: itemsPerPage,
       pageNumber: pageNumber,
-      sortColumns: sortColumns,
+      sortColumn: sortColumns,
       sortOrder: sortOrder,
       searchWithin: searchWithin ? searchWithin.toString() : 'ALL',
       platforms: platforms != null ? platforms.join(',') : platforms,
@@ -167,8 +167,8 @@ function TasksPage() {
     setSearchFilters((prev) => ({ ...prev, searchTerm }))
   }
 
-  const getUpdatedProjectList = () => {
-    setSearchFilters({ ...searchFilters, pageNumber: 1 })
+  const getUpdatedTaskList = () => {
+    setSearchFilters({ ...searchFilters, pageNumber: pageNumber })
   }
 
   const handlePageChange: PaginationProps['onChange'] = (page) => {
@@ -242,7 +242,7 @@ function TasksPage() {
     e.stopPropagation()
     deleteApi(projectId, '/TaskSearch')
       .then((res: any) => {
-        getUpdatedProjectList()
+        getUpdatedTaskList()
       })
       .catch((error: any) => {
         console.log('error feching data', error)
@@ -350,7 +350,7 @@ function TasksPage() {
             percent={record.linkPercentage}
             strokeColor={{ '0%': '#85D305', '50%': '#F68B0D', '100%': '#CA1919' }}
           />
-          <span className="progressContent">{`${record.linkCompletedCount} / ${record.totalLink}`}</span>
+          <p className="progressContent">{`${record.linkCompletedCount} / ${record.totalLink}`}</p>
         </>
       ),
       key: 'linkPercentage',

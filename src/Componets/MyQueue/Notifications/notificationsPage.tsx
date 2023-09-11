@@ -113,7 +113,7 @@ function NotificationsPage() {
     setSearch('')
   }
   const getUpdatedNotificationList = () => {
-    setSearchFilters({ ...searchFilters, pageNumber: 1 })
+    setSearchFilters({ ...searchFilters, pageNumber: pageNumber })
   }
   const setSearchTerm = (searchTerm: string) => {
     setSearchFilters((prev) => ({ ...prev, searchTerm }))
@@ -140,7 +140,7 @@ function NotificationsPage() {
   }
 
   // keep all the items in lowercase
-  const heighlightWords = ['critical', 'high priority', 'updated'];
+  const highlightWords = ['critical', 'high priority']
 
   const columnsNotification: ColumnsType<Notification> = [
     {
@@ -158,16 +158,20 @@ function NotificationsPage() {
       dataIndex: 'description',
       key: 'description',
       render: (text, record: any) => {
-        const words = text.split(' ');
-        return <div>
-          {words.map((word, index) => (
-            heighlightWords.includes(word.toLowerCase()) ? (
-              <span key={index} className="highlight-red">{word} </span>
-            ) : (
-              <span key={index}>{word} </span>
-            )
-          ))}
-        </div>
+        const words = text.split(' ')
+        return (
+          <div>
+            {words.map((word, index) =>
+              highlightWords.includes(word.toLowerCase()) ? (
+                <span key={index} className="highlight-red">
+                  {word}{' '}
+                </span>
+              ) : (
+                <span key={index}>{word} </span>
+              )
+            )}
+          </div>
+        )
       },
     },
     {
