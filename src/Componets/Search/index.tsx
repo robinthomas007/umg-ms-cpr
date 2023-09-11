@@ -428,7 +428,7 @@ const SearchInput: React.FC = () => {
             percent={record.linkPercentage}
             strokeColor={{ '0%': '#85D305', '50%': '#F68B0D', '100%': '#CA1919' }}
           />
-          <span className="progressContent">{`${record.linkCompletedCount} / ${record.totalLink}`}</span>
+          <p className="progressContent">{`${record.linkCompletedCount} / ${record.totalLink}`}</p>
         </>
       ),
     },

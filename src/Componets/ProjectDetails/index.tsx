@@ -367,6 +367,7 @@ export default function ProjectDetails() {
 
   const handleNotesModal = () => {
     setNotesModal(false)
+    setProjectLinkData(null)
   }
 
   return (
