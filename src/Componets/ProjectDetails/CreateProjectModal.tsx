@@ -49,6 +49,7 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
   const onFinish = (values: any) => {
     const { artist, title, url, accountUrl, categoryId, statusId, notes, assignedTo } = values.project
     props.setLoading(true)
+    props.handleClose()
     const data = {
       projectLinkId: props.projectLinkData ? [props.projectLinkData?.projectLinkId] : [0],
       projectId: Number(props.projectId),
@@ -70,7 +71,7 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
     )
       .then(() => {
         form.resetFields()
-        props.handleClose()
+
         setTimeout(() => {
           props.setLoading(false)
           props.getProjectLinks()

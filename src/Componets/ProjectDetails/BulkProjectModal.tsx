@@ -23,6 +23,7 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
   const onFinish = (values: any) => {
     const { artist, title, url, accountUrl, categoryId, statusId, notes, assignedTo } = values.project
     props.setLoading(true)
+    props.handleClose()
     const data = {
       projectLinkId: props.projectLinkIds,
       projectId: Number(props.projectId),
@@ -40,7 +41,7 @@ const CreateProjectModal: React.FC<ProjectDetailsCreateModalProps> = (props) => 
     postApi(removeEmptyAttributes(data), '/ProjectLink', 'Project Link updated Successfully!')
       .then(() => {
         form.resetFields()
-        props.handleClose()
+
         props.getProjectLinks()
         props.setLoading(false)
       })
