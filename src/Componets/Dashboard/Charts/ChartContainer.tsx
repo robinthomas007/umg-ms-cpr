@@ -1,8 +1,21 @@
-import { Typography, Select, Space } from 'antd'
-import styles from './ChartContainer.module.css'
-import { HolderOutlined, SettingFilled, FundFilled } from '@ant-design/icons'
+import React from 'react';
+import { Typography, Select, Space, Divider } from 'antd';
+import { HolderOutlined, SettingFilled, FundFilled } from '@ant-design/icons';
+import styles from './ChartContainer.module.css';
 
-export default function Home({ title, children, labels }) {
+interface Label {
+  text: string;
+  color: string;
+}
+
+interface Props {
+  title: string;
+  children: React.ReactNode;
+  labels: Label[];
+  isDoughnutChart: boolean;
+}
+
+const ChartContainer: React.FC<Props> = ({ title, children, labels, isDoughnutChart }) => {
   return (
     <div className={styles.chartContainer}>
       <div className={styles.chartHeader}>
@@ -35,7 +48,24 @@ export default function Home({ title, children, labels }) {
           ]}
         />
       </div>
-      <div className={styles.chart}>{children}</div>
+      {isDoughnutChart ? (
+        <div className="cpr-chart-container">
+          <div className={styles.chart}>{children}</div>
+          <div style={{ width: 200 }}>
+            <Divider orientation="right" style={{ color: '#01579B' }}>
+              48 CP3 Entries
+            </Divider>
+            <Divider orientation="right" style={{ color: '#85D305' }}>
+              48 CP3 Entries
+            </Divider>
+            <Divider orientation="right" style={{ color: '#F5FA20' }}>
+              48 CP3 Entries
+            </Divider>
+          </div>
+        </div>
+      ) : (
+        <div className={styles.chart}>{children}</div>
+      )}
       <div className={styles.chartFooter}>
         <Space size={'large'}>
           {labels.map((label) => (
@@ -48,5 +78,7 @@ export default function Home({ title, children, labels }) {
       </div>
       <SettingFilled className={styles.footerSettings} />
     </div>
-  )
+  );
 }
+
+export default ChartContainer;

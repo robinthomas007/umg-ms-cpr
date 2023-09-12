@@ -1,0 +1,32 @@
+.news-title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+  }
+  
+  .news-title .anticon {
+    font-size: 16px;
+  }
+  
+  .cpr-chart-container {
+    display: flex;
+    color: #fff;
+    justify-content: space-around;
+    align-items: center;
+  }
+  
+  .ant-divider::before {
+    border-block-start-color: unset !important;
+  }
+
+ .dashboard-wrapper .upcoming-release .ant-list-item-meta-description {
+    margin-top: -5px;
+  }
+
+  .event-border-1 {
+    border-bottom: 2px solid #F5FA20;
+  }
+
+  .event-border-2 {
+    border-bottom: 2px solid #85D305;
+  }
