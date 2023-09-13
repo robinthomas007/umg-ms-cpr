@@ -36,7 +36,7 @@ function MyQueue() {
 
   return (
     <div className="search-wrapper">
-      <Title>MyQueue</Title>
+      <Title>My Queue</Title>
       <Menu className="admin-menu" onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />
       {current === 'notifications' && <NotificationsPage />}
       {current === 'tasks' && <TasksPage />}

@@ -389,7 +389,6 @@ function TasksPage() {
             size={'large'}
             style={{ border: 'none', borderColor: '' }}
           />
-          {/* <CloseSquareOutlined onClick={() => console.log('onclcick')} style={{ fontSize: '25px' }} /> */}
         </Space>
       ),
     },
