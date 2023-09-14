@@ -1,14 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Typography, Space, Layout, Row, Col, List, Select, theme, Avatar, Table } from 'antd'
-import {
-  PushpinFilled,
-  HolderOutlined,
-} from '@ant-design/icons'
+import { PushpinFilled, HolderOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { Content } from 'antd/es/layout/layout'
 import './dashboard.css'
 import ChartContainer from './Charts/ChartContainer'
 import BarChart from './Charts/BarChart'
 import DoughnutChart from './Charts/Doughnut'
+import EventModal from './Modal/EventModal'
 
 const { Paragraph, Text } = Typography
 
@@ -31,33 +29,39 @@ const tableData1 = [
   {
     key: '1',
     day: 'Sun 1/1',
-    eventList: [{ name: 'New Years Day', type: "1" }],
+    eventList: [{ name: 'New Years Day', type: '1' }],
   },
   {
     key: '2',
     day: 'Mon 1/2',
-    eventList: [{ name: 'Matt, Anna, Jason & Graeme on Vacation', type: "0" }],
+    eventList: [{ name: 'Matt, Anna, Jason & Graeme on Vacation', type: '0' }],
   },
   {
     key: '3',
     day: 'Tue 1/3',
-    eventList: [{ name: 'Matt &  Anna on Vacation', type: "0" }],
+    eventList: [{ name: 'Matt &  Anna on Vacation', type: '0' }],
   },
   {
     key: '4',
     day: 'Wed 1/4',
-    eventList: [{ name: 'Matt &  Anna on Vacation', type: "0" }, { name: 'New Project Published:Justin Beiber / New Guy', type: "2" }],
+    eventList: [
+      { name: 'Matt &  Anna on Vacation', type: '0' },
+      { name: 'New Project Published:Justin Beiber / New Guy', type: '2' },
+    ],
   },
   {
     key: '4',
     day: 'Thurs 1/5',
-    eventList: [{ name: 'New Release:SZA / SOS', type: "2" }, { name: 'Matt on Vacation', type: "0" }],
+    eventList: [
+      { name: 'New Release:SZA / SOS', type: '2' },
+      { name: 'Matt on Vacation', type: '0' },
+    ],
   },
   {
     key: '4',
     day: 'Fri 1/6',
-    eventList: [{ name: 'New Release:French Montana / DJ Dr...', type: "2" }],
-    type: "1"
+    eventList: [{ name: 'New Release:French Montana / DJ Dr...', type: '2' }],
+    type: '1',
   },
   {
     key: '4',
@@ -104,10 +108,27 @@ const data = [
   },
 ]
 
-export default function Search() {
-  const { useToken }: { useToken: any } = theme;
-  const { token }: { token: any } = useToken();
+const handleShowPlusIcon = () => {
+  const box: any = document.querySelector('.plusIcon')
+  box.style.display = 'block'
+}
 
+export default function Search() {
+  const { useToken }: { useToken: any } = theme
+  const { token }: { token: any } = useToken()
+  const [createEventModalOpen, setCreateEventModalOpen] = useState<boolean>(false)
+
+  const showCreateEventModal = () => {
+    // setEditRecord(data)
+    setCreateEventModalOpen(true)
+  }
+
+  const createTeamSave = () => {
+    setCreateEventModalOpen(false)
+  }
+  const handleCreateTeamModalCancel = () => {
+    createEventModalOpen && setCreateEventModalOpen(false)
+  }
   return (
     <Layout>
       <Content className="dashboard-wrapper" style={{ padding: '70px 50px 60px' }}>
@@ -208,7 +229,7 @@ export default function Search() {
                 </div>
               </Col>
             </Row>
-            <Row style={{ marginTop: 50 }} className='upcoming-release'>
+            <Row style={{ marginTop: 50 }} className="upcoming-release">
               <Col span={8} style={{ paddingLeft: 50 }}>
                 <div style={{ backgroundColor: token.colorItemBg, borderRadius: 2, padding: 5 }}>
                   <Typography.Title level={5} style={{ padding: '10px 14px 0px' }}>
@@ -219,7 +240,15 @@ export default function Search() {
                     itemLayout="horizontal"
                     dataSource={data}
                     renderItem={(item, index) => (
-                      <List.Item key={index} style={{ backgroundColor: token.colorListItem, margin: 10, borderRadius: 4, padding: '0px 12px' }}>
+                      <List.Item
+                        key={index}
+                        style={{
+                          backgroundColor: token.colorListItem,
+                          margin: 10,
+                          borderRadius: 4,
+                          padding: '0px 12px',
+                        }}
+                      >
                         <Typography>{item.rate}</Typography>
                         <List.Item.Meta
                           avatar={
@@ -276,21 +305,60 @@ export default function Search() {
                     <Col span={24}>
                       {tableData1.map((item) => {
                         const length = 3 - Number(item.eventList.length)
-                        const newArray: number[] = Array.from({ length }, (_, index) => index);
+                        const newArray: number[] = Array.from({ length }, (_, index) => index)
                         return (
-                          <Row justify={'space-between'} align={'middle'} style={{ color: token.colorTextBase, textAlign: 'center', margin: 10 }}>
-                            <Col span={3} style={{ textAlign: 'left', paddingLeft: 30 }}>{item.day}</Col>
+                          <Row
+                            justify={'space-between'}
+                            align={'middle'}
+                            style={{ color: token.colorTextBase, textAlign: 'center', margin: 10 }}
+                          >
+                            <Col span={3} style={{ textAlign: 'left', paddingLeft: 30 }}>
+                              {item.day}
+                            </Col>
                             <Col span={21} style={{ overflow: 'auto' }}>
                               <div style={{ overflowX: 'auto' }}>
                                 <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap' }}>
                                   {item.eventList.map((event) => (
-                                    <div className={`event-border-${event.type}`} style={{ backgroundColor: token.colorListItem, padding: "25px 10px", borderRadius: 4, minHeight: 60, width: '32%', flexShrink: 0, marginRight: 10 }}>
-                                      {event.name}
-                                    </div>
+                                    <>
+                                      <div
+                                        id="notifymsg"
+                                        className={`event-border-${event.type}`}
+                                        style={{
+                                          backgroundColor: token.colorListItem,
+                                          padding: '25px 10px',
+                                          borderRadius: 4,
+                                          minHeight: 60,
+                                          width: '32%',
+                                          flexShrink: 0,
+                                          marginRight: 10,
+                                        }}
+                                      >
+                                        {event.name}
+                                        <PlusCircleOutlined className="plusIcon" style={{ float: 'right' }} />
+                                      </div>
+                                    </>
                                   ))}
                                   {newArray.map((item) => (
-                                    <div style={{ backgroundColor: token.colorListItem, padding: "25px 10px", borderRadius: 4, minHeight: 60, width: '32%', flexShrink: 0, marginRight: 10 }}>
-                                    </div>
+                                    <>
+                                      <div
+                                        id="notifymsg"
+                                        style={{
+                                          backgroundColor: token.colorListItem,
+                                          padding: '25px 10px',
+                                          borderRadius: 4,
+                                          minHeight: 60,
+                                          width: '32%',
+                                          flexShrink: 0,
+                                          marginRight: 10,
+                                        }}
+                                      >
+                                        <PlusCircleOutlined
+                                          onClick={showCreateEventModal}
+                                          className="plusIcon"
+                                          style={{ float: 'right' }}
+                                        />
+                                      </div>
+                                    </>
                                   ))}
                                 </div>
                               </div>
@@ -299,6 +367,13 @@ export default function Search() {
                         )
                       })}
                     </Col>
+                    {createEventModalOpen && (
+                      <EventModal
+                        isModalOpen={createEventModalOpen}
+                        handleOk={createTeamSave}
+                        handleCancel={handleCreateTeamModalCancel}
+                      />
+                    )}
                   </Row>
                 </div>
               </Col>

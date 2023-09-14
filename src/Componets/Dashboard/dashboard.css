@@ -25,8 +25,16 @@
 
   .event-border-1 {
     border-bottom: 2px solid #F5FA20;
+    
   }
 
   .event-border-2 {
     border-bottom: 2px solid #85D305;
+  }
+
+  #notifymsg:hover .plusIcon{
+    visibility: visible;
+  }
+  .plusIcon{
+    visibility: hidden;
   }
