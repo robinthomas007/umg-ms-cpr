@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Typography, Space, Layout, Row, Col, List, Select, theme, Avatar, Popover } from 'antd'
 import { PushpinFilled, HolderOutlined, PlusCircleOutlined, ClockCircleOutlined, ProfileOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { Content } from 'antd/es/layout/layout'
@@ -7,6 +7,8 @@ import ChartContainer from './Charts/ChartContainer'
 import BarChart from './Charts/BarChart'
 import DoughnutChart from './Charts/Doughnut'
 import EventModal from './Modal/EventModal'
+import moment from 'moment'
+
 const { Paragraph, Text } = Typography
 
 const tableData1 = [
@@ -92,6 +94,9 @@ const data = [
   },
 ]
 
+
+
+
 const handleShowPlusIcon = () => {
   const box: any = document.querySelector('.plusIcon')
   box.style.display = 'block'
@@ -101,6 +106,106 @@ export default function Search() {
   const { useToken }: { useToken: any } = theme
   const { token }: { token: any } = useToken()
   const [createEventModalOpen, setCreateEventModalOpen] = useState<boolean>(false)
+  const [eventList, setEventList] = useState<any>([])
+
+  React.useEffect(() => {
+    const data = [{
+      "bodyPreview": "sick leave",
+
+      "end": {
+
+        "dateTime": "2023-01-09T22:00:00.0000000",
+
+        "timeZone": "UTC"
+
+      },
+
+      "start": {
+        "dateTime": "2023-01-05T20:00:00.0000000",
+        "timeZone": "UTC"
+      },
+
+      "subject": "Leave",
+
+      "type": 0,
+
+      "categories": [],
+
+      "createdDateTime": "2023-09-14T09:52:40.4767391+00:00",
+
+      "lastModifiedDateTime": "2023-09-14T10:49:26.870079+00:00",
+
+      "id": "AAMkAGE1MjAzZmFhLTQyYjctNGU0My04ODFkLWU4MTI1NTA3ZGUyYwBGAAAAAADGwIBFCovMSIRj9xGd-5FSBwCV_mw3hxehT4fGMQahDDn-AAB1eOekAACV_mw3hxehT4fGMQahDDn-AAB1es1RAAA=",
+
+      "odataType": "#microsoft.graph.event",
+
+    },
+    {
+      "bodyPreview": "sick leave1",
+
+      "end": {
+
+        "dateTime": "2023-01-09T22:00:00.0000000",
+
+        "timeZone": "UTC"
+
+      },
+
+      "start": {
+        "dateTime": "2023-01-05T20:00:00.0000000",
+        "timeZone": "UTC"
+      },
+
+      "subject": "Leave 2",
+
+      "type": 0,
+
+      "categories": [],
+
+      "createdDateTime": "2023-09-14T09:52:40.4767391+00:00",
+
+      "lastModifiedDateTime": "2023-09-14T10:49:26.870079+00:00",
+
+      "id": "AAMkAGE1MjAzZmFhLTQyYjctNGU0My04ODFkLWU4MTI1NTA3ZGUyYwBGAAAAAADGwIBFCovMSIRj9xGd-5FSBwCV_mw3hxehT4fGMQahDDn-AAB1eOekAACV_mw3hxehT4fGMQahDDn-AAB1es1RAAA=",
+
+      "odataType": "#microsoft.graph.event",
+
+    },
+    ]
+
+    const newData: any = []
+    data.map((ev) => {
+      var a = moment(ev.start.dateTime);
+      var b = moment(ev.end.dateTime);
+      const diff = b.diff(a, 'days')
+      const length = diff + 1
+      const newArray: number[] = Array.from({ length }, (_, index) => index)
+      newArray.map((val) => {
+        const eventData: any = {}
+        const newobj: any = {}
+        const eventDay = moment(ev.start.dateTime).add(val, 'day').format('ddd M/D');
+        const checkDateIfExist = newData.find((item) => item.day === eventDay)
+        if (checkDateIfExist) {
+          eventData.name = ev.subject
+          eventData.bodyPreview = ev.bodyPreview
+          eventData.type = ev.type
+          checkDateIfExist.eventList.push(eventData)
+        } else {
+          newobj.day = eventDay
+          delete newobj.start
+          delete newobj.end
+          newobj.eventList = []
+          eventData.name = ev.subject
+          eventData.bodyPreview = ev.bodyPreview
+          eventData.type = ev.type
+          newobj.eventList.push(eventData)
+          newData.push(newobj)
+        }
+      })
+
+    })
+    setEventList(newData)
+  }, [])
 
   const showCreateEventModal = () => {
     // setEditRecord(data)
@@ -308,7 +413,7 @@ export default function Search() {
                   </Space>
                   <Row>
                     <Col span={24}>
-                      {tableData1.map((item) => {
+                      {eventList.map((item) => {
                         const length = 3 - Number(item.eventList.length)
                         const newArray: number[] = Array.from({ length }, (_, index) => index)
                         return (
