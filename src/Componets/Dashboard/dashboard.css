@@ -38,3 +38,44 @@
   .plusIcon{
     visibility: hidden;
   }
+
+.event-popover .ant-popover-title{
+  padding: 7px;
+  border-bottom: 1px solid #fdfdfd;
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 24px
+}
+
+.event-popover .ant-popover-inner {
+  border: 1px solid;
+}
+
+.event-popover .ant-popover-inner-content {
+  width: 300px !important;
+}
+
+.event-popover .event-popover-footer{
+  margin-left: 28px;
+  margin-top: 16px;
+  
+}
+.event-popover .popover-item {
+  display: flex;
+  justify-content:start;
+  align-items: start;
+}
+
+.event-popover .popover-item-content {
+  border-bottom: 1px solid #fdfdfd;
+  width: 100%;
+  margin-bottom: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.event-popover .popover-icons {
+  margin-right: 15px;
+  margin-top: 12px ;
+  font-size: 16px;
+}

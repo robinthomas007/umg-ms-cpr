@@ -1,29 +1,13 @@
 import React, { useState } from 'react'
-import { Button, Typography, Space, Layout, Row, Col, List, Select, theme, Avatar, Table } from 'antd'
-import { PushpinFilled, HolderOutlined, PlusCircleOutlined } from '@ant-design/icons'
+import { Button, Typography, Space, Layout, Row, Col, List, Select, theme, Avatar, Popover } from 'antd'
+import { PushpinFilled, HolderOutlined, PlusCircleOutlined, ClockCircleOutlined, ProfileOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { Content } from 'antd/es/layout/layout'
 import './dashboard.css'
 import ChartContainer from './Charts/ChartContainer'
 import BarChart from './Charts/BarChart'
 import DoughnutChart from './Charts/Doughnut'
 import EventModal from './Modal/EventModal'
-
 const { Paragraph, Text } = Typography
-
-const columns = [
-  {
-    dataIndex: 'day',
-  },
-  {
-    dataIndex: '1',
-  },
-  {
-    dataIndex: '2',
-  },
-  {
-    dataIndex: '3',
-  },
-]
 
 const tableData1 = [
   {
@@ -128,6 +112,27 @@ export default function Search() {
   }
   const handleCreateTeamModalCancel = () => {
     createEventModalOpen && setCreateEventModalOpen(false)
+  }
+
+  const eventContent = (event) => {
+    return (
+      <div>
+        <div className='popover-item'>
+          <ClockCircleOutlined size={16} className='popover-icons' />
+          <p className='popover-item-content'> Fri 15/09/2023 (All Day)</p>
+        </div>
+        <div className='popover-item'>
+          <ProfileOutlined className='popover-icons' size={16} />
+          <p className='popover-item-content'>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. The printing and typesetting industry, the printing and typesetting industry
+          </p>
+        </div>
+        <div className='event-popover-footer'>
+          <Button> <EditOutlined /> Edit</Button>
+          <Button> <DeleteOutlined />Delete</Button>
+        </div>
+      </div>
+    )
   }
   return (
     <Layout>
@@ -327,14 +332,20 @@ export default function Search() {
                                           backgroundColor: token.colorListItem,
                                           padding: '25px 10px',
                                           borderRadius: 4,
-                                          minHeight: 60,
+                                          minHeight: 70,
                                           width: '32%',
                                           flexShrink: 0,
                                           marginRight: 10,
+                                          display: 'flex',
+                                          justifyContent: 'center',
+                                          alignItems: 'center'
                                         }}
                                       >
-                                        {event.name}
-                                        <PlusCircleOutlined className="plusIcon" style={{ float: 'right' }} />
+                                        <Popover overlayClassName='event-popover' placement="right" content={eventContent(event)} title={event.name} trigger="click">
+                                          <span>{event.name}</span>
+
+                                        </Popover>
+                                        {/* <PlusCircleOutlined className="plusIcon" style={{ float: 'right' }} /> */}
                                       </div>
                                     </>
                                   ))}
@@ -346,10 +357,13 @@ export default function Search() {
                                           backgroundColor: token.colorListItem,
                                           padding: '25px 10px',
                                           borderRadius: 4,
-                                          minHeight: 60,
+                                          height: 70,
                                           width: '32%',
                                           flexShrink: 0,
                                           marginRight: 10,
+                                          display: 'flex',
+                                          justifyContent: 'center',
+                                          alignItems: 'center'
                                         }}
                                       >
                                         <PlusCircleOutlined
