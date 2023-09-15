@@ -8,53 +8,9 @@ import BarChart from './Charts/BarChart'
 import DoughnutChart from './Charts/Doughnut'
 import EventModal from './Modal/EventModal'
 import moment from 'moment'
-
+import { getApi, postApi } from '../../Api/Api'
+import { monthCalendar, weekCalendar, getWeekNumber, calculateWeekDates } from './../Common/Utils'
 const { Paragraph, Text } = Typography
-
-const tableData1 = [
-  {
-    key: '1',
-    day: 'Sun 1/1',
-    eventList: [{ name: 'New Years Day', type: '1' }],
-  },
-  {
-    key: '2',
-    day: 'Mon 1/2',
-    eventList: [{ name: 'Matt, Anna, Jason & Graeme on Vacation', type: '0' }],
-  },
-  {
-    key: '3',
-    day: 'Tue 1/3',
-    eventList: [{ name: 'Matt &  Anna on Vacation', type: '0' }],
-  },
-  {
-    key: '4',
-    day: 'Wed 1/4',
-    eventList: [
-      { name: 'Matt &  Anna on Vacation', type: '0' },
-      { name: 'New Project Published:Justin Beiber / New Guy', type: '2' },
-    ],
-  },
-  {
-    key: '4',
-    day: 'Thurs 1/5',
-    eventList: [
-      { name: 'New Release:SZA / SOS', type: '2' },
-      { name: 'Matt on Vacation', type: '0' },
-    ],
-  },
-  {
-    key: '4',
-    day: 'Fri 1/6',
-    eventList: [{ name: 'New Release:French Montana / DJ Dr...', type: '2' }],
-    type: '1',
-  },
-  {
-    key: '4',
-    day: 'Sat 1/7',
-    eventList: [],
-  },
-]
 
 const data = [
   {
@@ -94,9 +50,6 @@ const data = [
   },
 ]
 
-
-
-
 const handleShowPlusIcon = () => {
   const box: any = document.querySelector('.plusIcon')
   box.style.display = 'block'
@@ -107,105 +60,52 @@ export default function Search() {
   const { token }: { token: any } = useToken()
   const [createEventModalOpen, setCreateEventModalOpen] = useState<boolean>(false)
   const [eventList, setEventList] = useState<any>([])
+  const [week, setWeek] = useState<any>(weekCalendar()[(getWeekNumber(moment().format('DD')) || 1) - 1])
+  const [month, setMonth] = useState<any>(monthCalendar()[moment().month() || 0])
 
   React.useEffect(() => {
-    const data = [{
-      "bodyPreview": "sick leave",
+    const { startdatetime, enddatetime } = calculateWeekDates(week.value, month.value)
+    getApi({ startdatetime, enddatetime }, '/calendar/GetEvents')
+      .then((res) => {
+        if (res.value) {
+          const newData: any = []
+          res.value.map((ev) => {
+            var a = moment(ev.start.dateTime);
+            var b = moment(ev.end.dateTime);
+            const diff = b.diff(a, 'days')
+            const length = diff + 1
+            const newArray: number[] = Array.from({ length }, (_, index) => index)
+            newArray.map((val) => {
+              const eventData: any = {}
+              const newobj: any = {}
+              const eventDay = moment(ev.start.dateTime).add(val, 'day').format('ddd M/D');
+              const checkDateIfExist = newData.find((item) => item.day === eventDay)
+              if (checkDateIfExist) {
+                eventData.subject = ev.subject
+                eventData.bodyPreview = ev.bodyPreview
+                eventData.type = ev.type
+                checkDateIfExist.eventList.push(eventData)
+              } else {
+                newobj.day = eventDay
+                delete newobj.start
+                delete newobj.end
+                newobj.eventList = []
+                eventData.subject = ev.subject
+                eventData.bodyPreview = ev.bodyPreview
+                eventData.type = ev.type
+                newobj.eventList.push(eventData)
+                newData.push(newobj)
+              }
+            })
 
-      "end": {
-
-        "dateTime": "2023-01-09T22:00:00.0000000",
-
-        "timeZone": "UTC"
-
-      },
-
-      "start": {
-        "dateTime": "2023-01-05T20:00:00.0000000",
-        "timeZone": "UTC"
-      },
-
-      "subject": "Leave",
-
-      "type": 0,
-
-      "categories": [],
-
-      "createdDateTime": "2023-09-14T09:52:40.4767391+00:00",
-
-      "lastModifiedDateTime": "2023-09-14T10:49:26.870079+00:00",
-
-      "id": "AAMkAGE1MjAzZmFhLTQyYjctNGU0My04ODFkLWU4MTI1NTA3ZGUyYwBGAAAAAADGwIBFCovMSIRj9xGd-5FSBwCV_mw3hxehT4fGMQahDDn-AAB1eOekAACV_mw3hxehT4fGMQahDDn-AAB1es1RAAA=",
-
-      "odataType": "#microsoft.graph.event",
-
-    },
-    {
-      "bodyPreview": "sick leave1",
-
-      "end": {
-
-        "dateTime": "2023-01-09T22:00:00.0000000",
-
-        "timeZone": "UTC"
-
-      },
-
-      "start": {
-        "dateTime": "2023-01-05T20:00:00.0000000",
-        "timeZone": "UTC"
-      },
-
-      "subject": "Leave 2",
-
-      "type": 0,
-
-      "categories": [],
-
-      "createdDateTime": "2023-09-14T09:52:40.4767391+00:00",
-
-      "lastModifiedDateTime": "2023-09-14T10:49:26.870079+00:00",
-
-      "id": "AAMkAGE1MjAzZmFhLTQyYjctNGU0My04ODFkLWU4MTI1NTA3ZGUyYwBGAAAAAADGwIBFCovMSIRj9xGd-5FSBwCV_mw3hxehT4fGMQahDDn-AAB1eOekAACV_mw3hxehT4fGMQahDDn-AAB1es1RAAA=",
-
-      "odataType": "#microsoft.graph.event",
-
-    },
-    ]
-
-    const newData: any = []
-    data.map((ev) => {
-      var a = moment(ev.start.dateTime);
-      var b = moment(ev.end.dateTime);
-      const diff = b.diff(a, 'days')
-      const length = diff + 1
-      const newArray: number[] = Array.from({ length }, (_, index) => index)
-      newArray.map((val) => {
-        const eventData: any = {}
-        const newobj: any = {}
-        const eventDay = moment(ev.start.dateTime).add(val, 'day').format('ddd M/D');
-        const checkDateIfExist = newData.find((item) => item.day === eventDay)
-        if (checkDateIfExist) {
-          eventData.name = ev.subject
-          eventData.bodyPreview = ev.bodyPreview
-          eventData.type = ev.type
-          checkDateIfExist.eventList.push(eventData)
-        } else {
-          newobj.day = eventDay
-          delete newobj.start
-          delete newobj.end
-          newobj.eventList = []
-          eventData.name = ev.subject
-          eventData.bodyPreview = ev.bodyPreview
-          eventData.type = ev.type
-          newobj.eventList.push(eventData)
-          newData.push(newobj)
+          })
+          setEventList(newData)
         }
       })
-
-    })
-    setEventList(newData)
-  }, [])
+      .catch((error) => {
+        console.log('error feching data', error)
+      })
+  }, [week])
 
   const showCreateEventModal = () => {
     // setEditRecord(data)
@@ -239,6 +139,7 @@ export default function Search() {
       </div>
     )
   }
+
   return (
     <Layout>
       <Content className="dashboard-wrapper" style={{ padding: '70px 50px 60px' }}>
@@ -386,28 +287,23 @@ export default function Search() {
                     </Typography.Title>
                     <Space>
                       <Select
-                        defaultValue="1"
+                        value={week}
                         style={{
                           width: 150,
                         }}
-                        options={[
-                          {
-                            value: '1',
-                            label: 'Week of 1/1 - 1/7',
-                          },
-                        ]}
+                        options={weekCalendar(month.value)}
+                        onChange={(id, data) => setWeek(data)}
                       />
                       <Select
-                        defaultValue="1"
+                        value={month}
                         style={{
                           width: 120,
                         }}
-                        options={[
-                          {
-                            value: '1',
-                            label: 'January 2023',
-                          },
-                        ]}
+                        options={monthCalendar()}
+                        onChange={(id, data) => {
+                          setMonth(data)
+                          setWeek(weekCalendar(id)[0])
+                        }}
                       />
                     </Space>
                   </Space>
@@ -446,8 +342,8 @@ export default function Search() {
                                           alignItems: 'center'
                                         }}
                                       >
-                                        <Popover overlayClassName='event-popover' placement="right" content={eventContent(event)} title={event.name} trigger="click">
-                                          <span>{event.name}</span>
+                                        <Popover overlayClassName='event-popover' placement="right" content={eventContent(event)} title={event.subject} trigger="click">
+                                          <span>{event.subject}: {event.bodyPreview}</span>
 
                                         </Popover>
                                         {/* <PlusCircleOutlined className="plusIcon" style={{ float: 'right' }} /> */}
