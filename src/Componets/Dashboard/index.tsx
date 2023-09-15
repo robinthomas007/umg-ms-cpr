@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Typography, Space, Layout, Row, Col, List, Select, theme, Avatar, Popover } from 'antd'
-import { PushpinFilled, HolderOutlined, PlusCircleOutlined, ClockCircleOutlined, ProfileOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import {
+  PushpinFilled,
+  HolderOutlined,
+  PlusCircleOutlined,
+  ClockCircleOutlined,
+  ProfileOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons'
 import { Content } from 'antd/es/layout/layout'
 import './dashboard.css'
 import ChartContainer from './Charts/ChartContainer'
@@ -64,21 +72,21 @@ export default function Search() {
   const [month, setMonth] = useState<any>(monthCalendar()[moment().month() || 0])
 
   React.useEffect(() => {
-    const { startdatetime, enddatetime } = calculateWeekDates(week.value, month.value)
-    getApi({ startdatetime, enddatetime }, '/calendar/GetEvents')
+    const { startDate, endDate } = calculateWeekDates(week.value, month.value)
+    getApi({ startDate, endDate }, '/calendar/GetEvents')
       .then((res) => {
         if (res.value) {
           const newData: any = []
           res.value.map((ev) => {
-            var a = moment(ev.start.dateTime);
-            var b = moment(ev.end.dateTime);
+            var a = moment(ev.start.dateTime)
+            var b = moment(ev.end.dateTime)
             const diff = b.diff(a, 'days')
             const length = diff + 1
             const newArray: number[] = Array.from({ length }, (_, index) => index)
             newArray.map((val) => {
               const eventData: any = {}
               const newobj: any = {}
-              const eventDay = moment(ev.start.dateTime).add(val, 'day').format('ddd M/D');
+              const eventDay = moment(ev.start.dateTime).add(val, 'day').format('ddd M/D')
               const checkDateIfExist = newData.find((item) => item.day === eventDay)
               if (checkDateIfExist) {
                 eventData.subject = ev.subject
@@ -97,7 +105,6 @@ export default function Search() {
                 newData.push(newobj)
               }
             })
-
           })
           setEventList(newData)
         }
@@ -122,19 +129,27 @@ export default function Search() {
   const eventContent = (event) => {
     return (
       <div>
-        <div className='popover-item'>
-          <ClockCircleOutlined size={16} className='popover-icons' />
-          <p className='popover-item-content'> Fri 15/09/2023 (All Day)</p>
+        <div className="popover-item">
+          <ClockCircleOutlined size={16} className="popover-icons" />
+          <p className="popover-item-content"> Fri 15/09/2023 (All Day)</p>
         </div>
-        <div className='popover-item'>
-          <ProfileOutlined className='popover-icons' size={16} />
-          <p className='popover-item-content'>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. The printing and typesetting industry, the printing and typesetting industry
+        <div className="popover-item">
+          <ProfileOutlined className="popover-icons" size={16} />
+          <p className="popover-item-content">
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. The printing and typesetting
+            industry, the printing and typesetting industry
           </p>
         </div>
-        <div className='event-popover-footer'>
-          <Button> <EditOutlined /> Edit</Button>
-          <Button> <DeleteOutlined />Delete</Button>
+        <div className="event-popover-footer">
+          <Button>
+            {' '}
+            <EditOutlined /> Edit
+          </Button>
+          <Button>
+            {' '}
+            <DeleteOutlined />
+            Delete
+          </Button>
         </div>
       </div>
     )
@@ -339,12 +354,19 @@ export default function Search() {
                                           marginRight: 10,
                                           display: 'flex',
                                           justifyContent: 'center',
-                                          alignItems: 'center'
+                                          alignItems: 'center',
                                         }}
                                       >
-                                        <Popover overlayClassName='event-popover' placement="right" content={eventContent(event)} title={event.subject} trigger="click">
-                                          <span>{event.subject}: {event.bodyPreview}</span>
-
+                                        <Popover
+                                          overlayClassName="event-popover"
+                                          placement="right"
+                                          content={eventContent(event)}
+                                          title={event.subject}
+                                          trigger="click"
+                                        >
+                                          <span>
+                                            {event.subject}: {event.bodyPreview}
+                                          </span>
                                         </Popover>
                                         {/* <PlusCircleOutlined className="plusIcon" style={{ float: 'right' }} /> */}
                                       </div>
@@ -364,7 +386,7 @@ export default function Search() {
                                           marginRight: 10,
                                           display: 'flex',
                                           justifyContent: 'center',
-                                          alignItems: 'center'
+                                          alignItems: 'center',
                                         }}
                                       >
                                         <PlusCircleOutlined

@@ -213,7 +213,7 @@ export const calculateWeekDates = (selectedValue, month) => {
   const endOfWeek = moment(startOfWeek).endOf('week'); // End of the week
 
   return {
-    startdatetime: startOfWeek.format('YYYY-MM-DD'),
-    enddatetime: endOfWeek.format('YYYY-MM-DD'),
+    startDate: startOfWeek.format('YYYY-MM-DD'),
+    endDate: endOfWeek.format('YYYY-MM-DD'),
   };
 }
