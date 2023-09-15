@@ -73,46 +73,61 @@ export default function Search() {
 
   React.useEffect(() => {
     const { startDate, endDate } = calculateWeekDates(week.value, month.value)
-    getApi({ startDate, endDate }, '/calendar/GetEvents')
+    getApi({ startDate, endDate }, '/Calendar/GetEvents')
       .then((res) => {
         if (res.value) {
-          const newData: any = []
-          res.value.map((ev) => {
-            var a = moment(ev.start.dateTime)
-            var b = moment(ev.end.dateTime)
-            const diff = b.diff(a, 'days')
-            const length = diff + 1
-            const newArray: number[] = Array.from({ length }, (_, index) => index)
-            newArray.map((val) => {
-              const eventData: any = {}
-              const newobj: any = {}
-              const eventDay = moment(ev.start.dateTime).add(val, 'day').format('ddd M/D')
-              const checkDateIfExist = newData.find((item) => item.day === eventDay)
-              if (checkDateIfExist) {
-                eventData.subject = ev.subject
-                eventData.bodyPreview = ev.bodyPreview
-                eventData.type = ev.type
-                checkDateIfExist.eventList.push(eventData)
-              } else {
-                newobj.day = eventDay
-                delete newobj.start
-                delete newobj.end
-                newobj.eventList = []
-                eventData.subject = ev.subject
-                eventData.bodyPreview = ev.bodyPreview
-                eventData.type = ev.type
-                newobj.eventList.push(eventData)
-                newData.push(newobj)
-              }
-            })
-          })
-          setEventList(newData)
+          getEmptyRecordIfNoEvent(res.value)
+        } else {
+          getEmptyRecordIfNoEvent()
         }
       })
       .catch((error) => {
         console.log('error feching data', error)
+        getEmptyRecordIfNoEvent()
       })
   }, [week])
+
+
+  const getEmptyRecordIfNoEvent = (records?) => {
+    const newData: any = []
+    let { startDate, endDate } = calculateWeekDates(week.value, month.value)
+    const a = moment(startDate)
+    const b = moment(endDate)
+    const diff = b.diff(a, 'days')
+    const length = diff + 1
+    const newArray: number[] = Array.from({ length }, (_, index) => index)
+    newArray.map((val) => {
+      const newobj: any = {}
+      const eventDay = moment(startDate).add(val, 'day').format('ddd M/D')
+      let eventsInDay: any = []
+      if (records) {
+        eventsInDay = records.filter((data) => {
+          if (moment(data.start.dateTime).format('DD/MM/YYYY') === moment(data.end.dateTime).format('DD/MM/YYYY')) {
+            if (moment(startDate).add(val, 'day').format('DD/MM/YYYY') === moment(data.start.dateTime).format('DD/MM/YYYY')) {
+              return data
+            }
+          } else {
+            const momentDate1 = moment(data.start.dateTime);
+            const momentDate2 = moment(data.end.dateTime);
+            const momentDate3 = moment(moment(startDate).add(val, 'day'));
+            const isEqualToDate1 = momentDate3.isSame(momentDate1, 'day');
+            const isEqualToDate2 = momentDate3.isSame(momentDate2, 'day');
+            const isBetweenDate1AndDate2 = momentDate3.isBetween(momentDate1, momentDate2, 'day', '[]');
+            if (isEqualToDate1 || isEqualToDate2 || isBetweenDate1AndDate2) {
+              return data
+            }
+          }
+        })
+      }
+      console.log(eventsInDay, "eventsInDay")
+      newobj.day = eventDay
+      delete newobj.start
+      delete newobj.end
+      newobj.eventList = eventsInDay
+      newData.push(newobj)
+      setEventList(newData)
+    })
+  }
 
   const showCreateEventModal = () => {
     // setEditRecord(data)
@@ -365,10 +380,14 @@ export default function Search() {
                                           trigger="click"
                                         >
                                           <span>
-                                            {event.subject}: {event.bodyPreview}
+                                            {event.subject} {event.bodyPreview}
                                           </span>
                                         </Popover>
-                                        {/* <PlusCircleOutlined className="plusIcon" style={{ float: 'right' }} /> */}
+                                        {!event && <PlusCircleOutlined
+                                          onClick={showCreateEventModal}
+                                          className="plusIcon"
+                                          style={{ float: 'right' }}
+                                        />}
                                       </div>
                                     </>
                                   ))}
