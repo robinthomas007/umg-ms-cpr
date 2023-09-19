@@ -102,7 +102,10 @@ export default function Search() {
       let eventsInDay: any = []
       if (records) {
         eventsInDay = records.filter((data) => {
-          if (moment(data.start.dateTime).format('DD/MM/YYYY') === moment(data.end.dateTime).format('DD/MM/YYYY')) {
+          const categories = ['Holiday', 'Release', 'Absense']
+          data.categories = categories[Math.floor(Math.random() * categories.length)]
+          const diffInDays = moment(data.end.dateTime).diff(moment(data.start.dateTime), 'days');
+          if ((diffInDays === 1) || moment(data.start.dateTime).format('DD/MM/YYYY') === moment(data.end.dateTime).format('DD/MM/YYYY')) {
             if (moment(startDate).add(val, 'day').format('DD/MM/YYYY') === moment(data.start.dateTime).format('DD/MM/YYYY')) {
               return data
             }
@@ -119,7 +122,6 @@ export default function Search() {
           }
         })
       }
-      console.log(eventsInDay, "eventsInDay")
       newobj.day = eventDay
       delete newobj.start
       delete newobj.end
@@ -340,7 +342,7 @@ export default function Search() {
                   <Row>
                     <Col span={24}>
                       {eventList.map((item) => {
-                        const length = 3 - Number(item.eventList.length)
+                        const length = 3 - Number(item.eventList.length) === 0 ? 1 : 3 - Number(item.eventList.length)
                         const newArray: number[] = Array.from({ length }, (_, index) => index)
                         return (
                           <Row
@@ -352,69 +354,67 @@ export default function Search() {
                               {item.day}
                             </Col>
                             <Col span={21} style={{ overflow: 'auto' }}>
-                              <div style={{ overflowX: 'auto' }}>
+                              <div className='event-scroller' style={{ overflowX: 'auto' }}>
                                 <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap' }}>
-                                  {item.eventList.map((event) => (
-                                    <>
-                                      <div
-                                        id="notifymsg"
-                                        className={`event-border-${event.type}`}
-                                        style={{
-                                          backgroundColor: token.colorListItem,
-                                          padding: '25px 10px',
-                                          borderRadius: 4,
-                                          minHeight: 70,
-                                          width: '32%',
-                                          flexShrink: 0,
-                                          marginRight: 10,
-                                          display: 'flex',
-                                          justifyContent: 'center',
-                                          alignItems: 'center',
-                                        }}
+                                  {item.eventList.map((event, i) => (
+                                    <div
+                                      key={i}
+                                      id="notifymsg"
+                                      className={`event-border-${event.categories}`}
+                                      style={{
+                                        backgroundColor: token.colorListItem,
+                                        padding: '25px 10px',
+                                        borderRadius: 4,
+                                        minHeight: 70,
+                                        width: '32%',
+                                        flexShrink: 0,
+                                        marginRight: 10,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                      }}
+                                    >
+                                      <Popover
+                                        overlayClassName="event-popover"
+                                        placement="right"
+                                        content={eventContent(event)}
+                                        title={event.subject}
+                                        trigger="click"
                                       >
-                                        <Popover
-                                          overlayClassName="event-popover"
-                                          placement="right"
-                                          content={eventContent(event)}
-                                          title={event.subject}
-                                          trigger="click"
-                                        >
-                                          <span>
-                                            {event.subject} {event.bodyPreview}
-                                          </span>
-                                        </Popover>
-                                        {!event && <PlusCircleOutlined
-                                          onClick={showCreateEventModal}
-                                          className="plusIcon"
-                                          style={{ float: 'right' }}
-                                        />}
-                                      </div>
-                                    </>
+                                        <span>
+                                          {event.subject} {event.bodyPreview}
+                                        </span>
+                                      </Popover>
+                                      {!event && <PlusCircleOutlined
+                                        onClick={showCreateEventModal}
+                                        className="plusIcon add-event-icon"
+                                        style={{ float: 'right' }}
+                                      />}
+                                    </div>
                                   ))}
-                                  {newArray.map((item) => (
-                                    <>
-                                      <div
-                                        id="notifymsg"
-                                        style={{
-                                          backgroundColor: token.colorListItem,
-                                          padding: '25px 10px',
-                                          borderRadius: 4,
-                                          height: 70,
-                                          width: '32%',
-                                          flexShrink: 0,
-                                          marginRight: 10,
-                                          display: 'flex',
-                                          justifyContent: 'center',
-                                          alignItems: 'center',
-                                        }}
-                                      >
-                                        <PlusCircleOutlined
-                                          onClick={showCreateEventModal}
-                                          className="plusIcon"
-                                          style={{ float: 'right' }}
-                                        />
-                                      </div>
-                                    </>
+                                  {newArray.map((item, i) => (
+                                    <div
+                                      key={i}
+                                      id="notifymsg"
+                                      style={{
+                                        backgroundColor: token.colorListItem,
+                                        padding: '25px 10px',
+                                        borderRadius: 4,
+                                        height: 70,
+                                        width: '32%',
+                                        flexShrink: 0,
+                                        marginRight: 10,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                      }}
+                                    >
+                                      <PlusCircleOutlined
+                                        onClick={showCreateEventModal}
+                                        className="plusIcon add-event-icon"
+                                        style={{ float: 'right' }}
+                                      />
+                                    </div>
                                   ))}
                                 </div>
                               </div>
