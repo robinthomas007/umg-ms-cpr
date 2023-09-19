@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Button, Modal, Form, Input, Row, Col, Select, DatePicker } from 'antd'
 import type { DatePickerProps } from 'antd'
 import { postApi } from '../../../Api/Api'
+import dayjs from 'dayjs'
+import moment from 'moment'
 const { Option } = Select
 const { RangePicker } = DatePicker
 const dateFormat = 'MM-DD-YYYY'
@@ -17,8 +19,6 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
   const [holidayForm] = Form.useForm()
   const [absenseForm] = Form.useForm()
   const [selectedEvent, setSelectedEvent] = useState<number>(0)
-  const [startDateFormat, setStartDateFormat] = useState('')
-  const [endDateFormat, setEndDateFormat] = useState('')
   const [submitType, setSubmitType] = useState<any>('')
   const [typeOfForm, setTypeOfForm] = useState<string>('')
 
@@ -38,14 +38,71 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
   const onFinish = (values: any) => {
     console.log('submitted values', values)
   }
+
+  const getEventPayload = (data, startDate, endDate) => {
+    const payload: any = {
+      id: '',
+      subject: data.subject,
+      start: {
+        dateTime: startDate,
+        timeZone: 'UTC',
+      },
+      end: {
+        dateTime: endDate,
+        timeZone: 'UTC',
+      },
+      body: {
+        contentType: 1,
+        content: data.content,
+      },
+      reminderMinutesBeforeStart: 1440,
+      categories: data.category,
+    }
+    if (data.category[0] === 'Holiday') {
+      const selectedCountry = countries.find((country) => country.id === Number(data.country))
+      payload.location = { displayName: selectedCountry?.name }
+    }
+    // console.log(`${data.category[0]} submitted value ${JSON.stringify(payload)}}`)
+    postApi(payload, '/calendar/AddEvents', '')
+      .then((res) => {
+        handleOk()
+      })
+      .catch((err) => {
+        console.log(`getting error when adding ${data.category[0]} event`, err)
+      })
+  }
+
   const onReleaseFinish = (values: any) => {
-    console.log('Relase submitted values', values)
+    const modifiedRelese = { ...values }
+    modifiedRelese.category = ['Release']
+    modifiedRelese.subject = `New Release`
+    modifiedRelese.content = `${modifiedRelese.artistName} / ${modifiedRelese.projectName}`
+    const releaseDate = dayjs(modifiedRelese.releaseDate.$d)
+    const dateWithZeroTime = releaseDate.set('hour', 0).set('minute', 0).set('second', 0)
+    const releaseDateFormat = dateWithZeroTime.format('YYYY-MM-DDTHH:mm:ss')
+    getEventPayload(modifiedRelese, releaseDateFormat, releaseDateFormat)
   }
   const onHolidayFinish = (values: any) => {
-    console.log('Holiday submitted values', values)
+    const updatedHolidayObj = { ...values }
+    updatedHolidayObj.content = ``
+    updatedHolidayObj.subject = updatedHolidayObj.holiday
+    updatedHolidayObj.category = ['Holiday']
+    const startDate = dayjs(updatedHolidayObj.startDate.$d)
+    const endDate = dayjs(updatedHolidayObj.endDate.$d)
+    const startDateFormat = startDate.format('YYYY-MM-DDTHH:mm:ss')
+    const endDateFormat = endDate.format('YYYY-MM-DDTHH:mm:ss')
+    getEventPayload(updatedHolidayObj, startDateFormat, endDateFormat)
   }
   const onAbsenseFinish = (values: any) => {
-    console.log('Absenses submitted values', values)
+    const updatedAbsenseObj = { ...values }
+    updatedAbsenseObj.subject = 'Vacation'
+    updatedAbsenseObj.category = ['Absense']
+    const startDate = dayjs(updatedAbsenseObj.startDate.$d)
+    const endDate = dayjs(updatedAbsenseObj.endDate.$d)
+    const startDateFormat = startDate.format('YYYY-MM-DDTHH:mm:ss')
+    const endDateFormat = endDate.format('YYYY-MM-DDTHH:mm:ss')
+    updatedAbsenseObj.content = `${updatedAbsenseObj.userName}/${updatedAbsenseObj.teamName}`
+    getEventPayload(updatedAbsenseObj, startDateFormat, endDateFormat)
   }
 
   const onFinishFailed = (errorInfo: any) => {
@@ -66,12 +123,6 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
     setSelectedEvent(Number(value))
   }
 
-  const onStartDateChange: DatePickerProps['onChange'] = (date, dateString) => {
-    setStartDateFormat(dateString)
-  }
-  const onEndDateChange: DatePickerProps['onChange'] = (date, dateString) => {
-    setEndDateFormat(dateString)
-  }
   return (
     <Modal
       destroyOnClose
@@ -177,7 +228,7 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
                 rules={[
                   {
                     required: true,
-                    message: 'Release Date is required!',
+                    message: 'Date is required!',
                   },
                 ]}
                 name="releaseDate"
@@ -185,7 +236,7 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
                 labelAlign="left"
                 colon={false}
               >
-                <DatePicker onChange={onStartDateChange} format={dateFormat} placeholder="" />
+                <DatePicker format={dateFormat} placeholder="" />
               </Form.Item>
             </Col>
           </Row>
@@ -215,7 +266,7 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
               </Form.Item>
 
               <Form.Item label="Country" name="country">
-                <Select placeholder="Select Country" onChange={handleChange} showArrow allowClear>
+                <Select placeholder="Select Country" showArrow allowClear>
                   {countries.map((item) => (
                     <Option key={item.id} value={item.id}>
                       {item.name}
@@ -223,11 +274,33 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
                   ))}
                 </Select>
               </Form.Item>
-              {/* <Form.item label="Country" name="country">
-                <RangePicker picker="month" />
-              </Form.item> */}
-              <Form.Item label="Holiday Date" name="holidayDate">
-                <RangePicker />
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: 'Start Date is required!',
+                  },
+                ]}
+                name="startDate"
+                label="Start Date"
+                labelAlign="left"
+                colon={false}
+              >
+                <DatePicker format={dateFormat} placeholder="" />
+              </Form.Item>
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: 'End Date is required!',
+                  },
+                ]}
+                name="endDate"
+                label="End Date"
+                labelAlign="left"
+                colon={false}
+              >
+                <DatePicker format={dateFormat} placeholder="" />
               </Form.Item>
             </Col>
           </Row>
@@ -280,10 +353,10 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
               </Form.Item>
 
               <Form.Item name="startDate" label="Start Date" labelAlign="left" colon={false}>
-                <DatePicker onChange={onStartDateChange} format={dateFormat} placeholder="" />
+                <DatePicker format={dateFormat} placeholder="" />
               </Form.Item>
               <Form.Item name="endDate" label="End Date" labelAlign="left" colon={false}>
-                <DatePicker onChange={onEndDateChange} format={dateFormat} placeholder="" />
+                <DatePicker format={dateFormat} placeholder="" />
               </Form.Item>
             </Col>
           </Row>

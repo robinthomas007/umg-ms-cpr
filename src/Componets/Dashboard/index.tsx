@@ -87,7 +87,6 @@ export default function Search() {
       })
   }, [week])
 
-
   const getEmptyRecordIfNoEvent = (records?) => {
     const newData: any = []
     let { startDate, endDate } = calculateWeekDates(week.value, month.value)
@@ -104,18 +103,24 @@ export default function Search() {
         eventsInDay = records.filter((data) => {
           const categories = ['Holiday', 'Release', 'Absense']
           data.categories = categories[Math.floor(Math.random() * categories.length)]
-          const diffInDays = moment(data.end.dateTime).diff(moment(data.start.dateTime), 'days');
-          if ((diffInDays === 1) || moment(data.start.dateTime).format('DD/MM/YYYY') === moment(data.end.dateTime).format('DD/MM/YYYY')) {
-            if (moment(startDate).add(val, 'day').format('DD/MM/YYYY') === moment(data.start.dateTime).format('DD/MM/YYYY')) {
+          const diffInDays = moment(data.end.dateTime).diff(moment(data.start.dateTime), 'days')
+          if (
+            diffInDays === 1 ||
+            moment(data.start.dateTime).format('DD/MM/YYYY') === moment(data.end.dateTime).format('DD/MM/YYYY')
+          ) {
+            if (
+              moment(startDate).add(val, 'day').format('DD/MM/YYYY') ===
+              moment(data.start.dateTime).format('DD/MM/YYYY')
+            ) {
               return data
             }
           } else {
-            const momentDate1 = moment(data.start.dateTime);
-            const momentDate2 = moment(data.end.dateTime);
-            const momentDate3 = moment(moment(startDate).add(val, 'day'));
-            const isEqualToDate1 = momentDate3.isSame(momentDate1, 'day');
-            const isEqualToDate2 = momentDate3.isSame(momentDate2, 'day');
-            const isBetweenDate1AndDate2 = momentDate3.isBetween(momentDate1, momentDate2, 'day', '[]');
+            const momentDate1 = moment(data.start.dateTime)
+            const momentDate2 = moment(data.end.dateTime)
+            const momentDate3 = moment(moment(startDate).add(val, 'day'))
+            const isEqualToDate1 = momentDate3.isSame(momentDate1, 'day')
+            const isEqualToDate2 = momentDate3.isSame(momentDate2, 'day')
+            const isBetweenDate1AndDate2 = momentDate3.isBetween(momentDate1, momentDate2, 'day', '[]')
             if (isEqualToDate1 || isEqualToDate2 || isBetweenDate1AndDate2) {
               return data
             }
@@ -136,10 +141,10 @@ export default function Search() {
     setCreateEventModalOpen(true)
   }
 
-  const createTeamSave = () => {
+  const handleOkEventModal = () => {
     setCreateEventModalOpen(false)
   }
-  const handleCreateTeamModalCancel = () => {
+  const handleEventCloseModal = () => {
     createEventModalOpen && setCreateEventModalOpen(false)
   }
 
@@ -354,7 +359,7 @@ export default function Search() {
                               {item.day}
                             </Col>
                             <Col span={21} style={{ overflow: 'auto' }}>
-                              <div className='event-scroller' style={{ overflowX: 'auto' }}>
+                              <div className="event-scroller" style={{ overflowX: 'auto' }}>
                                 <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap' }}>
                                   {item.eventList.map((event, i) => (
                                     <div
@@ -385,11 +390,13 @@ export default function Search() {
                                           {event.subject} {event.bodyPreview}
                                         </span>
                                       </Popover>
-                                      {!event && <PlusCircleOutlined
-                                        onClick={showCreateEventModal}
-                                        className="plusIcon add-event-icon"
-                                        style={{ float: 'right' }}
-                                      />}
+                                      {!event && (
+                                        <PlusCircleOutlined
+                                          onClick={showCreateEventModal}
+                                          className="plusIcon add-event-icon"
+                                          style={{ float: 'right' }}
+                                        />
+                                      )}
                                     </div>
                                   ))}
                                   {newArray.map((item, i) => (
@@ -426,8 +433,8 @@ export default function Search() {
                     {createEventModalOpen && (
                       <EventModal
                         isModalOpen={createEventModalOpen}
-                        handleOk={createTeamSave}
-                        handleCancel={handleCreateTeamModalCancel}
+                        handleOk={handleOkEventModal}
+                        handleCancel={handleEventCloseModal}
                       />
                     )}
                   </Row>
