@@ -9,7 +9,7 @@ import {
   EditOutlined,
   DeleteOutlined,
   RightOutlined,
-  LeftOutlined
+  LeftOutlined,
 } from '@ant-design/icons'
 import { Content } from 'antd/es/layout/layout'
 import './dashboard.css'
@@ -18,7 +18,7 @@ import BarChart from './Charts/BarChart'
 import DoughnutChart from './Charts/Doughnut'
 import EventModal from './Modal/EventModal'
 import moment from 'moment'
-import { getApi, postApi } from '../../Api/Api'
+import { deleteApi, getApi, postApi } from '../../Api/Api'
 import { monthCalendar, weekCalendar, getWeekNumber, calculateWeekDates, yearCalendar } from './../Common/Utils'
 const { Paragraph, Text } = Typography
 
@@ -78,7 +78,6 @@ export default function Search() {
   const [startDate, setStartDate] = useState<any>(moment().clone().startOf('week'))
   const [endDate, setEndDate] = useState<any>(moment().clone().endOf('week'))
 
-
   console.log(startDate.format('DD-MM-YYYY'))
   console.log(endDate.format('DD-MM-YYYY'))
 
@@ -106,15 +105,15 @@ export default function Search() {
 
   // Function to handle clicking the right arrow (next week)
   const handleNextWeek = () => {
-    setStartDate(startDate.clone().add(1, 'week').startOf('week'));
-    setEndDate(endDate.clone().add(1, 'week').endOf('week'));
-  };
+    setStartDate(startDate.clone().add(1, 'week').startOf('week'))
+    setEndDate(endDate.clone().add(1, 'week').endOf('week'))
+  }
 
   // Function to handle clicking the left arrow (previous week)
   const handlePreviousWeek = () => {
-    setStartDate(startDate.clone().subtract(1, 'week').startOf('week'));
-    setEndDate(endDate.clone().subtract(1, 'week').endOf('week'));
-  };
+    setStartDate(startDate.clone().subtract(1, 'week').startOf('week'))
+    setEndDate(endDate.clone().subtract(1, 'week').endOf('week'))
+  }
 
   const getEmptyRecordIfNoEvent = (records?) => {
     const newData: any = []
@@ -177,26 +176,38 @@ export default function Search() {
     setSelectedEventData(data)
     showCreateEventModal()
   }
+  const removeEventFromCalendar = (eventId) => {
+    console.log('event for remove fro calendar ', eventId)
+    deleteApi(eventId, '/Calendar')
+      .then((res: any) => {
+        console.log('res of remove event', res)
+      })
+      .catch((error: any) => {
+        console.log('error feching data', error)
+      })
+  }
 
   const eventContent = (event) => {
     return (
       <div>
         <div className="popover-item">
           <ClockCircleOutlined size={16} className="popover-icons" />
-          <p className="popover-item-content"> {moment(event.start.dateTime).format('DD/MM/YYYY HH:mm')} -  {moment(event.end.dateTime).format('DD/MM/YYYY HH:mm')} ({event.end.timeZone})</p>
+          <p className="popover-item-content">
+            {' '}
+            {moment(event.start.dateTime).format('DD/MM/YYYY HH:mm')} -{' '}
+            {moment(event.end.dateTime).format('DD/MM/YYYY HH:mm')} ({event.end.timeZone})
+          </p>
         </div>
         <div className="popover-item">
           <ProfileOutlined className="popover-icons" size={16} />
-          <p className="popover-item-content">
-            {event.bodyPreview}
-          </p>
+          <p className="popover-item-content">{event.bodyPreview}</p>
         </div>
         <div className="event-popover-footer">
           <Button onClick={() => handleEditEventData(event)}>
             {' '}
             <EditOutlined /> Edit
           </Button>
-          <Button>
+          <Button onClick={() => removeEventFromCalendar(event.id)}>
             {' '}
             <DeleteOutlined />
             Delete
@@ -353,10 +364,19 @@ export default function Search() {
                     </Typography.Title>
 
                     <Space>
-                      <Typography.Title style={{ margin: 0, background: token.colorListItem, padding: '2px 5px', border: 1 }} level={5}>
-                        <Button size='small' style={{ border: 0 }} icon={<LeftOutlined onClick={handlePreviousWeek} />} />
-                        {startDate.format('DD MMMM')} {startDate.format('YYYY') !== year.label ? startDate.format('YYYY') : ''} - {endDate.format('DD MMMM')} {year.label}
-                        <Button size='small' style={{ border: 0 }} icon={<RightOutlined onClick={handleNextWeek} />} />
+                      <Typography.Title
+                        style={{ margin: 0, background: token.colorListItem, padding: '2px 5px', border: 1 }}
+                        level={5}
+                      >
+                        <Button
+                          size="small"
+                          style={{ border: 0 }}
+                          icon={<LeftOutlined onClick={handlePreviousWeek} />}
+                        />
+                        {startDate.format('DD MMMM')}{' '}
+                        {startDate.format('YYYY') !== year.label ? startDate.format('YYYY') : ''} -{' '}
+                        {endDate.format('DD MMMM')} {year.label}
+                        <Button size="small" style={{ border: 0 }} icon={<RightOutlined onClick={handleNextWeek} />} />
                       </Typography.Title>
                       {/* <Select
                         value={week}

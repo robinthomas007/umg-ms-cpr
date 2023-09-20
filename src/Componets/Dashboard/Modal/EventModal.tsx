@@ -49,6 +49,10 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel, data }
     console.log('submitted values', values)
   }
 
+  const convertDateFormat = (eventObj) => {
+    return dayjs(eventObj.startDate.$d).format('YYYY-MM-DDTHH:mm:ss')
+  }
+
   const getEventPayload = (data, startDate, endDate) => {
     const payload: any = {
       id: '',
@@ -109,22 +113,18 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel, data }
     updatedHolidayObj.content = ``
     updatedHolidayObj.subject = updatedHolidayObj.holiday
     updatedHolidayObj.category = ['Holiday']
-    const startDate = dayjs(updatedHolidayObj.startDate.$d)
-    const endDate = dayjs(updatedHolidayObj.endDate.$d)
-    const startDateFormat = startDate.format('YYYY-MM-DDTHH:mm:ss')
-    const endDateFormat = endDate.format('YYYY-MM-DDTHH:mm:ss')
-    getEventPayload(updatedHolidayObj, startDateFormat, endDateFormat)
+    const startDate = convertDateFormat(updatedHolidayObj)
+    const endDate = convertDateFormat(updatedHolidayObj)
+    getEventPayload(updatedHolidayObj, startDate, endDate)
   }
   const onAbsenseFinish = (values: any) => {
     const updatedAbsenseObj = { ...values }
     updatedAbsenseObj.subject = 'Vacation'
     updatedAbsenseObj.category = ['Absense']
-    const startDate = dayjs(updatedAbsenseObj.startDate.$d)
-    const endDate = dayjs(updatedAbsenseObj.endDate.$d)
-    const startDateFormat = startDate.format('YYYY-MM-DDTHH:mm:ss')
-    const endDateFormat = endDate.format('YYYY-MM-DDTHH:mm:ss')
+    const startDate = convertDateFormat(updatedAbsenseObj)
+    const endDate = convertDateFormat(updatedAbsenseObj)
     updatedAbsenseObj.content = `${updatedAbsenseObj.userName}/${updatedAbsenseObj.teamName}`
-    getEventPayload(updatedAbsenseObj, startDateFormat, endDateFormat)
+    getEventPayload(updatedAbsenseObj, startDate, endDate)
   }
 
   const onFinishFailed = (errorInfo: any) => {
