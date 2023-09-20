@@ -8,6 +8,8 @@ import {
   ProfileOutlined,
   EditOutlined,
   DeleteOutlined,
+  RightOutlined,
+  LeftOutlined
 } from '@ant-design/icons'
 import { Content } from 'antd/es/layout/layout'
 import './dashboard.css'
@@ -17,7 +19,7 @@ import DoughnutChart from './Charts/Doughnut'
 import EventModal from './Modal/EventModal'
 import moment from 'moment'
 import { getApi, postApi } from '../../Api/Api'
-import { monthCalendar, weekCalendar, getWeekNumber, calculateWeekDates } from './../Common/Utils'
+import { monthCalendar, weekCalendar, getWeekNumber, calculateWeekDates, yearCalendar } from './../Common/Utils'
 const { Paragraph, Text } = Typography
 
 const data = [
@@ -68,17 +70,27 @@ export default function Search() {
   const { token }: { token: any } = useToken()
   const [createEventModalOpen, setCreateEventModalOpen] = useState<boolean>(false)
   const [eventList, setEventList] = useState<any>([])
-  const [week, setWeek] = useState<any>(weekCalendar()[(getWeekNumber(moment().format('DD')) || 1) - 1])
+  // const [week, setWeek] = useState<any>(weekCalendar()[(getWeekNumber(moment().format('DD')) || 1) - 1])
   const [month, setMonth] = useState<any>(monthCalendar()[moment().month() || 0])
   const [selectedEventData, setSelectedEventData] = useState<any>()
   const [popoverVisible, setPopoverVisible] = useState(false)
+  const [year, setYear] = useState<any>(yearCalendar()[10])
+  const [startDate, setStartDate] = useState<any>(moment().clone().startOf('week'))
+  const [endDate, setEndDate] = useState<any>(moment().clone().endOf('week'))
+
+
+  console.log(startDate.format('DD-MM-YYYY'))
+  console.log(endDate.format('DD-MM-YYYY'))
 
   const handlePopoverClick = () => {
     setPopoverVisible(!popoverVisible)
   }
   React.useEffect(() => {
-    const { startDate, endDate } = calculateWeekDates(week.value, month.value)
-    getApi({ startDate, endDate }, '/Calendar/GetEvents')
+    // const { startDate, endDate } = calculateWeekDates(week.value, month.value, year.value)
+    const fromDate = startDate.format('YYYY-MM-DD')
+    const toDate = endDate.format('YYYY-MM-DD')
+
+    getApi({ startDate: fromDate, endDate: toDate }, '/Calendar/GetEvents')
       .then((res) => {
         if (res.value) {
           getEmptyRecordIfNoEvent(res.value)
@@ -90,14 +102,23 @@ export default function Search() {
         console.log('error feching data', error)
         getEmptyRecordIfNoEvent()
       })
-  }, [week])
+  }, [startDate, endDate])
+
+  // Function to handle clicking the right arrow (next week)
+  const handleNextWeek = () => {
+    setStartDate(startDate.clone().add(1, 'week').startOf('week'));
+    setEndDate(endDate.clone().add(1, 'week').endOf('week'));
+  };
+
+  // Function to handle clicking the left arrow (previous week)
+  const handlePreviousWeek = () => {
+    setStartDate(startDate.clone().subtract(1, 'week').startOf('week'));
+    setEndDate(endDate.clone().subtract(1, 'week').endOf('week'));
+  };
 
   const getEmptyRecordIfNoEvent = (records?) => {
     const newData: any = []
-    let { startDate, endDate } = calculateWeekDates(week.value, month.value)
-    const a = moment(startDate)
-    const b = moment(endDate)
-    const diff = b.diff(a, 'days')
+    const diff = endDate.diff(startDate, 'days')
     const length = diff + 1
     const newArray: number[] = Array.from({ length }, (_, index) => index)
     newArray.map((val) => {
@@ -158,18 +179,16 @@ export default function Search() {
   }
 
   const eventContent = (event) => {
-    // console.log('event for the ', event)
     return (
       <div>
         <div className="popover-item">
           <ClockCircleOutlined size={16} className="popover-icons" />
-          <p className="popover-item-content"> Fri 15/09/2023 (All Day)</p>
+          <p className="popover-item-content"> {moment(event.start.dateTime).format('DD/MM/YYYY HH:mm')} -  {moment(event.end.dateTime).format('DD/MM/YYYY HH:mm')} ({event.end.timeZone})</p>
         </div>
         <div className="popover-item">
           <ProfileOutlined className="popover-icons" size={16} />
           <p className="popover-item-content">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. The printing and typesetting
-            industry, the printing and typesetting industry
+            {event.bodyPreview}
           </p>
         </div>
         <div className="event-popover-footer">
@@ -332,15 +351,21 @@ export default function Search() {
                       <HolderOutlined style={{ fontSize: 18, marginRight: 8 }} />
                       Team Calendar
                     </Typography.Title>
+
                     <Space>
-                      <Select
+                      <Typography.Title style={{ margin: 0, background: token.colorListItem, padding: '2px 5px', border: 1 }} level={5}>
+                        <Button size='small' style={{ border: 0 }} icon={<LeftOutlined onClick={handlePreviousWeek} />} />
+                        {startDate.format('DD MMMM')} {startDate.format('YYYY') !== year.label ? startDate.format('YYYY') : ''} - {endDate.format('DD MMMM')} {year.label}
+                        <Button size='small' style={{ border: 0 }} icon={<RightOutlined onClick={handleNextWeek} />} />
+                      </Typography.Title>
+                      {/* <Select
                         value={week}
                         style={{
                           width: 150,
                         }}
                         options={weekCalendar(month.value)}
                         onChange={(id, data) => setWeek(data)}
-                      />
+                      /> */}
                       <Select
                         value={month}
                         style={{
@@ -349,7 +374,21 @@ export default function Search() {
                         options={monthCalendar()}
                         onChange={(id, data) => {
                           setMonth(data)
-                          setWeek(weekCalendar(id)[0])
+                          setStartDate(moment(`01-${id}-${year.value}`).clone().startOf('week'))
+                          setEndDate(moment(`01-${id}-${year.value}`).clone().endOf('week'))
+                        }}
+                      />
+                      <Select
+                        value={year}
+                        style={{
+                          width: 100,
+                        }}
+                        options={yearCalendar()}
+                        onChange={(id, data) => {
+                          setYear(data)
+                          setMonth(monthCalendar()[0])
+                          setStartDate(moment(`01-01-${id}`).clone().startOf('week'))
+                          setEndDate(moment(`01-01-${id}`).clone().endOf('week'))
                         }}
                       />
                     </Space>

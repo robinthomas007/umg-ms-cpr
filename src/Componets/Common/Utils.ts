@@ -120,11 +120,10 @@ export const monthCalendar = () => {
   for (let month = 0; month < 12; month++) {
     const date = new Date(currentYear, month, 1);
     const monthLabel = date.toLocaleString('default', { month: 'long' });
-    const yearLabel = currentYear;
 
     const monthObject = {
-      value: `${monthLabel} ${yearLabel}`,
-      label: `${monthLabel} ${yearLabel}`,
+      value: `${monthLabel}`,
+      label: `${monthLabel}`,
     };
 
     months.push(monthObject);
@@ -181,32 +180,32 @@ export const weekCalendar = (currentMonth?) => {
   ]
 }
 
-export const calculateWeekDates = (selectedValue, month) => {
-  selectedValue = Number(selectedValue)
+export const calculateWeekDates = (day, month, year) => {
+  day = Number(day)
   const today = moment();
   let currentMonth = today.month();
   if (month) {
     currentMonth = monthCalendar().findIndex((item) => item.value === month)
   }
-  const currentYear = today.year();
+  const currentYear = year ? year : today.year();
 
   const startOfMonth = moment([currentYear, currentMonth]);
 
   let startOfWeek;
 
-  if (selectedValue === 1) {
+  if (day === 1) {
     startOfWeek = moment(startOfMonth).startOf('week');
   }
-  if (selectedValue === 2) {
+  if (day === 2) {
     startOfWeek = moment(startOfMonth).add(1, 'weeks').startOf('week');
   }
-  if (selectedValue === 3) {
+  if (day === 3) {
     startOfWeek = moment(startOfMonth).add(2, 'weeks').startOf('week');
   }
-  if (selectedValue === 4) {
+  if (day === 4) {
     startOfWeek = moment(startOfMonth).add(3, 'weeks').startOf('week');
   }
-  if (selectedValue === 5) {
+  if (day === 5) {
     startOfWeek = moment(startOfMonth).add(4, 'weeks').startOf('week');
   }
 
@@ -216,4 +215,19 @@ export const calculateWeekDates = (selectedValue, month) => {
     startDate: startOfWeek.format('YYYY-MM-DD'),
     endDate: endOfWeek.format('YYYY-MM-DD'),
   };
+}
+
+
+export const yearCalendar = () => {
+  const currentYear = new Date().getFullYear();
+  const yearsArray: any = [];
+
+  for (let year = currentYear - 10; year <= currentYear; year++) {
+    yearsArray.push({ value: year, label: year.toString() });
+  }
+  return yearsArray
+}
+
+export const getMonth = (month) => {
+
 }
