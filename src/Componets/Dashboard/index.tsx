@@ -396,7 +396,7 @@ export default function Search() {
                   <Row>
                     <Col span={24}>
                       {eventList.map((item) => {
-                        const length = 3 - Number(item.eventList.length) === 0 ? 1 : 3 - Number(item.eventList.length)
+                        const length = 3 - Number(item.eventList.length) <= 0 ? 1 : 3 - Number(item.eventList.length)
                         const newArray: number[] = Array.from({ length }, (_, index) => index)
                         return (
                           <Row
