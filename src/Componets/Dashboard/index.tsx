@@ -70,7 +70,12 @@ export default function Search() {
   const [eventList, setEventList] = useState<any>([])
   const [week, setWeek] = useState<any>(weekCalendar()[(getWeekNumber(moment().format('DD')) || 1) - 1])
   const [month, setMonth] = useState<any>(monthCalendar()[moment().month() || 0])
+  const [selectedEventData, setSelectedEventData] = useState<any>()
+  const [popoverVisible, setPopoverVisible] = useState(false)
 
+  const handlePopoverClick = () => {
+    setPopoverVisible(!popoverVisible)
+  }
   React.useEffect(() => {
     const { startDate, endDate } = calculateWeekDates(week.value, month.value)
     getApi({ startDate, endDate }, '/Calendar/GetEvents')
@@ -147,8 +152,13 @@ export default function Search() {
   const handleEventCloseModal = () => {
     createEventModalOpen && setCreateEventModalOpen(false)
   }
+  const handleEditEventData = (data) => {
+    setSelectedEventData(data)
+    showCreateEventModal()
+  }
 
   const eventContent = (event) => {
+    // console.log('event for the ', event)
     return (
       <div>
         <div className="popover-item">
@@ -163,7 +173,7 @@ export default function Search() {
           </p>
         </div>
         <div className="event-popover-footer">
-          <Button>
+          <Button onClick={() => handleEditEventData(event)}>
             {' '}
             <EditOutlined /> Edit
           </Button>
@@ -382,7 +392,7 @@ export default function Search() {
                                       <Popover
                                         overlayClassName="event-popover"
                                         placement="right"
-                                        content={eventContent(event)}
+                                        content={() => eventContent(event)}
                                         title={event.subject}
                                         trigger="click"
                                       >
@@ -435,6 +445,7 @@ export default function Search() {
                         isModalOpen={createEventModalOpen}
                         handleOk={handleOkEventModal}
                         handleCancel={handleEventCloseModal}
+                        data={selectedEventData}
                       />
                     )}
                   </Row>

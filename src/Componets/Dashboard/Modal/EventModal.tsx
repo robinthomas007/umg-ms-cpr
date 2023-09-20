@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Button, Modal, Form, Input, Row, Col, Select, DatePicker } from 'antd'
 import type { DatePickerProps } from 'antd'
 import { postApi } from '../../../Api/Api'
+// import { v4 as uuidv4 } from 'uuid'
+
 import dayjs from 'dayjs'
 import moment from 'moment'
 const { Option } = Select
@@ -11,9 +13,10 @@ interface EventModalProps {
   isModalOpen: boolean
   handleOk: () => void
   handleCancel: () => void
+  data: any
 }
 
-export default function EventModal({ isModalOpen, handleOk, handleCancel }: EventModalProps) {
+export default function EventModal({ isModalOpen, handleOk, handleCancel, data }: EventModalProps) {
   const [form] = Form.useForm()
   const [releaseForm] = Form.useForm()
   const [holidayForm] = Form.useForm()
@@ -21,8 +24,15 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
   const [selectedEvent, setSelectedEvent] = useState<number>(0)
   const [submitType, setSubmitType] = useState<any>('')
   const [typeOfForm, setTypeOfForm] = useState<string>('')
-
-  useEffect(() => {}, [form])
+  // const uniqueId = uuidv4()
+  useEffect(() => {
+    const updatedEvent = { ...data }
+    console.log('updated event', updatedEvent)
+    const selectedEventType = events.find((event) => event.name === updatedEvent.categories)
+    console.log('selectedEventType', selectedEventType)
+    setFormType(selectedEventType?.id)
+    form.setFieldsValue({ eventType: selectedEventType?.id })
+  }, [data])
 
   const events = [
     { name: 'Release', id: 1 },
@@ -62,6 +72,18 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
       const selectedCountry = countries.find((country) => country.id === Number(data.country))
       payload.location = { displayName: selectedCountry?.name }
     }
+    // if (data.category[0] === 'Release') {
+    //   payload.singleValueExtendedProperties = [
+    //     {
+    //       id: `String ${uniqueId}`,
+    //       value: `${data.projectName}`,
+    //     },
+    //     {
+    //       id: `String ${uniqueId}`,
+    //       value: `${data.artistName}`,
+    //     },
+    //   ]
+    // }
     // console.log(`${data.category[0]} submitted value ${JSON.stringify(payload)}}`)
     postApi(payload, '/calendar/AddEvents', '')
       .then((res) => {
@@ -76,7 +98,7 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
     const modifiedRelese = { ...values }
     modifiedRelese.category = ['Release']
     modifiedRelese.subject = `New Release`
-    modifiedRelese.content = `${modifiedRelese.artistName} / ${modifiedRelese.projectName}`
+    modifiedRelese.content = `${modifiedRelese.artistName}/${modifiedRelese.projectName}`
     const releaseDate = dayjs(modifiedRelese.releaseDate.$d)
     const dateWithZeroTime = releaseDate.set('hour', 0).set('minute', 0).set('second', 0)
     const releaseDateFormat = dateWithZeroTime.format('YYYY-MM-DDTHH:mm:ss')
@@ -109,7 +131,7 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
     console.log('Failed:', errorInfo)
   }
 
-  const handleChange = (value: number) => {
+  const setFormType = (value) => {
     if (value === 1) {
       setTypeOfForm('releaseForm')
       setSubmitType(() => onReleaseFinish)
@@ -121,6 +143,9 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
       setSubmitType(() => onAbsenseFinish)
     }
     setSelectedEvent(Number(value))
+  }
+  const handleChange = (value: number) => {
+    setFormType(value)
   }
 
   return (
@@ -308,7 +333,7 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel }: Even
       )}
       {selectedEvent === 3 && (
         <Form
-          form={holidayForm}
+          form={absenseForm}
           labelCol={{
             span: 8,
           }}
