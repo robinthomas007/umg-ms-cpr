@@ -85,10 +85,17 @@ export default function Search() {
     const fromDate = startDate.format('YYYY-MM-DD')
     const toDate = endDate.format('YYYY-MM-DD')
 
+    if (month.value !== endDate.format('MMMM')) {
+      setMonth({ value: endDate.format('MMMM'), label: endDate.format('MMMM') })
+    }
+
+    if (year.value !== endDate.format('YYYY')) {
+      setYear({ value: endDate.format('YYYY'), label: endDate.format('YYYY') })
+    }
+
     getApi({ startDate: fromDate, endDate: toDate }, '/Calendar/GetEvents')
       .then((res) => {
         if (res.value) {
-          console.log(res.value, "res.valueres.value")
           getEmptyRecordIfNoEvent(res.value)
         } else {
           getEmptyRecordIfNoEvent()
