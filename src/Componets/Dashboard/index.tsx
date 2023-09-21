@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Typography, Space, Layout, Row, Col, List, Select, theme, Avatar, Popover } from 'antd'
+import { Button, Spin, Typography, Space, Layout, Row, Col, List, Select, theme, Avatar, Popover } from 'antd'
 import {
   PushpinFilled,
   HolderOutlined,
@@ -76,23 +76,17 @@ export default function Search() {
   const [year, setYear] = useState<any>(yearCalendar()[10])
   const [startDate, setStartDate] = useState<any>(moment().clone().startOf('week'))
   const [endDate, setEndDate] = useState<any>(moment().clone().endOf('week'))
-
+  const [loading, setLoading] = useState<boolean>(false)
+  const [isStateUpdated, setIsStateUpdated] = useState<boolean>(false)
   const handlePopoverClick = () => {
     setPopoverVisible(!popoverVisible)
   }
 
   React.useEffect(() => {
-    const fromDate = startDate.format('YYYY-MM-DD')
-    const toDate = endDate.format('YYYY-MM-DD')
-
-    if (month.value !== endDate.format('MMMM')) {
-      setMonth({ value: endDate.format('MMMM'), label: endDate.format('MMMM') })
-    }
-
-    if (year.value !== endDate.format('YYYY')) {
-      setYear({ value: endDate.format('YYYY'), label: endDate.format('YYYY') })
-    }
-
+    // const { startDate, endDate } = calculateWeekDates(week.value, month.value, year.value)
+    const fromDate = startDate.format('MM-DD-YYYY')
+    const toDate = endDate.format('MM-DD-YYYY')
+    setLoading(true)
     getApi({ startDate: fromDate, endDate: toDate }, '/Calendar/GetEvents')
       .then((res) => {
         if (res.value) {
@@ -100,12 +94,14 @@ export default function Search() {
         } else {
           getEmptyRecordIfNoEvent()
         }
+        setLoading(false)
       })
       .catch((error) => {
         console.log('error feching data', error)
         getEmptyRecordIfNoEvent()
+        setLoading(false)
       })
-  }, [startDate, endDate])
+  }, [startDate, endDate, isStateUpdated])
 
   // Function to handle clicking the right arrow (next week)
   const handleNextWeek = () => {
@@ -170,9 +166,11 @@ export default function Search() {
 
   const handleOkEventModal = () => {
     setCreateEventModalOpen(false)
+    setSelectedEventData(null)
   }
   const handleEventCloseModal = () => {
     createEventModalOpen && setCreateEventModalOpen(false)
+    setSelectedEventData(null)
   }
   const handleEditEventData = (data) => {
     setSelectedEventData(data)
@@ -183,6 +181,7 @@ export default function Search() {
     deleteApi(eventId, '/Calendar')
       .then((res: any) => {
         console.log('res of remove event', res)
+        setIsStateUpdated(!isStateUpdated)
       })
       .catch((error: any) => {
         console.log('error feching data', error)
@@ -407,8 +406,22 @@ export default function Search() {
                       />
                     </Space>
                   </Space>
-                  <Row>
+                  <Row style={{ minHeight: '600px', opacity: loading ? 0.5 : 1 }}>
                     <Col span={24}>
+                      {loading && (
+                        <Spin
+                          size="default"
+                          style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            zIndex: 1,
+                            opacity: 0.8,
+                          }}
+                        />
+                      )}
+
                       {eventList.map((item) => {
                         const length = 3 - Number(item.eventList.length) <= 0 ? 1 : 3 - Number(item.eventList.length)
                         const newArray: number[] = Array.from({ length }, (_, index) => index)
@@ -496,7 +509,10 @@ export default function Search() {
                         isModalOpen={createEventModalOpen}
                         handleOk={handleOkEventModal}
                         handleCancel={handleEventCloseModal}
-                        data={selectedEventData}
+                        selectedEventdata={selectedEventData}
+                        setLoading={setLoading}
+                        isStateUpdated={isStateUpdated}
+                        setIsStateUpdated={setIsStateUpdated}
                       />
                     )}
                   </Row>

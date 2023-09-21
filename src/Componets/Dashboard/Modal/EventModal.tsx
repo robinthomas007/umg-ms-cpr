@@ -13,10 +13,21 @@ interface EventModalProps {
   isModalOpen: boolean
   handleOk: () => void
   handleCancel: () => void
-  data: any
+  selectedEventdata: any
+  setLoading: any
+  setIsStateUpdated: any
+  isStateUpdated: boolean
 }
 
-export default function EventModal({ isModalOpen, handleOk, handleCancel, data }: EventModalProps) {
+export default function EventModal({
+  isModalOpen,
+  handleOk,
+  handleCancel,
+  selectedEventdata,
+  setLoading,
+  isStateUpdated,
+  setIsStateUpdated,
+}: EventModalProps) {
   const [form] = Form.useForm()
   const [releaseForm] = Form.useForm()
   const [holidayForm] = Form.useForm()
@@ -26,13 +37,15 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel, data }
   const [typeOfForm, setTypeOfForm] = useState<string>('')
   // const uniqueId = uuidv4()
   useEffect(() => {
-    const updatedEvent = { ...data }
-    console.log('updated event', updatedEvent)
-    const selectedEventType = events.find((event) => event.name === updatedEvent.categories)
-    console.log('selectedEventType', selectedEventType)
-    setFormType(selectedEventType?.id)
-    form.setFieldsValue({ eventType: selectedEventType?.id })
-  }, [data])
+    if (selectedEventdata !== null && selectedEventdata) {
+      const updatedEvent = { ...selectedEventdata }
+      console.log('updated event', updatedEvent)
+      const selectedEventType = events.find((event) => event.name === updatedEvent.categories[0])
+      console.log('selectedEventType', selectedEventType)
+      setFormType(selectedEventType?.id, updatedEvent)
+      form.setFieldsValue({ eventType: selectedEventType?.id })
+    }
+  }, [selectedEventdata])
 
   const events = [
     { name: 'Release', id: 1 },
@@ -40,9 +53,9 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel, data }
     { name: 'Absense', id: 3 },
   ]
   const countries = [
-    { name: 'India', id: 1 },
-    { name: 'US', id: 2 },
-    { name: 'UK', id: 3 },
+    // { name: 'India', id: 1 },
+    { name: 'US', id: 1 },
+    // { name: 'UK', id: 3 },
   ]
 
   const onFinish = (values: any) => {
@@ -55,45 +68,50 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel, data }
 
   const getEventPayload = (data, startDate, endDate) => {
     const payload: any = {
-      id: '',
-      subject: data.subject,
-      start: {
-        dateTime: startDate,
-        timeZone: 'UTC',
+      customRequest: null,
+      events: {
+        id: selectedEventdata !== null && selectedEventdata ? selectedEventdata.id : '',
+        subject: data.subject,
+        start: {
+          dateTime: startDate,
+          timeZone: 'UTC',
+        },
+        end: {
+          dateTime: endDate,
+          timeZone: 'UTC',
+        },
+        body: {
+          contentType: 1,
+          content: data.content,
+        },
+        reminderMinutesBeforeStart: 1440,
+        categories: data.category,
       },
-      end: {
-        dateTime: endDate,
-        timeZone: 'UTC',
-      },
-      body: {
-        contentType: 1,
-        content: data.content,
-      },
-      reminderMinutesBeforeStart: 1440,
-      categories: data.category,
     }
     if (data.category[0] === 'Holiday') {
       const selectedCountry = countries.find((country) => country.id === Number(data.country))
       payload.location = { displayName: selectedCountry?.name }
     }
-    // if (data.category[0] === 'Release') {
-    //   payload.singleValueExtendedProperties = [
-    //     {
-    //       id: `String ${uniqueId}`,
-    //       value: `${data.projectName}`,
-    //     },
-    //     {
-    //       id: `String ${uniqueId}`,
-    //       value: `${data.artistName}`,
-    //     },
-    //   ]
-    // }
+    if (data.category[0] === 'Release') {
+      payload.customRequest = {
+        eventType: 'Release',
+        projectName: data.projectName,
+        artistName: data.artistName,
+      }
+    }
+    setLoading(true)
+
     // console.log(`${data.category[0]} submitted value ${JSON.stringify(payload)}}`)
     postApi(payload, '/calendar/AddEvents', '')
       .then((res) => {
+        // setStartDate(updatedStartDate)
+        setIsStateUpdated(!isStateUpdated)
         handleOk()
+        setLoading(false)
       })
       .catch((err) => {
+        setLoading(false)
+
         console.log(`getting error when adding ${data.category[0]} event`, err)
       })
   }
@@ -111,7 +129,7 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel, data }
   const onHolidayFinish = (values: any) => {
     const updatedHolidayObj = { ...values }
     updatedHolidayObj.content = ``
-    updatedHolidayObj.subject = updatedHolidayObj.holiday
+    updatedHolidayObj.subject = updatedHolidayObj.holidayName
     updatedHolidayObj.category = ['Holiday']
     const startDate = convertDateFormat(updatedHolidayObj)
     const endDate = convertDateFormat(updatedHolidayObj)
@@ -120,6 +138,7 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel, data }
   const onAbsenseFinish = (values: any) => {
     const updatedAbsenseObj = { ...values }
     updatedAbsenseObj.subject = 'Vacation'
+    updatedAbsenseObj.content = ''
     updatedAbsenseObj.category = ['Absense']
     const startDate = convertDateFormat(updatedAbsenseObj)
     const endDate = convertDateFormat(updatedAbsenseObj)
@@ -131,16 +150,39 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel, data }
     console.log('Failed:', errorInfo)
   }
 
-  const setFormType = (value) => {
+  const setFormType = (value, selectedForm?) => {
     if (value === 1) {
       setTypeOfForm('releaseForm')
       setSubmitType(() => onReleaseFinish)
+      if (selectedForm) {
+        selectedForm.projectName = selectedForm.eventCustomResponse.projectName
+        selectedForm.artistName = selectedForm.eventCustomResponse.artistName
+        const formatedDate = dayjs(selectedForm.start.dateTime).format('MM-DD-YYYY')
+        selectedForm.releaseDate = dayjs(formatedDate)
+        releaseForm.setFieldsValue(selectedForm)
+      }
     } else if (value === 2) {
       setTypeOfForm('holidayForm')
       setSubmitType(() => onHolidayFinish)
+      if (selectedForm) {
+        selectedForm.holidayName = selectedForm.subject
+        selectedForm.country = 1
+        const formatedStartDate = dayjs(selectedForm.start.dateTime).format('MM-DD-YYYY')
+        const formatedEndDate = dayjs(selectedForm.end.dateTime).format('MM-DD-YYYY')
+        selectedForm.startDate = dayjs(formatedStartDate)
+        selectedForm.endDate = dayjs(formatedEndDate)
+        holidayForm.setFieldsValue(selectedForm)
+      }
     } else {
       setTypeOfForm('absenseForm')
       setSubmitType(() => onAbsenseFinish)
+      if (selectedForm) {
+        const formatedStartDate = dayjs(selectedForm.start.dateTime).format('MM-DD-YYYY')
+        const formatedEndDate = dayjs(selectedForm.end.dateTime).format('MM-DD-YYYY')
+        selectedForm.startDate = dayjs(formatedStartDate)
+        selectedForm.endDate = dayjs(formatedEndDate)
+        absenseForm.setFieldsValue(selectedForm)
+      }
     }
     setSelectedEvent(Number(value))
   }
@@ -158,7 +200,14 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel, data }
       onOk={handleOk}
       onCancel={handleCancel}
       footer={[
-        <Button form={typeOfForm} onClick={submitType} key="submit" htmlType="submit" type="primary">
+        <Button
+          form={typeOfForm}
+          onClick={submitType}
+          disabled={typeOfForm === ''}
+          key="submit"
+          htmlType="submit"
+          type="primary"
+        >
           Save
         </Button>,
         <Button key="back" onClick={handleCancel}>
@@ -186,12 +235,12 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel, data }
             <Form.Item
               label="Event Type"
               name="eventType"
-              //   rules={[
-              //     {
-              //       required: true,
-              //       message: 'Event type is required!',
-              //     },
-              //   ]}
+              rules={[
+                {
+                  required: true,
+                  message: 'Event type is required!',
+                },
+              ]}
             >
               <Select placeholder="Select Event" onChange={handleChange} showArrow allowClear>
                 {events.map((item) => (
@@ -286,12 +335,12 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel, data }
         >
           <Row>
             <Col span={24}>
-              <Form.Item label="Holiday Name" name="holiday">
+              <Form.Item label="Holiday Name" name="holidayName">
                 <Input />
               </Form.Item>
 
               <Form.Item label="Country" name="country">
-                <Select placeholder="Select Country" showArrow allowClear>
+                <Select placeholder="Select Country" defaultValue={1} showArrow allowClear>
                   {countries.map((item) => (
                     <Option key={item.id} value={item.id}>
                       {item.name}
@@ -350,33 +399,6 @@ export default function EventModal({ isModalOpen, handleOk, handleCancel, data }
         >
           <Row>
             <Col span={24}>
-              <Form.Item
-                label="User Name"
-                name="userName"
-                colon={false}
-                rules={[
-                  {
-                    required: true,
-                    message: 'UserName Name is required!',
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                label="Team Name"
-                name="teamName"
-                colon={false}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Team Name is required!',
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-
               <Form.Item name="startDate" label="Start Date" labelAlign="left" colon={false}>
                 <DatePicker format={dateFormat} placeholder="" />
               </Form.Item>
