@@ -19,7 +19,7 @@ import DoughnutChart from './Charts/Doughnut'
 import EventModal from './Modal/EventModal'
 import moment from 'moment'
 import { deleteApi, getApi, postApi } from '../../Api/Api'
-import { monthCalendar, weekCalendar, getWeekNumber, calculateWeekDates, yearCalendar } from './../Common/Utils'
+import { monthCalendar, yearCalendar } from './../Common/Utils'
 const { Paragraph, Text } = Typography
 
 const data = [
@@ -70,7 +70,6 @@ export default function Search() {
   const { token }: { token: any } = useToken()
   const [createEventModalOpen, setCreateEventModalOpen] = useState<boolean>(false)
   const [eventList, setEventList] = useState<any>([])
-  // const [week, setWeek] = useState<any>(weekCalendar()[(getWeekNumber(moment().format('DD')) || 1) - 1])
   const [month, setMonth] = useState<any>(monthCalendar()[moment().month() || 0])
   const [selectedEventData, setSelectedEventData] = useState<any>()
   const [popoverVisible, setPopoverVisible] = useState(false)
@@ -78,20 +77,18 @@ export default function Search() {
   const [startDate, setStartDate] = useState<any>(moment().clone().startOf('week'))
   const [endDate, setEndDate] = useState<any>(moment().clone().endOf('week'))
 
-  console.log(startDate.format('DD-MM-YYYY'))
-  console.log(endDate.format('DD-MM-YYYY'))
-
   const handlePopoverClick = () => {
     setPopoverVisible(!popoverVisible)
   }
+
   React.useEffect(() => {
-    // const { startDate, endDate } = calculateWeekDates(week.value, month.value, year.value)
     const fromDate = startDate.format('YYYY-MM-DD')
     const toDate = endDate.format('YYYY-MM-DD')
 
     getApi({ startDate: fromDate, endDate: toDate }, '/Calendar/GetEvents')
       .then((res) => {
         if (res.value) {
+          console.log(res.value, "res.valueres.value")
           getEmptyRecordIfNoEvent(res.value)
         } else {
           getEmptyRecordIfNoEvent()
@@ -126,8 +123,6 @@ export default function Search() {
       let eventsInDay: any = []
       if (records) {
         eventsInDay = records.filter((data) => {
-          const categories = ['Holiday', 'Release', 'Absense']
-          data.categories = categories[Math.floor(Math.random() * categories.length)]
           const diffInDays = moment(data.end.dateTime).diff(moment(data.start.dateTime), 'days')
           if (
             diffInDays === 1 ||
@@ -378,14 +373,6 @@ export default function Search() {
                         {endDate.format('DD MMMM')} {year.label}
                         <Button size="small" style={{ border: 0 }} icon={<RightOutlined onClick={handleNextWeek} />} />
                       </Typography.Title>
-                      {/* <Select
-                        value={week}
-                        style={{
-                          width: 150,
-                        }}
-                        options={weekCalendar(month.value)}
-                        onChange={(id, data) => setWeek(data)}
-                      /> */}
                       <Select
                         value={month}
                         style={{
@@ -434,12 +421,11 @@ export default function Search() {
                                     <div
                                       key={i}
                                       id="notifymsg"
-                                      className={`event-border-${event.categories}`}
+                                      className={`event-border-${event.categories[0]}`}
                                       style={{
                                         backgroundColor: token.colorListItem,
                                         padding: '25px 10px',
                                         borderRadius: 4,
-                                        minHeight: 70,
                                         width: '32%',
                                         flexShrink: 0,
                                         marginRight: 10,
@@ -476,7 +462,6 @@ export default function Search() {
                                         backgroundColor: token.colorListItem,
                                         padding: '25px 10px',
                                         borderRadius: 4,
-                                        height: 70,
                                         width: '32%',
                                         flexShrink: 0,
                                         marginRight: 10,
