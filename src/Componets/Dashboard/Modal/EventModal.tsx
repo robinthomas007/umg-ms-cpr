@@ -4,6 +4,8 @@ import type { DatePickerProps } from 'antd'
 import { postApi } from '../../../Api/Api'
 // import { v4 as uuidv4 } from 'uuid'
 
+import { useAuth } from '../../../Context/authContext'
+
 import dayjs from 'dayjs'
 import moment from 'moment'
 const { Option } = Select
@@ -35,6 +37,8 @@ export default function EventModal({
   const [selectedEvent, setSelectedEvent] = useState<number>(0)
   const [submitType, setSubmitType] = useState<any>('')
   const [typeOfForm, setTypeOfForm] = useState<string>('')
+
+  const { user } = useAuth()
   // const uniqueId = uuidv4()
   useEffect(() => {
     if (selectedEventdata !== null && selectedEventdata) {
@@ -80,38 +84,34 @@ export default function EventModal({
           dateTime: endDate,
           timeZone: 'UTC',
         },
-        body: {
-          contentType: 1,
-          content: data.content,
-        },
         reminderMinutesBeforeStart: 1440,
         categories: data.category,
       },
     }
-    if (data.category[0] === 'Holiday') {
-      const selectedCountry = countries.find((country) => country.id === Number(data.country))
-      payload.location = { displayName: selectedCountry?.name }
-    }
+    // if (data.category[0] === 'Holiday') {
+    //   const selectedCountry = countries.find((country) => country.id === Number(data.country))
+    //   payload.location = { displayName: selectedCountry?.name }
+    // }
     if (data.category[0] === 'Release') {
       payload.customRequest = {
         eventType: 'Release',
         projectName: data.projectName,
         artistName: data.artistName,
       }
+      payload.body = {
+        contentType: 1,
+        content: data.content,
+      }
     }
     setLoading(true)
-
-    // console.log(`${data.category[0]} submitted value ${JSON.stringify(payload)}}`)
+    handleOk()
     postApi(payload, '/calendar/AddEvents', '')
       .then((res) => {
-        // setStartDate(updatedStartDate)
         setIsStateUpdated(!isStateUpdated)
-        handleOk()
         setLoading(false)
       })
       .catch((err) => {
         setLoading(false)
-
         console.log(`getting error when adding ${data.category[0]} event`, err)
       })
   }
@@ -128,8 +128,8 @@ export default function EventModal({
   }
   const onHolidayFinish = (values: any) => {
     const updatedHolidayObj = { ...values }
-    updatedHolidayObj.content = `Holiday`
-    updatedHolidayObj.subject = updatedHolidayObj.holidayName
+    // updatedHolidayObj.content = `Holiday`
+    updatedHolidayObj.subject = `Holiday: ${updatedHolidayObj.holidayName}`
     updatedHolidayObj.category = ['Holiday']
     const startDate = convertDateFormat(updatedHolidayObj.startDate)
     const endDate = convertDateFormat(updatedHolidayObj.endDate)
@@ -137,8 +137,7 @@ export default function EventModal({
   }
   const onAbsenseFinish = (values: any) => {
     const updatedAbsenseObj = { ...values }
-    updatedAbsenseObj.subject = 'Vacation:'
-    updatedAbsenseObj.content = 'Vinoth Periyasamy-OOO'
+    updatedAbsenseObj.subject = `${user.name} - OOO`
     updatedAbsenseObj.category = ['Absense']
     const startDate = convertDateFormat(updatedAbsenseObj.startDate)
     const endDate = convertDateFormat(updatedAbsenseObj.endDate)
@@ -165,7 +164,7 @@ export default function EventModal({
       setSubmitType(() => onHolidayFinish)
       if (selectedForm) {
         selectedForm.holidayName = selectedForm.subject
-        selectedForm.country = 1
+        // selectedForm.country = 1
         const formatedStartDate = dayjs(selectedForm.start.dateTime).format('MM-DD-YYYY')
         const formatedEndDate = dayjs(selectedForm.end.dateTime).format('MM-DD-YYYY')
         selectedForm.startDate = dayjs(formatedStartDate)
@@ -338,7 +337,7 @@ export default function EventModal({
                 <Input />
               </Form.Item>
 
-              <Form.Item label="Country" name="country">
+              {/* <Form.Item label="Country" name="country">
                 <Select placeholder="Select Country" defaultValue={1} showArrow allowClear>
                   {countries.map((item) => (
                     <Option key={item.id} value={item.id}>
@@ -346,7 +345,7 @@ export default function EventModal({
                     </Option>
                   ))}
                 </Select>
-              </Form.Item>
+              </Form.Item> */}
               <Form.Item
                 rules={[
                   {

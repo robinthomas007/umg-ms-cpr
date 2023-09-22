@@ -199,10 +199,12 @@ export default function Search() {
             {moment(event.end.dateTime).format('DD/MM/YYYY HH:mm')} ({event.end.timeZone})
           </p>
         </div>
-        <div className="popover-item">
-          <ProfileOutlined className="popover-icons" size={16} />
-          <p className="popover-item-content">{event.bodyPreview}</p>
-        </div>
+        {event.categories[0] === 'Release' && (
+          <div className="popover-item">
+            <ProfileOutlined className="popover-icons" size={16} />
+            <p className="popover-item-content">{event.bodyPreview}</p>
+          </div>
+        )}
         <div className="event-popover-footer">
           <Button onClick={() => handleEditEventData(event)}>
             {' '}

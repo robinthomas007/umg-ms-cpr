@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
   React.useEffect(() => {
     getUserRole().then((res) => {
       if (res && res.length > 0) {
-        setUser({ ...user, role: res[0].masterRole, id: res[0].members[0].userId })
+        setUser({ ...user, role: res[0].masterRole, name: res[0].members[0].userName, id: res[0].members[0].userId })
       }
     })
   }, [updatedRole])
