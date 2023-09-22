@@ -77,6 +77,14 @@ export default function Search() {
   React.useEffect(() => {
     const fromDate = startDate.format('MM-DD-YYYY')
     const toDate = endDate.format('MM-DD-YYYY')
+
+    if (month.value !== endDate.format('MMMM')) {
+      setMonth({ value: endDate.format('MMMM'), label: endDate.format('MMMM') })
+    }
+    if (year.value !== endDate.format('YYYY')) {
+      setYear({ value: endDate.format('YYYY'), label: endDate.format('YYYY') })
+    }
+
     setLoading(true)
     getApi({ startDate: fromDate, endDate: toDate }, '/Calendar/GetEvents')
       .then((res) => {
