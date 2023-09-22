@@ -59,12 +59,6 @@ const data = [
     rate: '1/9',
   },
 ]
-
-const handleShowPlusIcon = () => {
-  const box: any = document.querySelector('.plusIcon')
-  box.style.display = 'block'
-}
-
 export default function Search() {
   const { useToken }: { useToken: any } = theme
   const { token }: { token: any } = useToken()
@@ -78,27 +72,24 @@ export default function Search() {
   const [endDate, setEndDate] = useState<any>(moment().clone().endOf('week'))
   const [loading, setLoading] = useState<boolean>(false)
   const [isStateUpdated, setIsStateUpdated] = useState<boolean>(false)
-  const handlePopoverClick = () => {
-    setPopoverVisible(!popoverVisible)
-  }
+
 
   React.useEffect(() => {
-    // const { startDate, endDate } = calculateWeekDates(week.value, month.value, year.value)
     const fromDate = startDate.format('MM-DD-YYYY')
     const toDate = endDate.format('MM-DD-YYYY')
     setLoading(true)
     getApi({ startDate: fromDate, endDate: toDate }, '/Calendar/GetEvents')
       .then((res) => {
         if (res.value) {
-          getEmptyRecordIfNoEvent(res.value)
+          getEventsRecords(res.value)
         } else {
-          getEmptyRecordIfNoEvent()
+          getEventsRecords()
         }
         setLoading(false)
       })
       .catch((error) => {
         console.log('error feching data', error)
-        getEmptyRecordIfNoEvent()
+        getEventsRecords()
         setLoading(false)
       })
   }, [startDate, endDate, isStateUpdated])
@@ -115,7 +106,7 @@ export default function Search() {
     setEndDate(endDate.clone().subtract(1, 'week').endOf('week'))
   }
 
-  const getEmptyRecordIfNoEvent = (records?) => {
+  const getEventsRecords = (records?) => {
     const newData: any = []
     const diff = endDate.diff(startDate, 'days')
     const length = diff + 1
@@ -171,20 +162,28 @@ export default function Search() {
   const handleEventCloseModal = () => {
     createEventModalOpen && setCreateEventModalOpen(false)
     setSelectedEventData(null)
+    setPopoverVisible(false)
   }
   const handleEditEventData = (data) => {
     setSelectedEventData(data)
     showCreateEventModal()
+    setPopoverVisible(true)
   }
+
   const removeEventFromCalendar = (eventId) => {
-    console.log('event for remove fro calendar ', eventId)
+    setTimeout(() => {
+      setPopoverVisible(true)
+    }, 200);
     deleteApi(eventId, '/Calendar')
       .then((res: any) => {
         console.log('res of remove event', res)
         setIsStateUpdated(!isStateUpdated)
+        setPopoverVisible(false)
+
       })
       .catch((error: any) => {
         console.log('error feching data', error)
+        setPopoverVisible(false)
       })
   }
 
@@ -456,7 +455,7 @@ export default function Search() {
                                         alignItems: 'center',
                                       }}
                                     >
-                                      <Popover
+                                      {!popoverVisible ? <Popover
                                         overlayClassName="event-popover"
                                         placement="right"
                                         content={() => eventContent(event)}
@@ -466,7 +465,9 @@ export default function Search() {
                                         <span>
                                           {event.subject} {event.bodyPreview}
                                         </span>
-                                      </Popover>
+                                      </Popover> : <span>
+                                        {event.subject} {event.bodyPreview}
+                                      </span>}
                                       {!event && (
                                         <PlusCircleOutlined
                                           onClick={showCreateEventModal}
