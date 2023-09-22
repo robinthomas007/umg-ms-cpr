@@ -128,7 +128,7 @@ export default function EventModal({
   }
   const onHolidayFinish = (values: any) => {
     const updatedHolidayObj = { ...values }
-    updatedHolidayObj.content = ``
+    updatedHolidayObj.content = `Holiday`
     updatedHolidayObj.subject = updatedHolidayObj.holidayName
     updatedHolidayObj.category = ['Holiday']
     const startDate = convertDateFormat(updatedHolidayObj.startDate)
@@ -137,12 +137,11 @@ export default function EventModal({
   }
   const onAbsenseFinish = (values: any) => {
     const updatedAbsenseObj = { ...values }
-    updatedAbsenseObj.subject = 'Vacation'
+    updatedAbsenseObj.subject = 'Vacation:'
     updatedAbsenseObj.content = 'Vinoth Periyasamy-OOO'
     updatedAbsenseObj.category = ['Absense']
     const startDate = convertDateFormat(updatedAbsenseObj.startDate)
     const endDate = convertDateFormat(updatedAbsenseObj.endDate)
-    updatedAbsenseObj.content = `${updatedAbsenseObj.userName}/${updatedAbsenseObj.teamName}`
     getEventPayload(updatedAbsenseObj, startDate, endDate)
   }
 
