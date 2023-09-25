@@ -98,10 +98,10 @@ export default function EventModal({
         projectName: data.projectName,
         artistName: data.artistName,
       }
-      payload.events.body = {
-        contentType: 1,
-        content: data.content,
-      }
+      // payload.events.body = {
+      //   contentType: 1,
+      //   content: data.content,
+      // }
     }
     setLoading(true)
     handleOk()
@@ -119,8 +119,8 @@ export default function EventModal({
   const onReleaseFinish = (values: any) => {
     const modifiedRelese = { ...values }
     modifiedRelese.category = ['Release']
-    modifiedRelese.subject = `New Release`
-    modifiedRelese.content = `${modifiedRelese.artistName}/${modifiedRelese.projectName}`
+    modifiedRelese.subject = `New Release \n${modifiedRelese.artistName} / ${modifiedRelese.projectName}`
+    // modifiedRelese.content = `${modifiedRelese.artistName} / ${modifiedRelese.projectName}`
     const releaseDate = dayjs(modifiedRelese.releaseDate.$d)
     const dateWithZeroTime = releaseDate.set('hour', 0).set('minute', 0).set('second', 0)
     const releaseDateFormat = dateWithZeroTime.format('YYYY-MM-DDTHH:mm:ss')

@@ -269,8 +269,7 @@ export default function Navbar() {
             )}
             {noti.notificationType.toLowerCase() === 'newrelease' && (
               <>
-                <strong>{noti.userName}</strong> The New Release for{' '}
-                <strong>"{noti?.projectName.split('##')[0]}"</strong> titled,
+                The New Release for <strong>"{noti?.projectName.split('##')[0]}"</strong> titled,
                 <strong>"{noti?.projectName.split('##')[1]}"</strong>is due to Release in{' '}
                 {noti?.projectName.split('##')[2]}!<span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
               </>
