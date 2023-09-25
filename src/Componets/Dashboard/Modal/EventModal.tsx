@@ -98,7 +98,7 @@ export default function EventModal({
         projectName: data.projectName,
         artistName: data.artistName,
       }
-      payload.body = {
+      payload.events.body = {
         contentType: 1,
         content: data.content,
       }
