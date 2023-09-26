@@ -126,9 +126,9 @@ export default function Search() {
       let eventsInDay: any = []
       if (records) {
         eventsInDay = records.filter((data) => {
-          const diffInDays = moment(data.end.dateTime).diff(moment(data.start.dateTime), 'days')
+          // const diffInDays = moment(data.end.dateTime).diff(moment(data.start.dateTime), 'days')
           if (
-            diffInDays === 1 ||
+            data.isAllDay ||
             moment(data.start.dateTime).format('DD/MM/YYYY') === moment(data.end.dateTime).format('DD/MM/YYYY')
           ) {
             if (
@@ -172,6 +172,7 @@ export default function Search() {
   const handleOkEventModal = () => {
     setCreateEventModalOpen(false)
     setSelectedEventData(null)
+    setPopoverVisible(false)
   }
   const handleEventCloseModal = () => {
     createEventModalOpen && setCreateEventModalOpen(false)
