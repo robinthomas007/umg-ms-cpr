@@ -72,7 +72,7 @@ export default function Search() {
   const [endDate, setEndDate] = useState<any>(moment().clone().endOf('week'))
   const [loading, setLoading] = useState<boolean>(false)
   const [isStateUpdated, setIsStateUpdated] = useState<boolean>(false)
-
+  const [selectedDay, setSelectedDay] = useState<any>('')
 
   React.useEffect(() => {
     const fromDate = startDate.format('MM-DD-YYYY')
@@ -122,6 +122,7 @@ export default function Search() {
     newArray.map((val) => {
       const newobj: any = {}
       const eventDay = moment(startDate).add(val, 'day').format('ddd M/D')
+      const selectedDate = moment(startDate).add(val, 'day').format('MM/DD/YYYY')
       let eventsInDay: any = []
       if (records) {
         eventsInDay = records.filter((data) => {
@@ -149,17 +150,22 @@ export default function Search() {
           }
         })
       }
+      // console.log('eventDay', moment(eventDay).set())
       newobj.day = eventDay
       delete newobj.start
       delete newobj.end
+      newobj.selectedDay = selectedDate
       newobj.eventList = eventsInDay
       newData.push(newobj)
       setEventList(newData)
     })
   }
 
-  const showCreateEventModal = () => {
-    // setEditRecord(data)
+  const showCreateEventModal = (customdate?) => {
+    if (customdate) {
+      setSelectedDay(customdate)
+    }
+
     setCreateEventModalOpen(true)
   }
 
@@ -181,13 +187,12 @@ export default function Search() {
   const removeEventFromCalendar = (eventId) => {
     setTimeout(() => {
       setPopoverVisible(true)
-    }, 200);
+    }, 200)
     deleteApi(eventId, '/Calendar')
       .then((res: any) => {
         console.log('res of remove event', res)
         setIsStateUpdated(!isStateUpdated)
         setPopoverVisible(false)
-
       })
       .catch((error: any) => {
         console.log('error feching data', error)
@@ -463,19 +468,23 @@ export default function Search() {
                                         alignItems: 'center',
                                       }}
                                     >
-                                      {!popoverVisible ? <Popover
-                                        overlayClassName="event-popover"
-                                        placement="right"
-                                        content={() => eventContent(event)}
-                                        title={event.subject}
-                                        trigger="click"
-                                      >
+                                      {!popoverVisible ? (
+                                        <Popover
+                                          overlayClassName="event-popover"
+                                          placement="right"
+                                          content={() => eventContent(event)}
+                                          title={event.subject}
+                                          trigger="click"
+                                        >
+                                          <span>
+                                            {event.subject} {event.bodyPreview}
+                                          </span>
+                                        </Popover>
+                                      ) : (
                                         <span>
                                           {event.subject} {event.bodyPreview}
                                         </span>
-                                      </Popover> : <span>
-                                        {event.subject} {event.bodyPreview}
-                                      </span>}
+                                      )}
                                       {!event && (
                                         <PlusCircleOutlined
                                           onClick={showCreateEventModal}
@@ -485,7 +494,7 @@ export default function Search() {
                                       )}
                                     </div>
                                   ))}
-                                  {newArray.map((item, i) => (
+                                  {newArray.map((emptyItem, i) => (
                                     <div
                                       key={i}
                                       id="notifymsg"
@@ -502,7 +511,7 @@ export default function Search() {
                                       }}
                                     >
                                       <PlusCircleOutlined
-                                        onClick={showCreateEventModal}
+                                        onClick={() => showCreateEventModal(item.selectedDay)}
                                         className="plusIcon add-event-icon"
                                         style={{ float: 'right' }}
                                       />
@@ -524,6 +533,7 @@ export default function Search() {
                         setLoading={setLoading}
                         isStateUpdated={isStateUpdated}
                         setIsStateUpdated={setIsStateUpdated}
+                        selectedDay={selectedDay}
                       />
                     )}
                   </Row>

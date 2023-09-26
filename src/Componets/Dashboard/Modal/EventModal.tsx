@@ -19,6 +19,7 @@ interface EventModalProps {
   setLoading: any
   setIsStateUpdated: any
   isStateUpdated: boolean
+  selectedDay: any
 }
 
 export default function EventModal({
@@ -28,6 +29,7 @@ export default function EventModal({
   selectedEventdata,
   setLoading,
   isStateUpdated,
+  selectedDay,
   setIsStateUpdated,
 }: EventModalProps) {
   const [form] = Form.useForm()
@@ -67,7 +69,10 @@ export default function EventModal({
   }
 
   const convertDateFormat = (date) => {
-    return dayjs(date.$d).format('YYYY-MM-DDTHH:mm:ss')
+    const dateInstance = dayjs(date.$d)
+    const dateWithZeroTime = dateInstance.set('hour', 0).set('minute', 0).set('second', 0)
+    const dateFormat = dateWithZeroTime.format('YYYY-MM-DDTHH:mm:ss')
+    return dateFormat
   }
 
   const getEventPayload = (data, startDate, endDate) => {
@@ -163,12 +168,12 @@ export default function EventModal({
       setTypeOfForm('holidayForm')
       setSubmitType(() => onHolidayFinish)
       if (selectedForm) {
-        selectedForm.holidayName = selectedForm.subject
-        // selectedForm.country = 1
+        selectedForm.holidayName = selectedForm.subject.split(':')[1]
         const formatedStartDate = dayjs(selectedForm.start.dateTime).format('MM-DD-YYYY')
         const formatedEndDate = dayjs(selectedForm.end.dateTime).format('MM-DD-YYYY')
         selectedForm.startDate = dayjs(formatedStartDate)
         selectedForm.endDate = dayjs(formatedEndDate)
+        // selectedForm.country = 1
         holidayForm.setFieldsValue(selectedForm)
       }
     } else {
@@ -265,7 +270,7 @@ export default function EventModal({
           onFinishFailed={onFinishFailed}
           autoComplete="off"
           name="releaseForm"
-          initialValues={{ releaseDate: dayjs() }}
+          initialValues={{ releaseDate: dayjs(selectedDay) }}
         >
           <Row>
             <Col span={24}>
@@ -321,7 +326,7 @@ export default function EventModal({
           wrapperCol={{
             span: 16,
           }}
-          initialValues={{ startDate: dayjs(), endDate: dayjs() }}
+          initialValues={{ startDate: dayjs(selectedDay), endDate: dayjs(selectedDay) }}
           onFinish={onHolidayFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
@@ -383,7 +388,7 @@ export default function EventModal({
           wrapperCol={{
             span: 16,
           }}
-          initialValues={{ startDate: dayjs(), endDate: dayjs() }}
+          initialValues={{ startDate: dayjs(selectedDay), endDate: dayjs(selectedDay) }}
           onFinish={onAbsenseFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
