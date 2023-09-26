@@ -334,7 +334,16 @@ export default function EventModal({
         >
           <Row>
             <Col span={24}>
-              <Form.Item label="Holiday Name" name="holidayName">
+              <Form.Item
+                rules={[
+                  {
+                    required: true,
+                    message: 'Holiday Name is required!',
+                  },
+                ]}
+                label="Holiday Name"
+                name="holidayName"
+              >
                 <Input />
               </Form.Item>
 
