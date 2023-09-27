@@ -158,8 +158,12 @@ export default function EventModal({
       setTypeOfForm('releaseForm')
       setSubmitType(() => onReleaseFinish)
       if (selectedForm) {
-        selectedForm.projectName = selectedForm.eventCustomResponse.projectName
-        selectedForm.artistName = selectedForm.eventCustomResponse.artistName
+        selectedForm.projectName = selectedForm.eventCustomResponse?.projectName
+          ? selectedForm.eventCustomResponse.projectName
+          : ''
+        selectedForm.artistName = selectedForm.eventCustomResponse?.artistName
+          ? selectedForm.eventCustomResponse.artistName
+          : ''
         const formatedDate = dayjs(selectedForm.start.dateTime).format('MM-DD-YYYY')
         selectedForm.releaseDate = dayjs(formatedDate)
         releaseForm.setFieldsValue(selectedForm)
