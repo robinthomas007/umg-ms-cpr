@@ -437,9 +437,9 @@ function TasksPage() {
 
           {openNotesModal && (
             <NotesModal
-              soureName={task.title}
+              sourceName={task.title}
               sourceId={task.projectId}
-              soure={'Tasks'}
+              source={'Tasks'}
               open={openNotesModal}
               handleClose={handleNotesModal}
             />

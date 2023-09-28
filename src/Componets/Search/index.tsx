@@ -583,9 +583,9 @@ const SearchInput: React.FC = () => {
           )}
           {openNotesModal && (
             <NotesModal
-              soureName={project.title}
+              sourceName={project.title}
               sourceId={project.projectId}
-              soure={'Projects'}
+              source={'Projects'}
               open={openNotesModal}
               handleClose={handleNotesModal}
             />

@@ -10,8 +10,8 @@ import { hexArray } from './../Common/StaticDatas'
 interface NotesModalProps {
   open: boolean
   handleClose: () => void
-  soure: string
-  soureName: string
+  source: string
+  sourceName: string
   sourceId: string | number
 }
 const layout = {
@@ -31,14 +31,14 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
 
   const invokeGetNotesApi = React.useCallback(() => {
     setLoading(true)
-    getApi({ sourceId: props.sourceId, source: props.soure }, '/notes/getnotes')
+    getApi({ sourceId: props.sourceId, source: props.source }, '/notes/getnotes')
       .then((res) => {
         setNotes(res)
       })
       .finally(() => {
         setLoading(false)
       })
-  }, [props.sourceId, props.soure])
+  }, [props.sourceId, props.source])
   useEffect(() => {
     invokeGetNotesApi()
     getApi({ SearchTerm: null }, '/usersearch')
@@ -71,10 +71,11 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
   const handleSubmit = (values) => {
     postApi(
       {
+        source: props.source,
         sourceId: props.sourceId,
         comments: values.notes,
-        source: props.soure,
-        sourceName: props.soureName,
+
+        sourceName: props.sourceName,
       },
       '/notes/updatenotes',
       'successfully added the notes'

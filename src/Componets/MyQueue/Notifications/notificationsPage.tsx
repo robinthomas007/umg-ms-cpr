@@ -289,9 +289,9 @@ function NotificationsPage() {
             selectedFilters={selectedFilters}
           />
           <NotesModal
-            soureName={selectedNoti.sourceName}
+            sourceName={selectedNoti.sourceName}
             sourceId={selectedNoti.notificationId}
-            soure={'Notifications'}
+            source={selectedNoti.source}
             open={openNotesModal}
             handleClose={handleNotesModal}
           />
