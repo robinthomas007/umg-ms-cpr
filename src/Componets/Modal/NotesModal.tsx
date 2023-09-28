@@ -71,10 +71,9 @@ const NotesModal: React.FC<NotesModalProps> = (props) => {
   const handleSubmit = (values) => {
     postApi(
       {
-        source: props.source,
+        source: 'Notifications',
         sourceId: props.sourceId,
         comments: values.notes,
-
         sourceName: props.sourceName,
       },
       '/notes/updatenotes',
