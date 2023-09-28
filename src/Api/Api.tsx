@@ -79,7 +79,7 @@ const showNotification = (status, customMessage) => {
         type: 'success',
         content: customMessage || 'Successfully Saved',
         className: 'custom-message-top',
-        duration: 2.5,
+        duration: 2,
       })
     }
   }
@@ -88,7 +88,8 @@ const showNotification = (status, customMessage) => {
     message.open({
       type: 'error',
       content: customMessage || 'Error Saving Data',
-      duration: 0,
+      className: 'custom-message-top',
+      duration: 2,
     })
   }
 }

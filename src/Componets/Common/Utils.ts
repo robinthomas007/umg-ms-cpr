@@ -3,6 +3,7 @@ import jwt_decode from 'jwt-decode'
 import { BASE_URL } from './../../App'
 import axios from 'axios'
 import { ADMIN, TEAM_ADMIN, TEAM_MEMBER } from './StaticDatas'
+import moment from 'moment'
 
 export const getUsername = () => {
   try {
@@ -110,4 +111,123 @@ export function removeEmptyAttributes(obj) {
 
 export const restrictUser = (role) => {
   return role === ADMIN || role === TEAM_ADMIN || role === TEAM_MEMBER ? false : true
+}
+
+
+export const monthCalendar = () => {
+  const months: any = [];
+  const currentYear = new Date().getFullYear();
+  for (let month = 0; month < 12; month++) {
+    const date = new Date(currentYear, month, 1);
+    const monthLabel = date.toLocaleString('default', { month: 'long' });
+
+    const monthObject = {
+      value: `${monthLabel}`,
+      label: `${monthLabel}`,
+    };
+
+    months.push(monthObject);
+  }
+  return months
+}
+
+export const getWeekNumber = (date) => {
+  date = Number(date)
+  if (date < 8) {
+    return 1
+  } else if (date > 7 && date < 15) {
+    return 2
+  }
+  else if (date > 14 && date < 21) {
+    return 3
+  }
+  else if (date > 20 && date < 28) {
+    return 4
+  }
+  else if (date > 27) {
+    return 5
+  }
+}
+
+export const weekCalendar = (currentMonth?) => {
+  const today = moment();
+  if (!currentMonth) {
+    currentMonth = today.month();
+  } else {
+    currentMonth = monthCalendar().findIndex((month) => month.value === currentMonth)
+  }
+  return [
+    {
+      value: '1',
+      label: `Week of ${currentMonth + 1}/1 - ${currentMonth + 1}/7`,
+    },
+    {
+      value: '2',
+      label: `Week of ${currentMonth + 1}/8 - ${currentMonth + 1}/14`,
+    },
+    {
+      value: '3',
+      label: `Week of ${currentMonth + 1}/15 - ${currentMonth + 1}/21`,
+    },
+    {
+      value: '4',
+      label: `Week of ${currentMonth + 1}/22 - ${currentMonth + 1}/28`,
+    },
+    {
+      value: '5',
+      label: `Week of ${currentMonth + 1}/28 - ${currentMonth + 1}/31`,
+    },
+  ]
+}
+
+export const calculateWeekDates = (day, month, year) => {
+  day = Number(day)
+  const today = moment();
+  let currentMonth = today.month();
+  if (month) {
+    currentMonth = monthCalendar().findIndex((item) => item.value === month)
+  }
+  const currentYear = year ? year : today.year();
+
+  const startOfMonth = moment([currentYear, currentMonth]);
+
+  let startOfWeek;
+
+  if (day === 1) {
+    startOfWeek = moment(startOfMonth).startOf('week');
+  }
+  if (day === 2) {
+    startOfWeek = moment(startOfMonth).add(1, 'weeks').startOf('week');
+  }
+  if (day === 3) {
+    startOfWeek = moment(startOfMonth).add(2, 'weeks').startOf('week');
+  }
+  if (day === 4) {
+    startOfWeek = moment(startOfMonth).add(3, 'weeks').startOf('week');
+  }
+  if (day === 5) {
+    startOfWeek = moment(startOfMonth).add(4, 'weeks').startOf('week');
+  }
+
+  const endOfWeek = moment(startOfWeek).endOf('week'); // End of the week
+
+  return {
+    startDate: startOfWeek.format('YYYY-MM-DD'),
+    endDate: endOfWeek.format('YYYY-MM-DD'),
+  };
+}
+
+
+export const yearCalendar = () => {
+  const currentYear = new Date().getFullYear();
+  const yearsArray: any = [];
+
+  for (let year = currentYear - 10; year <= currentYear; year++) {
+    yearsArray.push({ value: year, label: year.toString() });
+  }
+  return yearsArray
+}
+
+export const getMonth = (month) => {
+
 }

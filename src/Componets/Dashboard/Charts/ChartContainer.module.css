@@ -1,6 +1,6 @@
 .chartContainer {
   border-radius: 4px;
-  /* background-color: var(--header-background); */
+  background-color: var(--header-background);
 }
 
 .chartHeader {
@@ -11,7 +11,7 @@
 
 .chart {
   height: 280px;
-  padding: 20px 40px;
+  padding: 20px 20px;
 }
 
 .chartFooter {

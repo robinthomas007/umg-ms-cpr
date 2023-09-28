@@ -267,6 +267,13 @@ export default function Navbar() {
                 <span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
               </>
             )}
+            {noti.notificationType.toLowerCase() === 'newrelease' && (
+              <>
+                The New Release for <strong>"{noti?.projectName.split('##')[0]}"</strong> titled,
+                <strong>"{noti?.projectName.split('##')[1]}"</strong>is due to Release in{' '}
+                {noti?.projectName.split('##')[2]}!<span> ({moment.utc(noti.createdDateTime).fromNow()})</span>
+              </>
+            )}
           </div>
         </div>
       )
