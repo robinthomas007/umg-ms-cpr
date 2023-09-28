@@ -291,7 +291,7 @@ function NotificationsPage() {
           <NotesModal
             sourceName={selectedNoti.sourceName}
             sourceId={selectedNoti.notificationId}
-            source={selectedNoti.source}
+            source={'Notifications'}
             open={openNotesModal}
             handleClose={handleNotesModal}
           />
