@@ -113,12 +113,25 @@ export default function Search() {
     setStartDate(startDate.clone().subtract(1, 'week').startOf('week'))
     setEndDate(endDate.clone().subtract(1, 'week').endOf('week'))
   }
+  // for Allday event type subtracting one day from the endDate getEvents API response
+  const formatAllDayEventsEndDate = (records) => {
+    const modifiedRecords = records.map((data) => {
+      if (data.isAllDay) {
+        data.end.dateTime = moment(data.end.dateTime).subtract(1, 'day').format('YYYY/MM/DD')
+      }
+      return data
+    })
+    return modifiedRecords
+  }
 
   const getEventsRecords = (records?) => {
     const newData: any = []
     const diff = endDate.diff(startDate, 'days')
     const length = diff + 1
     const newArray: number[] = Array.from({ length }, (_, index) => index)
+    if (records) {
+      records = formatAllDayEventsEndDate(records)
+    }
     newArray.map((val) => {
       const newobj: any = {}
       const eventDay = moment(startDate).add(val, 'day').format('ddd M/D')
@@ -127,10 +140,7 @@ export default function Search() {
       if (records) {
         eventsInDay = records.filter((data) => {
           // const diffInDays = moment(data.end.dateTime).diff(moment(data.start.dateTime), 'days')
-          if (
-            data.isAllDay ||
-            moment(data.start.dateTime).format('DD/MM/YYYY') === moment(data.end.dateTime).format('DD/MM/YYYY')
-          ) {
+          if (moment(data.start.dateTime).format('DD/MM/YYYY') === moment(data.end.dateTime).format('DD/MM/YYYY')) {
             if (
               moment(startDate).add(val, 'day').format('DD/MM/YYYY') ===
               moment(data.start.dateTime).format('DD/MM/YYYY')
